@@ -1,0 +1,23 @@
+{
+    "name": "battery-data",
+    "version": "0.0.1",
+    "description": "Padronização dos Dados das Baterias",
+    "main": "index.js",
+    "keywords": [
+        "dados",
+        "baterias"
+    ],
+    "author": "Lucas Mantuan",
+    "license": "ISC",
+    "dependencies": {
+        "knex": "2.4.2",
+        "lodash": "4.17.21",
+        "mysql2": "3.3.0",
+        "xlsx": "file:vendor_modules/xlsx-0.19.3.tgz"
+    },
+    "devDependencies": {
+        "eslint": "8.40.0",
+        "eslint-plugin-prettier": "4.2.1",
+        "prettier": "2.8.8"
+    }
+}

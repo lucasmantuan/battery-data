@@ -1,0 +1,11 @@
+{
+    "rename_keys": {
+        "test_time(s)": "test_time"
+    },
+    "change_values": ["multiplicarTodosValores", ["cycle_index", "step_index"], "cycle_step"],
+    "map_object": {
+        "date_time": "date",
+        "test_time": "test",
+        "cycle_step": "cyst"
+    }
+}

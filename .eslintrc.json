@@ -1,0 +1,18 @@
+{
+    "env": {
+        "node": true,
+        "es2021": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "plugins": ["prettier"],
+    "rules": {
+        "eqeqeq": "off",
+        "no-console": "warn",
+        "max-len": ["error", { "code": 160 }],
+        "prettier/prettier": "error"
+    }
+}
