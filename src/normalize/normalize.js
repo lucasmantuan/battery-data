@@ -33,7 +33,7 @@ function normalize(planilhas, profile) {
 }
 
 function read(folder) {
-    const result = lerDiretorio(folder).then(definirExtensao('xlsx')).then(definirPlanilha(1)).then(dividirPlanilhas(8));
+    const result = lerDiretorio(folder).then(definirExtensao('xlsx')).then(definirPlanilha(1)).then(dividirPlanilhas(1));
     return result;
 }
 
