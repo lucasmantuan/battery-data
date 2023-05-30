@@ -3,7 +3,8 @@
         "baseUrl": "src",
         "module": "commonjs",
         "moduleResolution": "node",
-        "target": "es2021"
+        "target": "es2021",
+        "checkJs": true
     },
     "exclude": ["node_modules", "**/node_modules/*", "vendor_modules", "**/vendor_modules/*", "outros_arquivos", "**/outros_arquivos/*"]
 }

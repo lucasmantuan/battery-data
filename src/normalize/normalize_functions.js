@@ -72,32 +72,30 @@ function converterPlanilhas(planilhas) {
     });
 }
 
-function removerEspacosBranco(dados) {
-    const resultado = dados.map((array) => {
-        const novoArray = array.map((objeto) => {
-            const novoObjeto = {};
-            Object.keys(objeto).forEach((key) => {
-                novoObjeto[key.trim()] = objeto[key];
-            });
-            return novoObjeto;
-        });
-        return novoArray;
+/**
+ * Remove os espaços em branco (no início e no final) das chaves dos objetos do array.
+ *
+ * @param {Array<Object>} data O array contendo os objetos para a remoção dos espaços em branco nas chaves.
+ * @returns {Array<Object>} O array de objetos com as chaves alteradas, sem os espaços em branco.
+ */
+function removeWhitespace(data) {
+    const result = _.map(data, (item) => {
+        return _.mapKeys(item, (value, key) => _.trim(key));
     });
-    return resultado;
+    return result;
 }
 
-function converterParaMinusculo(dados) {
-    const resultado = dados.map((array) => {
-        const novoArray = array.map((objeto) => {
-            const novoObjeto = {};
-            Object.keys(objeto).forEach((key) => {
-                novoObjeto[key.toLowerCase()] = objeto[key];
-            });
-            return novoObjeto;
-        });
-        return novoArray;
+/**
+ * Converte as chaves dos objetos do array para minúsculas.
+ *
+ * @param {Array<Object>} data O array contendo os objetos para a conversão das chaves para minúsculas.
+ * @returns {Array<Object>} O array de objetos com as chaves convertidas para minúsculas.
+ */
+function convertToLowercase(data) {
+    const result = _.map(data, (item) => {
+        return _.mapKeys(item, (value, key) => _.toLower(key));
     });
-    return resultado;
+    return result;
 }
 
 function renomearChaves(criterio) {
@@ -183,8 +181,8 @@ module.exports = {
     lerPlanilhas,
     dividirPlanilhas,
     converterPlanilhas,
-    removerEspacosBranco,
-    converterParaMinusculo,
+    removeWhitespace,
+    convertToLowercase,
     renomearChaves,
     alterarValores,
     mapearObjeto,
