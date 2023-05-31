@@ -1,25 +1,25 @@
 const normalize_formulas = require('./normalize_formulas.js');
 
 const {
-    lerDiretorio,
+    alterarValores,
+    convertToLowercase,
+    converterData,
+    converterPlanilhas,
     definirExtensao,
     definirPlanilha,
     dividirPlanilhas,
-    lerPlanilhas,
-    converterPlanilhas,
-    removeWhitespace,
-    convertToLowercase,
-    renomearChaves,
-    alterarValores,
+    flattenData,
+    lerDiretorio,
+    readSpreadsheets,
     mapearObjeto,
-    converterData,
-    achatarDados
+    removeWhitespace,
+    renomearChaves
 } = require('./normalize_functions.js');
 
 function normalize(planilhas, profile) {
     const { rename_keys, change_values, map_object } = profile;
 
-    const resultado = lerPlanilhas(planilhas).then(converterPlanilhas).then(achatarDados).then(removeWhitespace).then(convertToLowercase);
+    const resultado = readSpreadsheets(planilhas).then(converterPlanilhas).then(flattenData).then(removeWhitespace).then(convertToLowercase);
     // .then(renomearChaves(rename_keys))
     // .then(alterarValores(normalize_formulas[change_values[0]], change_values[1], change_values[2]))
     // .then(mapearObjeto(map_object))zz

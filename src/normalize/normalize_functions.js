@@ -5,6 +5,19 @@ const _ = require('lodash');
 
 xlsx.set_fs(fs);
 
+/**
+ * Converte as chaves dos objetos no array para minúsculas.
+ *
+ * @param {Array<Object>} data O array contendo os objetos para a conversão das chaves para minúsculas.
+ * @returns {Array<Object>} O novo array de objetos com as chaves convertidas para minúsculas.
+ */
+function convertToLowercase(data) {
+    const result = _.map(data, (item) => {
+        return _.mapKeys(item, (value, key) => _.toLower(key));
+    });
+    return result;
+}
+
 function lerDiretorio(caminho) {
     return new Promise((resolve, reject) => {
         try {
@@ -37,28 +50,11 @@ function dividirPlanilhas(tamanho) {
 
         for (let i = 0; i < caminhos.length; i += tamanho) {
             const pedaco = caminhos.slice(i, i + tamanho);
-            resultado.push({ caminhos: pedaco, indice });
+            resultado.push({ paths: pedaco, index: indice });
         }
 
         return resultado;
     };
-}
-
-function lerPlanilhas({ caminhos, indice }) {
-    const resultado = Promise.all(caminhos.map((caminho) => lerPlanilha(caminho, indice)));
-    return resultado;
-}
-
-function lerPlanilha(caminho, indice) {
-    return new Promise((resolve, reject) => {
-        try {
-            const arquivo = xlsx.readFile(caminho, { cellDates: true });
-            const planilha = arquivo.Sheets[arquivo.SheetNames[indice]];
-            resolve(planilha);
-        } catch (error) {
-            reject(error);
-        }
-    });
 }
 
 function converterPlanilhas(planilhas) {
@@ -73,27 +69,25 @@ function converterPlanilhas(planilhas) {
 }
 
 /**
- * Remove os espaços em branco (no início e no final) das chaves dos objetos do array.
+ * Achata um array em um único nível, removendo aninhamentos adicionais.
+ *
+ * @param {Array<Array>} data O array que será achatado.
+ * @returns {Array<Object>} O array achatado em um único nível.
+ */
+function flattenData(data) {
+    const flat_data = _.flatten(data);
+    return flat_data;
+}
+
+/**
+ * Remove os espaços em branco (no início e no final) das chaves dos objetos no array.
  *
  * @param {Array<Object>} data O array contendo os objetos para a remoção dos espaços em branco nas chaves.
- * @returns {Array<Object>} O array de objetos com as chaves alteradas, sem os espaços em branco.
+ * @returns {Array<Object>} O novo array de objetos com as chaves alteradas, sem os espaços em branco.
  */
 function removeWhitespace(data) {
     const result = _.map(data, (item) => {
         return _.mapKeys(item, (value, key) => _.trim(key));
-    });
-    return result;
-}
-
-/**
- * Converte as chaves dos objetos do array para minúsculas.
- *
- * @param {Array<Object>} data O array contendo os objetos para a conversão das chaves para minúsculas.
- * @returns {Array<Object>} O array de objetos com as chaves convertidas para minúsculas.
- */
-function convertToLowercase(data) {
-    const result = _.map(data, (item) => {
-        return _.mapKeys(item, (value, key) => _.toLower(key));
     });
     return result;
 }
@@ -169,23 +163,45 @@ function converterData(chave) {
     };
 }
 
-function achatarDados(dados) {
-    const dadosAchatados = dados.flat();
-    return dadosAchatados;
+/**
+ * Converte a lista de caminhos de planilhas em uma única promise que contém as planilhas lidas.
+ *
+ * @param {{ paths: Array<string>; index: number; }} data Objeto com a lista de caminhos e o índice da planilha.
+ * @returns {Promise<Array>} Promise que resolve em um array das planilhas lidas.
+ */
+function readSpreadsheets(data) {
+    const { paths, index } = data;
+    const result = Promise.all(_.map(paths, (path) => readSpreadsheet(path, index)));
+    return result;
+}
+
+/**
+ * Lê o arquivo da planilha e retorna uma promise com a planilha desejada.
+ *
+ * @param {string} path Caminho do arquivo da planilha para leitura.
+ * @param {number} index Índice da planilha desejada.
+ * @returns {Promise<Object>} Promise que resolve na planilha lida.
+ */
+function readSpreadsheet(path, index) {
+    return new Promise((resolve) => {
+        const file = xlsx.readFile(path, { cellDates: true });
+        const spreadsheet = file.Sheets[file.SheetNames[index]];
+        resolve(spreadsheet);
+    });
 }
 
 module.exports = {
-    lerDiretorio,
+    alterarValores,
+    convertToLowercase,
+    converterData,
+    converterPlanilhas,
     definirExtensao,
     definirPlanilha,
-    lerPlanilhas,
     dividirPlanilhas,
-    converterPlanilhas,
-    removeWhitespace,
-    convertToLowercase,
-    renomearChaves,
-    alterarValores,
+    flattenData,
+    lerDiretorio,
     mapearObjeto,
-    converterData,
-    achatarDados
+    readSpreadsheets,
+    removeWhitespace,
+    renomearChaves
 };
