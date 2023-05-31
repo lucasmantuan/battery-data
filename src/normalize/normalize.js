@@ -1,26 +1,32 @@
+const _ = require('lodash');
+
 const normalize_formulas = require('./normalize_formulas.js');
 
 const {
     alterarValores,
+    convertSreadsheets,
     convertToLowercase,
     converterData,
-    converterPlanilhas,
     definirExtensao,
     definirPlanilha,
     dividirPlanilhas,
     flattenData,
     lerDiretorio,
-    readSpreadsheets,
     mapearObjeto,
+    readSpreadsheets,
     removeWhitespace,
-    renomearChaves
+    renameKeys
 } = require('./normalize_functions.js');
 
 function normalize(planilhas, profile) {
     const { rename_keys, change_values, map_object } = profile;
 
-    const resultado = readSpreadsheets(planilhas).then(converterPlanilhas).then(flattenData).then(removeWhitespace).then(convertToLowercase);
-    // .then(renomearChaves(rename_keys))
+    const resultado = readSpreadsheets(planilhas)
+        .then(convertSreadsheets)
+        .then(flattenData)
+        .then(removeWhitespace)
+        .then(convertToLowercase)
+        .then(_.isEmpty(rename_keys) ? (data) => data : renameKeys(rename_keys));
     // .then(alterarValores(normalize_formulas[change_values[0]], change_values[1], change_values[2]))
     // .then(mapearObjeto(map_object))zz
     // .then(converterData('date'));
