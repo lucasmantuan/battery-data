@@ -82,29 +82,51 @@ function removeWhitespace(data) {
     return result;
 }
 
-/**
- * Função que renomeia as chaves de um objeto com base em um parâmetro fornecido.
- *
- * @param {Object} param - Objeto contendo as chaves e os novos nomes das chaves.
- * @returns {Function} - Função que recebe um objeto de dados como parâmetro e retorna um novo objeto com as chaves renomeadas.
- */
-function renameKeys(param) {
-    /**
-     * Função interna que recebe um objeto de dados como parâmetro e retorna um novo objeto com as chaves renomeadas.
-     *
-     * @param {Array} data - Array de objetos de dados a serem processados.
-     * @returns {Array} - Array contendo os objetos de dados com as chaves renomeadas.
-     */
+function renameKeysIfNeeded(param) {
     return function (data) {
-        const result = _.map(data, (item) => {
-            return _.mapKeys(item, (value, key) => {
-                if (param[key]) return param[key];
-                return key;
-            });
-        });
-        return result;
+        if (_.isEmpty(param)) {
+            return data;
+        } else {
+            return renameKeys(param, data);
+        }
     };
 }
+
+function renameKeys(param, data) {
+    const result = _.map(data, (item) => {
+        return _.mapKeys(item, (value, key) => {
+            if (param[key]) return param[key];
+            return key;
+        });
+    });
+    return result;
+}
+
+// /**
+//  * Função que renomeia as chaves de um objeto com base em um parâmetro fornecido.
+//  *
+//  * @param {Object<string, string>} param - Objeto contendo as chaves e os novos nomes das chaves.
+//  * @returns {function(Array<Object>): Array<Object>}  - Função que recebe um array de objetos de dados
+//  * como parâmetro e retorna um novo array com as chaves renomeadas.
+//  */
+// function renameKeys(param) {
+//     /**
+//      * Função interna que recebe um array de objetos de dados como parâmetro
+//      * e retorna um novo array com as chaves renomeadas.
+//      *
+//      * @param {Array<Object>} data - Array de objetos de dados a serem processados.
+//      * @returns {Array<Object>} - Array contendo os objetos de dados com as chaves renomeadas.
+//      */
+//     return function (data) {
+//         const result = _.map(data, (item) => {
+//             return _.mapKeys(item, (value, key) => {
+//                 if (param[key]) return param[key];
+//                 return key;
+//             });
+//         });
+//         return result;
+//     };
+// }
 
 function lerDiretorio(caminho) {
     return new Promise((resolve, reject) => {
@@ -209,5 +231,5 @@ module.exports = {
     mapearObjeto,
     readSpreadsheets,
     removeWhitespace,
-    renameKeys
+    renameKeysIfNeeded
 };

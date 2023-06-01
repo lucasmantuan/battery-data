@@ -12,7 +12,7 @@
     "rules": {
         "eqeqeq": "off",
         "no-console": "warn",
-        "max-len": ["error", { "code": 160 }],
+        "max-len": ["error", { "code": 120 }],
         "prettier/prettier": "error"
     }
 }

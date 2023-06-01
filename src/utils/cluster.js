@@ -13,34 +13,34 @@ function createCluster(data, profile) {
             output: process.stdout
         });
 
-        // const updatePercentage = (percentCompleted) => {
-        //     readline.cursorTo(process.stdout, 0, 1);
-        //     process.stdout.write(`Processando: ${percentCompleted.toFixed(2)}%`);
-        //     readline.moveCursor(process.stdout, 0, 0);
-        //     readline.clearScreenDown(process.stdout);
-        // };
+        const updatePercentage = (percentCompleted) => {
+            readline.cursorTo(process.stdout, 0, 1);
+            process.stdout.write(`Processando: ${percentCompleted.toFixed(2)}%`);
+            readline.moveCursor(process.stdout, 0, 0);
+            // readline.clearScreenDown(process.stdout);
+        };
 
         for (let i = 0; i < Math.min(cpus, total_items); i++) {
             const worker = cluster.fork();
             const item = data[i];
             worker.send(item);
 
-            // const percentCompleted = (processed_items / total_items) * 100;
-            // updatePercentage(percentCompleted);
+            const percentCompleted = (processed_items / total_items) * 100;
+            updatePercentage(percentCompleted);
 
             processed_items++;
         }
 
         cluster.on('message', (worker) => {
-            // const percentCompleted = (processed_items / total_items) * 100;
-            // updatePercentage(percentCompleted);
+            const percentCompleted = (processed_items / total_items) * 100;
+            updatePercentage(percentCompleted);
 
             if (processed_items < total_items) {
                 const item = data[processed_items];
                 worker.send(item);
                 processed_items++;
             } else {
-                // process.stdout.write('\n');
+                process.stdout.write('\n');
                 worker.kill();
                 rl.close();
             }

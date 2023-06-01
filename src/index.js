@@ -11,7 +11,6 @@ let data = [];
 
 if (profile == 'arbin') {
     const file = fs.readFileSync(`./profiles/${profile}.json`);
-    // eslint-disable-next-line no-unused-vars
     info = parseToObject(file);
 }
 

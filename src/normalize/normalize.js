@@ -15,7 +15,7 @@ const {
     mapearObjeto,
     readSpreadsheets,
     removeWhitespace,
-    renameKeys
+    renameKeysIfNeeded
 } = require('./normalize_functions.js');
 
 function normalize(planilhas, profile) {
@@ -26,7 +26,7 @@ function normalize(planilhas, profile) {
         .then(flattenData)
         .then(removeWhitespace)
         .then(convertToLowercase)
-        .then(_.isEmpty(rename_keys) ? (data) => data : renameKeys(rename_keys));
+        .then(renameKeysIfNeeded(rename_keys));
     // .then(alterarValores(normalize_formulas[change_values[0]], change_values[1], change_values[2]))
     // .then(mapearObjeto(map_object))zz
     // .then(converterData('date'));
@@ -35,7 +35,10 @@ function normalize(planilhas, profile) {
 }
 
 function read(folder) {
-    const result = lerDiretorio(folder).then(definirExtensao('xlsx')).then(definirPlanilha(1)).then(dividirPlanilhas(8));
+    const result = lerDiretorio(folder)
+        .then(definirExtensao('xlsx'))
+        .then(definirPlanilha(1))
+        .then(dividirPlanilhas(8));
     return result;
 }
 
