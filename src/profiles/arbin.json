@@ -1,6 +1,9 @@
 {
     "rename_keys": {},
-    "change_values": ["multiplicarTodosValores", ["cycle_index", "step_index"], "cycle_step"],
+    "change_values": [
+        ["multiply", ["cycle_index", "step_index"], "multiply"],
+        ["sum", ["cycle_index", "step_index"], "sum"]
+    ],
     "map_object": {
         "date_time": "date",
         "test_time": "test",

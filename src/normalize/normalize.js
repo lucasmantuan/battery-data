@@ -1,9 +1,5 @@
-const _ = require('lodash');
-
-const normalize_formulas = require('./normalize_formulas.js');
-
 const {
-    alterarValores,
+    changeValuesIfNeeded,
     convertSreadsheets,
     convertToLowercase,
     converterData,
@@ -18,17 +14,18 @@ const {
     renameKeysIfNeeded
 } = require('./normalize_functions.js');
 
-function normalize(planilhas, profile) {
+function normalize(spreadsheets, profile) {
     const { rename_keys, change_values, map_object } = profile;
 
-    const resultado = readSpreadsheets(planilhas)
+    const resultado = readSpreadsheets(spreadsheets)
         .then(convertSreadsheets)
         .then(flattenData)
         .then(removeWhitespace)
         .then(convertToLowercase)
-        .then(renameKeysIfNeeded(rename_keys));
-    // .then(alterarValores(normalize_formulas[change_values[0]], change_values[1], change_values[2]))
-    // .then(mapearObjeto(map_object))zz
+        .then(renameKeysIfNeeded(rename_keys))
+        .then(changeValuesIfNeeded(change_values));
+    // normalize_formulas[change_values[0]], change_values[1], change_values[2])
+    // .then(mapearObjeto(map_object))
     // .then(converterData('date'));
 
     return resultado;

@@ -6,6 +6,7 @@ const { normalize } = require('../normalize/normalize.js');
 function createCluster(data, profile) {
     if (cluster.isPrimary) {
         const total_items = data.length;
+
         let processed_items = 0;
 
         const rl = readline.createInterface({
@@ -13,10 +14,11 @@ function createCluster(data, profile) {
             output: process.stdout
         });
 
-        const updatePercentage = (percentCompleted) => {
-            readline.cursorTo(process.stdout, 0, 1);
-            process.stdout.write(`Processando: ${percentCompleted.toFixed(2)}%`);
-            readline.moveCursor(process.stdout, 0, 0);
+        const updatePercentage = (p, t) => {
+            // const percentCompleted = (p / t) * 100;
+            // readline.cursorTo(process.stdout, 0, 1);
+            // process.stdout.write(`Processando: ${percentCompleted.toFixed(2)}%`);
+            // readline.moveCursor(process.stdout, 0, 0);
             // readline.clearScreenDown(process.stdout);
         };
 
@@ -24,16 +26,12 @@ function createCluster(data, profile) {
             const worker = cluster.fork();
             const item = data[i];
             worker.send(item);
-
-            const percentCompleted = (processed_items / total_items) * 100;
-            updatePercentage(percentCompleted);
-
+            updatePercentage(processed_items, total_items);
             processed_items++;
         }
 
         cluster.on('message', (worker) => {
-            const percentCompleted = (processed_items / total_items) * 100;
-            updatePercentage(percentCompleted);
+            updatePercentage(processed_items, total_items);
 
             if (processed_items < total_items) {
                 const item = data[processed_items];
