@@ -5,8 +5,9 @@
         ["sum", ["cycle_index", "step_index"], "sum"]
     ],
     "map_object": {
-        "date_time": "date",
-        "test_time": "test",
-        "cycle_step": "cyst"
-    }
+        "date_time": "data",
+        "multiply": "multiplicacao",
+        "sum": "soma"
+    },
+    "date": "data"
 }

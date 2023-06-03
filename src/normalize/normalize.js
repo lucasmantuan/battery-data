@@ -2,20 +2,20 @@ const {
     changeValuesIfNeeded,
     convertSreadsheets,
     convertToLowercase,
-    converterData,
+    converteDateIfNeeded,
     definirExtensao,
     definirPlanilha,
     dividirPlanilhas,
     flattenData,
     lerDiretorio,
-    mapearObjeto,
+    mapObjectIfNeeded,
     readSpreadsheets,
     removeWhitespace,
     renameKeysIfNeeded
 } = require('./normalize_functions.js');
 
 function normalize(spreadsheets, profile) {
-    const { rename_keys, change_values, map_object } = profile;
+    const { rename_keys, change_values, map_object, date } = profile;
 
     const resultado = readSpreadsheets(spreadsheets)
         .then(convertSreadsheets)
@@ -23,10 +23,9 @@ function normalize(spreadsheets, profile) {
         .then(removeWhitespace)
         .then(convertToLowercase)
         .then(renameKeysIfNeeded(rename_keys))
-        .then(changeValuesIfNeeded(change_values));
-    // normalize_formulas[change_values[0]], change_values[1], change_values[2])
-    // .then(mapearObjeto(map_object))
-    // .then(converterData('date'));
+        .then(changeValuesIfNeeded(change_values))
+        .then(mapObjectIfNeeded(map_object))
+        .then(converteDateIfNeeded(date));
 
     return resultado;
 }

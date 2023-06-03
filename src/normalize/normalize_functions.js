@@ -9,14 +9,11 @@ xlsx.set_fs(fs);
 /**
  * Verifica a necessidade de aplicar uma função com base nos parâmetros fornecidos.
  *
- * @param {Array} param - Array vazio ou um Array com os parâmetros para aplicação da função.
- * @returns {((data: Array<Object>) => Array<Object>)} - Função que recebe um array de objetos e retorna
+ * @param {Array} param Array vazio ou um Array com os parâmetros para aplicação da função.
+ * @returns {((data: Array<Object>) => Array<Object>)} Função que recebe um array de objetos e retorna
  * um array de objetos sem alteração ou com as chaves renomeadas.
  */
 function changeValuesIfNeeded(param) {
-    /**
-     * Retorna o array com os dados sem alteração ou com a função aplicada.
-     */
     return function (data) {
         if (_.isEmpty(param)) {
             return data;
@@ -29,19 +26,16 @@ function changeValuesIfNeeded(param) {
 /**
  * Aplica uma função nos valores de um objeto com base em um parâmetro fornecido.
  *
- * @param {Array} param - Array com os parâmetros para aplicação da função.
- * @param {Array<Object>} data - Array contendo os objetos de dados a serem processados.
- * @returns {Array<Object>} - Array contendo os objetos de dados com os valores aplicados.
+ * @param {Array} param Array com os parâmetros para aplicação da função.
+ * @param {Array<Object>} data Array contendo os objetos de dados a serem processados.
+ * @returns {Array<Object>} Array contendo os objetos de dados com os valores aplicados.
  */
 function changeValues(param, data) {
-    const valuesFn = _.values;
-    const pickFn = _.pick;
-
     _.forEach(param, (param_item) => {
         const [callback_name, params, key] = param_item;
         const callback = normalize_formulas[callback_name];
         _.forEach(data, (data_item) => {
-            const values = valuesFn(pickFn(data_item, params));
+            const values = _.values(_.pick(data_item, params));
             const new_value = callback(values);
             _.set(data_item, key, new_value);
         });
@@ -70,13 +64,54 @@ function convertSreadsheets(data) {
  * @returns {Array<Object>} O novo array de objetos com as chaves convertidas para minúsculas.
  */
 function convertToLowercase(data) {
-    const mapKeys = _.mapKeys;
-    const toLower = _.toLower;
-
     const result = _.map(data, (item) => {
-        return mapKeys(item, (value, key) => toLower(key));
+        return _.mapKeys(item, (value, key) => _.toLower(key));
     });
     return result;
+}
+
+/**
+ * Verifica a necessidade de converter a data com base em um parâmetro fornecido para o formato 'YYYY-MM-DD HH:MM:SS'.
+ *
+ * @param {Object | Object<string, string>} param Objeto vazio ou um objeto com um par chave-valor representando
+ * o valor a ser convertido.
+ * @returns {((data: Array<Object>) => Array<Object>)} Função que recebe um array de objetos e retorna
+ * um array de objetos sem alteração ou com o valor da data convertido.
+ */
+function converteDateIfNeeded(param) {
+    /**
+     * Retorna o objeto sem alteração ou com a data convertida.
+     *
+     * @param {Array<Object>} data Array contendo os objetos de dados a serem processados.
+     * @returns {Array<Object>} Array contendo os objetos de dados com a data convertida.
+     */
+    return function (data) {
+        if (_.isEmpty(param)) {
+            return data;
+        } else {
+            return converteDate(param, data);
+        }
+    };
+}
+
+/**
+ * Faz a conversão da data com base nos parâmetros fornecidos.
+ *
+ * @param {string} param String com o valor da chave para conversão da data.
+ * @param {Array<Object>} data Array contendo os objetos de dados a serem processados.
+ *
+ * @returns {Array<Object>} Array contendo os objetos de dados com a data convertida.
+ */
+function converteDate(param, data) {
+    return _.map(data, (item) => {
+        return _.mapValues(item, (value, key) => {
+            if (key === param) {
+                return value.toISOString().slice(0, 19).replace('T', ' ');
+            } else {
+                return value;
+            }
+        });
+    });
 }
 
 /**
@@ -88,6 +123,51 @@ function convertToLowercase(data) {
 function flattenData(data) {
     const flat_data = _.flatten(data);
     return flat_data;
+}
+
+/**
+ * Verifica a necessidade mapear o objeto com base em um parâmetro fornecido.
+ *
+ * @param {Object | Object<string, string>} param Objeto vazio ou um objeto com pares chave-valor representando
+ * o mapeamento do objeto.
+ * @returns {((data: Array<Object>) => Array<Object>)} Função que recebe um array de objetos e retorna
+ * um array de objetos sem alteração ou com o objeto mapeado.
+ */
+function mapObjectIfNeeded(param) {
+    /**
+     * Retorna o objeto sem alteração ou com as chaves renomeadas.
+     *
+     * @param {Array<Object>} data Array contendo os objetos de dados a serem processados.
+     * @returns {Array<Object>} Array contendo os objetos de dados mapeados
+     */
+    return function (data) {
+        if (_.isEmpty(param)) {
+            return data;
+        } else {
+            return mapObject(param, data);
+        }
+    };
+}
+
+/**
+ * Faz o mapeamento do objeto com base nos parâmetros fornecidos.
+ *
+ * @param {Object<string, string>} param Objeto com pares chave-valor representando o mapeamento do objeto.
+ * @param {Array<Object>} data Array contendo os objetos de dados a serem processados.
+ *
+ * * @returns {Array<Object>} Array contendo os objetos de dados mapeados.
+ */
+function mapObject(param, data) {
+    return _.map(data, (item) => {
+        return _.reduce(
+            _.keys(item),
+            (acc, key) => {
+                if (param[key]) acc[param[key]] = item[key];
+                return acc;
+            },
+            {}
+        );
+    });
 }
 
 /**
@@ -124,11 +204,8 @@ function readSpreadsheet(path, index) {
  * @returns {Array<Object>} O novo array de objetos com as chaves alteradas, sem os espaços em branco.
  */
 function removeWhitespace(data) {
-    const mapKeys = _.mapKeys;
-    const trim = _.trim;
-
     const result = _.map(data, (item) => {
-        return mapKeys(item, (value, key) => trim(key));
+        return _.mapKeys(item, (value, key) => _.trim(key));
     });
     return result;
 }
@@ -136,17 +213,17 @@ function removeWhitespace(data) {
 /**
  * Verifica a necessidade de renomear as chaves de um objeto com base em um parâmetro fornecido.
  *
- * @param {Object | Object<string, string>} param - Objeto vazio ou um objeto com pares chave-valor representando
+ * @param {Object | Object<string, string>} param Objeto vazio ou um objeto com pares chave-valor representando
  * as chaves e os novos nomes das chaves.
- * @returns {((data: Array<Object>) => Array<Object>)} - Função que recebe um array de objetos e retorna
+ * @returns {((data: Array<Object>) => Array<Object>)} Função que recebe um array de objetos e retorna
  * um array de objetos sem alteração ou com as chaves renomeadas.
  */
 function renameKeysIfNeeded(param) {
     /**
      * Retorna o objeto sem alteração ou com as chaves renomeadas.
      *
-     * @param {Array<Object>} data - Array contendo os objetos de dados a serem processados.
-     * @returns {Array<Object>} - Array contendo os objetos de dados com as chaves renomeadas.
+     * @param {Array<Object>} data Array contendo os objetos de dados a serem processados.
+     * @returns {Array<Object>} Array contendo os objetos de dados com as chaves renomeadas.
      */
     return function (data) {
         if (_.isEmpty(param)) {
@@ -160,16 +237,14 @@ function renameKeysIfNeeded(param) {
 /**
  * Renomeia as chaves de um objeto com base em um parâmetro fornecido.
  *
- * @param {Object<string, string>} param - Objeto com pares chave-valor representando as chaves
+ * @param {Object<string, string>} param Objeto com pares chave-valor representando as chaves
  * e os novos nomes das chaves.
- * @param {Array<Object>} data - Array contendo os objetos de dados a serem processados.
- * @returns {Array<Object>} - Array contendo os objetos de dados com as chaves renomeadas.
+ * @param {Array<Object>} data Array contendo os objetos de dados a serem processados.
+ * @returns {Array<Object>} Array contendo os objetos de dados com as chaves renomeadas.
  */
 function renameKeys(param, data) {
-    const mapKeys = _.mapKeys;
-
     const result = _.map(data, (item) => {
-        return mapKeys(item, (value, key) => {
+        return _.mapKeys(item, (value, key) => {
             if (param[key]) return param[key];
             return key;
         });
@@ -216,53 +291,17 @@ function dividirPlanilhas(tamanho) {
     };
 }
 
-function mapearObjeto(criterio) {
-    return function (/** @type {any[]} */ dados) {
-        const resultado = dados.map((/** @type {any[]} */ array) => {
-            const novoArray = array.map((/** @type {{ [x: string]: any; }} */ objeto) => {
-                const novoObjeto = Object.keys(objeto).reduce((acc, key) => {
-                    if (criterio[key]) acc[criterio[key]] = objeto[key];
-                    return acc;
-                }, {});
-                return novoObjeto;
-            });
-            return novoArray;
-        });
-        return resultado;
-    };
-}
-
-function converterData(chave) {
-    return function (/** @type {any[]} */ dados) {
-        const resultado = dados.map((/** @type {any[]} */ array) => {
-            const novoArray = array.map((/** @type {{ [x: string]: any; }} */ objeto) => {
-                const novoObjeto = Object.keys(objeto).reduce((acc, key) => {
-                    if (key === chave) {
-                        acc[key] = objeto[key].toISOString().slice(0, 19).replace('T', ' ');
-                    } else {
-                        acc[key] = objeto[key];
-                    }
-                    return acc;
-                }, {});
-                return novoObjeto;
-            });
-            return novoArray;
-        });
-        return resultado;
-    };
-}
-
 module.exports = {
     changeValuesIfNeeded,
     convertSreadsheets,
     convertToLowercase,
-    converterData,
+    converteDateIfNeeded,
     definirExtensao,
     definirPlanilha,
     dividirPlanilhas,
     flattenData,
     lerDiretorio,
-    mapearObjeto,
+    mapObjectIfNeeded,
     readSpreadsheets,
     removeWhitespace,
     renameKeysIfNeeded
