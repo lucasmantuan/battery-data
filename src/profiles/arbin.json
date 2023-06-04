@@ -1,13 +1,19 @@
 {
-    "rename_keys": {},
-    "change_values": [
-        ["multiply", ["cycle_index", "step_index"], "multiply"],
-        ["sum", ["cycle_index", "step_index"], "sum"]
-    ],
-    "map_object": {
-        "date_time": "data",
-        "multiply": "multiplicacao",
-        "sum": "soma"
+    "conversion": {
+        "rename_keys": {},
+        "change_values": [
+            ["multiply", ["cycle_index", "step_index"], "multiply"],
+            ["sum", ["cycle_index", "step_index"], "sum"]
+        ],
+        "map_object": {
+            "date_time": "data",
+            "multiply": "multiplicacao",
+            "sum": "soma"
+        },
+        "date": "data"
     },
-    "date": "data"
+    "file": {
+        "file_extension": "xlsx",
+        "worksheet_number": 1
+    }
 }

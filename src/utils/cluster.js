@@ -6,7 +6,6 @@ const { normalize } = require('../normalize/normalize.js');
 function createCluster(data, profile) {
     if (cluster.isPrimary) {
         const total_items = data.length;
-
         let processed_items = 0;
 
         const rl = readline.createInterface({

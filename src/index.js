@@ -15,7 +15,7 @@ if (profile == 'arbin') {
 }
 
 async function readAsync(folder, info) {
-    data = await read(folder);
+    data = await read(folder, info, 1);
     createCluster(data, info);
 }
 

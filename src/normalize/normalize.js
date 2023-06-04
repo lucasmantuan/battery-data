@@ -1,40 +1,49 @@
 const {
     changeValuesIfNeeded,
-    convertSreadsheets,
+    chunkSplit,
+    convertSpreadsheets,
     convertToLowercase,
-    converteDateIfNeeded,
-    definirExtensao,
-    definirPlanilha,
-    dividirPlanilhas,
+    convertDateIfNeeded,
+    fileExtension,
     flattenData,
-    lerDiretorio,
     mapObjectIfNeeded,
+    readFolder,
     readSpreadsheets,
     removeWhitespace,
     renameKeysIfNeeded
 } = require('./normalize_functions.js');
 
-function normalize(spreadsheets, profile) {
-    const { rename_keys, change_values, map_object, date } = profile;
+/**
+ * Normaliza as planilhas, aplicando uma sequencia de transformações com base em um parâmetro fornecido.
+ *
+ * @param {{ paths: string[]; worksheet: number; }} folder_list
+ * Objeto contendo o caminho e o indice dos arquivos para normalização.
+ *
+ * @param {{ rename_keys: object; change_values: array; map_object: object; date: string; }} profile
+ * Objeto contendo os parâmetros para a normalização dos arquivos.;
+ *
+ * @returns {Promise<object>}
+ * Promise contendo os objetos normalizados.
+ */
+function normalize(folder_list, profile) {
+    const { rename_keys, change_values, map_object, date } = profile.conversion;
+    const { worksheet_number } = profile.file;
 
-    const resultado = readSpreadsheets(spreadsheets)
-        .then(convertSreadsheets)
+    const result = readSpreadsheets(folder_list, worksheet_number)
+        .then(convertSpreadsheets)
         .then(flattenData)
         .then(removeWhitespace)
         .then(convertToLowercase)
         .then(renameKeysIfNeeded(rename_keys))
         .then(changeValuesIfNeeded(change_values))
         .then(mapObjectIfNeeded(map_object))
-        .then(converteDateIfNeeded(date));
-
-    return resultado;
+        .then(convertDateIfNeeded(date));
+    return result;
 }
 
-function read(folder) {
-    const result = lerDiretorio(folder)
-        .then(definirExtensao('xlsx'))
-        .then(definirPlanilha(1))
-        .then(dividirPlanilhas(8));
+function read(folder, profile, chunk) {
+    const { file_extension } = profile.file;
+    const result = readFolder(folder).then(fileExtension(file_extension)).then(chunkSplit(chunk));
     return result;
 }
 
