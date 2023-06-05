@@ -3,49 +3,74 @@ const cpus = require('os').cpus().length;
 const readline = require('readline');
 const { normalize } = require('../normalize/normalize.js');
 
-function createCluster(data, profile) {
-    if (cluster.isPrimary) {
-        const total_items = data.length;
-        let processed_items = 0;
+const readline_interface = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-        const rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout
+/**
+ * Atualiza o percentual de conclusão do processamento dos arquivos no terminal.
+ *
+ * @param {number} items_processed
+ * Total de itens processados.
+ *
+ * @param {number} total_items
+ * Total de itens pra processamento.
+ */
+function updateStatus(items_processed, total_items) {
+    const percent_completed = (items_processed / total_items) * 100;
+    readline.cursorTo(process.stdout, 0, 1);
+    process.stdout.write(percent_completed.toFixed(0) + '%');
+    readline.moveCursor(process.stdout, 0, 0);
+    readline.clearScreenDown(process.stdout);
+}
+
+/**
+ * Cria um balanceador de carga simples para efetuar o processamento dos dados
+ * distribuindo os itens entre os processadores disponíveis no computador.
+ *
+ * @param {Array<string>} data
+ * Um array contendo o caminho dos arquivos a serem processados.
+ *
+ * @param {Object} profile
+ * Um objeto contendo os parâmetros para normalização dos dados.
+ *
+ * @returns {void} Essa função não retorna nenhum valor.
+ */
+function createCluster(data, profile) {
+    // @ts-ignore
+    if (cluster.isPrimary) {
+        let items_processed = 0;
+        const total_items = data.length;
+
+        data.forEach((item, index) => {
+            if (index < Math.min(cpus, total_items)) {
+                // @ts-ignore
+                const worker = cluster.fork();
+                worker.send(item);
+                items_processed++;
+                updateStatus(items_processed, total_items);
+            }
         });
 
-        const updatePercentage = (p, t) => {
-            // const percentCompleted = (p / t) * 100;
-            // readline.cursorTo(process.stdout, 0, 1);
-            // process.stdout.write(`Processando: ${percentCompleted.toFixed(2)}%`);
-            // readline.moveCursor(process.stdout, 0, 0);
-            // readline.clearScreenDown(process.stdout);
-        };
-
-        for (let i = 0; i < Math.min(cpus, total_items); i++) {
-            const worker = cluster.fork();
-            const item = data[i];
-            worker.send(item);
-            updatePercentage(processed_items, total_items);
-            processed_items++;
-        }
-
+        // @ts-ignore
         cluster.on('message', (worker) => {
-            updatePercentage(processed_items, total_items);
-
-            if (processed_items < total_items) {
-                const item = data[processed_items];
+            if (items_processed < total_items) {
+                const item = data[items_processed];
                 worker.send(item);
-                processed_items++;
+                items_processed++;
+                updateStatus(items_processed, total_items);
             } else {
                 process.stdout.write('\n');
                 worker.kill();
-                rl.close();
+                readline_interface.close();
             }
         });
     } else {
         process.on('message', (item) => {
+            // @ts-ignore
             normalize(item, profile).then((result) => {
-                console.log(result);
+                // console.log(result);
                 process.send(result);
             });
         });
