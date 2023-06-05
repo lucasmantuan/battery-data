@@ -14,16 +14,22 @@ const {
 } = require('./normalize_functions.js');
 
 /**
- * Normaliza as planilhas, aplicando uma sequencia de transformações com base em um parâmetro fornecido.
+ * Normaliza os arquivos, aplicando uma sequência de transformações, com base nos parâmetros fornecidos.
  *
- * @param {{ paths: string[]; worksheet: number; }} folder_list
- * Objeto contendo o caminho e o indice dos arquivos para normalização.
+ * @param {Array<string>} folder_list
+ * Objeto com a lista dos arquivos.
  *
- * @param {{ rename_keys: object; change_values: array; map_object: object; date: string; }} profile
- * Objeto contendo os parâmetros para a normalização dos arquivos.;
+ * @param {Object} profile
+ * Objeto contendo os parâmetros para manipulação dos arquivos.
  *
- * @returns {Promise<object>}
- * Promise contendo os objetos normalizados.
+ * @param {Object} profile.conversion
+ * Objeto contendo as configurações de conversão.
+ *
+ * @param {Object} profile.file
+ * Objeto contendo as configurações do arquivo.
+ *
+ * @returns {Promise<Array<object>>}
+ * Promise que resolve em um array de objetos.
  */
 function normalize(folder_list, profile) {
     const { rename_keys, change_values, map_object, date } = profile.conversion;
@@ -41,6 +47,24 @@ function normalize(folder_list, profile) {
     return result;
 }
 
+/**
+ * Divide uma lista de arquivos em blocos com base nos parâmetros fornecidos.
+ *
+ * @param {string} folder
+ * String com o local dos arquivos para divisão.
+ *
+ * @param {Object} profile
+ * Objeto contendo os parâmetros para manipulação dos arquivos.
+ *
+ * @param {Object} profile.file
+ * Objeto contendo as configurações do arquivo.
+ *
+ * @param {number} chunk
+ * Quantidade de itens para cada bloco.
+ *
+ * @returns {Promise<Array<Array>>}
+ * Promise que resolve em um array de arrays.
+ */
 function read(folder, profile, chunk) {
     const { file_extension } = profile.file;
     const result = readFolder(folder).then(fileExtension(file_extension)).then(chunkSplit(chunk));
