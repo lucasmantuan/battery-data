@@ -1,9 +1,9 @@
-function multiply(valores) {
-    return valores.reduce((acc, value) => acc * value, 1);
+function multiply(values) {
+    return values.reduce((acc, value) => acc * value, 1);
 }
 
-function sum(valores) {
-    return valores.reduce((acc, value) => acc + value, 0);
+function sum(values) {
+    return values.reduce((acc, value) => acc + value, 0);
 }
 
 const normalize_formulas = {

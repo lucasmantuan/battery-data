@@ -3,20 +3,23 @@ const { createCluster } = require('./utils/cluster.js');
 const { parseToObject } = require('./utils/utils.js');
 const { read } = require('./normalize/normalize.js');
 
-const profile = process.argv[2].split('-')[1];
-const folder = process.argv[3];
+const parameters = {
+    profile: String(process.argv[2].split('-')[1]),
+    chunk: Number(process.argv[3].split('-')[1]),
+    folder: String(process.argv[4])
+};
 
-let info = {};
+let profile = {};
 let data = [];
 
-if (profile == 'arbin') {
-    const file = fs.readFileSync(`./profiles/${profile}.json`);
-    info = parseToObject(file);
+if (parameters.profile === 'arbin') {
+    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
+    profile = parseToObject(result);
 }
 
-async function readAsync(folder, info) {
-    data = await read(folder, info, 1);
-    createCluster(data, info);
+async function readAsync(folder, profile) {
+    data = await read(folder, profile, parameters.chunk);
+    createCluster(data, profile);
 }
 
-readAsync(folder, info);
+readAsync(parameters.folder, profile);
