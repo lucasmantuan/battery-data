@@ -9,42 +9,43 @@ function openConnection(connection_config) {
     });
 }
 
-function createTable(table_name, table_schema) {
+function createTable(param) {
+    const { name, schema } = param;
     return function (connection) {
-        return connection.schema.hasTable(table_name).then((has_table) => {
+        return connection.schema.hasTable(name).then((has_table) => {
             if (!has_table) {
                 return connection.schema
-                    .createTable(table_name, function (table) {
-                        _.forEach(_.toPairs(table_schema), ([column, params]) => {
+                    .createTable(name, function (table) {
+                        _.forEach(_.toPairs(schema), ([column, params]) => {
                             const { type, ...param } = params;
                             table[type](column, ..._.values(param));
                         });
                     })
                     .then(() => {
-                        return { connection, table_name };
+                        return { connection, name };
                     });
             } else {
-                return { connection, table_name };
+                return { connection, name };
             }
         });
     };
 }
 
-function writeData(data) {
-    return function (param) {
-        const { connection, table_name } = param;
-        return connection(table_name)
+function writeData(data, table) {
+    const { name } = table;
+    return function (connection) {
+        return connection(name)
             .insert(data)
             .then(() => {
-                return { connection, table_name };
+                return { connection, name };
             });
     };
 }
 
 function closeConnection(param) {
-    const { connection } = param;
+    const { connection, name } = param;
     connection.destroy();
-    return true;
+    return name;
 }
 
 module.exports = {

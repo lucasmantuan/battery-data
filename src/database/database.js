@@ -2,15 +2,17 @@ const { openConnection, createTable, writeData, closeConnection } = require('./d
 
 function database(data, profile) {
     const { connection, table } = profile.database;
+    const result = openConnection(connection).then(writeData(data, table)).then(closeConnection);
+    return result;
+}
 
-    const result = openConnection(connection)
-        .then(createTable(table.name, table.schema))
-        .then(writeData(data))
-        .then(closeConnection);
-
+function create(profile) {
+    const { connection, table } = profile.database;
+    const result = openConnection(connection).then(createTable(table)).then(closeConnection);
     return result;
 }
 
 module.exports = {
-    database
+    database,
+    create
 };

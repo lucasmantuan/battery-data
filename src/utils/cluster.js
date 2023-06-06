@@ -4,11 +4,6 @@ const readline = require('readline');
 const { database } = require('../database/database.js');
 const { normalize } = require('../normalize/normalize.js');
 
-const readline_interface = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
 /**
  * Atualiza o percentual de conclusão do processamento dos arquivos no terminal.
  *
@@ -19,9 +14,8 @@ const readline_interface = readline.createInterface({
  * Total de itens pra processamento.
  */
 function updateStatus(items_processed, total_items) {
-    const percent_completed = (items_processed / total_items) * 100;
     readline.cursorTo(process.stdout, 0, 1);
-    process.stdout.write(percent_completed.toFixed(0) + '%');
+    process.stdout.write(`${total_items}:${items_processed}`);
     readline.moveCursor(process.stdout, 0, 0);
     readline.clearScreenDown(process.stdout);
 }
@@ -62,17 +56,17 @@ function createCluster(data, profile) {
                 items_processed++;
                 updateStatus(items_processed, total_items);
             } else {
-                process.stdout.write('\n');
                 worker.kill();
-                readline_interface.close();
+                // @ts-ignore
+                cluster.disconnect(() => process.exit());
             }
         });
     } else {
         process.on('message', async function (item) {
             // @ts-ignore
             const data = await normalize(item, profile);
-            const result = await database(data, profile);
-            process.send(result);
+            await database(data, profile);
+            process.send('processed');
         });
     }
 }
