@@ -1,6 +1,7 @@
 const cluster = require('cluster');
 const cpus = require('os').cpus().length;
 const readline = require('readline');
+const { database } = require('../database/database.js');
 const { normalize } = require('../normalize/normalize.js');
 
 const readline_interface = readline.createInterface({
@@ -29,7 +30,7 @@ function updateStatus(items_processed, total_items) {
  * Cria um balanceador de carga simples para efetuar o processamento dos dados
  * distribuindo os itens entre os processadores disponíveis no computador.
  *
- * @param {Array<string>} data
+ * @param {Array} data
  * Um array contendo o caminho dos arquivos a serem processados.
  *
  * @param {Object} profile
@@ -67,12 +68,11 @@ function createCluster(data, profile) {
             }
         });
     } else {
-        process.on('message', (item) => {
+        process.on('message', async function (item) {
             // @ts-ignore
-            normalize(item, profile).then((result) => {
-                // console.log(result);
-                process.send(result);
-            });
+            const data = await normalize(item, profile);
+            const result = await database(data, profile);
+            process.send(result);
         });
     }
 }

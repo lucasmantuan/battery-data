@@ -1,31 +1,16 @@
-const { abrirConexao, criarTabela, fecharConexao, gravarRegistros } = require('./database_functions.js');
+const { openConnection, createTable, writeData, closeConnection } = require('./database_functions.js');
 
-module.exports = function database(data) {
-    abrirConexao({
-        client: 'mysql2',
-        connection: {
-            host: 'localhost',
-            port: 3306,
-            user: 'root',
-            password: 'lucas',
-            database: 'battery'
-        }
-    })
-        .then(
-            criarTabela('data', {
-                date: {
-                    type: 'datetime'
-                },
-                test: {
-                    type: 'decimal',
-                    precision: 12,
-                    scale: 6
-                },
-                cyst: {
-                    type: 'integer'
-                }
-            })
-        )
-        .then(gravarRegistros(data))
-        .then(fecharConexao);
+function database(data, profile) {
+    const { connection, table } = profile.database;
+
+    const result = openConnection(connection)
+        .then(createTable(table.name, table.schema))
+        .then(writeData(data))
+        .then(closeConnection);
+
+    return result;
+}
+
+module.exports = {
+    database
 };

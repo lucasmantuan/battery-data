@@ -1,54 +1,55 @@
 const knex = require('knex');
+const _ = require('lodash');
 
-function abrirConexao(configuracao) {
-    return new Promise((resolve, reject) => {
-        try {
-            const conexao = knex(configuracao);
-            resolve(conexao);
-        } catch (error) {
-            reject(error);
-        }
+function openConnection(connection_config) {
+    return new Promise((resolve) => {
+        // @ts-ignore
+        const connection = knex(connection_config);
+        resolve(connection);
     });
 }
 
-function fecharConexao({ conexao }) {
-    return conexao.destroy();
-}
-
-function criarTabela(nomeTabela, configuracaoTabela) {
-    return function (conexao) {
-        return conexao.schema.hasTable(nomeTabela).then((existe) => {
-            if (!existe) {
-                return conexao.schema
-                    .createTable(nomeTabela, (table) => {
-                        Object.entries(configuracaoTabela).forEach(([coluna, config]) => {
-                            const { type, ...opcoes } = config;
-                            table[type](coluna, ...Object.values(opcoes));
+function createTable(table_name, table_schema) {
+    return function (connection) {
+        return connection.schema.hasTable(table_name).then((has_table) => {
+            if (!has_table) {
+                return connection.schema
+                    .createTable(table_name, function (table) {
+                        _.forEach(_.toPairs(table_schema), ([column, params]) => {
+                            const { type, ...param } = params;
+                            table[type](column, ..._.values(param));
                         });
                     })
                     .then(() => {
-                        return { conexao, nomeTabela };
+                        return { connection, table_name };
                     });
             } else {
-                return { conexao, nomeTabela };
+                return { connection, table_name };
             }
         });
     };
 }
 
-function gravarRegistros(registros) {
-    return function ({ conexao, nomeTabela }) {
-        return conexao(nomeTabela)
-            .insert(registros)
+function writeData(data) {
+    return function (param) {
+        const { connection, table_name } = param;
+        return connection(table_name)
+            .insert(data)
             .then(() => {
-                return { conexao, nomeTabela };
+                return { connection, table_name };
             });
     };
 }
 
+function closeConnection(param) {
+    const { connection } = param;
+    connection.destroy();
+    return true;
+}
+
 module.exports = {
-    abrirConexao,
-    fecharConexao,
-    criarTabela,
-    gravarRegistros
+    openConnection,
+    createTable,
+    closeConnection,
+    writeData
 };

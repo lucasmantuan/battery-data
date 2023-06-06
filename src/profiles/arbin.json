@@ -1,19 +1,57 @@
 {
     "conversion": {
-        "rename_keys": {},
+        "rename_keys": { "tc_counter1": "tc_counter" },
         "change_values": [
             ["multiply", ["cycle_index", "step_index"], "multiply"],
             ["sum", ["cycle_index", "step_index"], "sum"]
         ],
         "map_object": {
-            "date_time": "data",
-            "multiply": "multiplicacao",
-            "sum": "soma"
+            "date_time": "date_time",
+            "cycle_index": "cycle_index",
+            "step_index": "step_index",
+            "tc_counter": "tc_counter",
+            "multiply": "multiply",
+            "sum": "sum"
         },
-        "date": "data"
+        "date": "date_time"
     },
     "file": {
         "file_extension": "xlsx",
         "worksheet_number": 1
+    },
+    "database": {
+        "connection": {
+            "client": "mysql2",
+            "connection": {
+                "host": "172.22.210.211",
+                "port": 3306,
+                "user": "root",
+                "password": "lucas",
+                "database": "lucas"
+            }
+        },
+        "table": {
+            "name": "battery",
+            "schema": {
+                "date_time": {
+                    "type": "datetime"
+                },
+                "cycle_index": {
+                    "type": "integer"
+                },
+                "step_index": {
+                    "type": "integer"
+                },
+                "tc_counter": {
+                    "type": "integer"
+                },
+                "multiply": {
+                    "type": "integer"
+                },
+                "sum": {
+                    "type": "integer"
+                }
+            }
+        }
     }
 }
