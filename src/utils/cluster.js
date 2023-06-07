@@ -15,7 +15,7 @@ const { normalize } = require('../normalize/normalize.js');
  */
 function updateStatus(items_processed, total_items) {
     readline.cursorTo(process.stdout, 0, 1);
-    process.stdout.write(`${total_items}:${items_processed}`);
+    process.stdout.write(`${items_processed}:${total_items}`);
     readline.moveCursor(process.stdout, 0, 0);
     readline.clearScreenDown(process.stdout);
 }
@@ -56,9 +56,7 @@ function createCluster(data, profile) {
                 items_processed++;
                 updateStatus(items_processed, total_items);
             } else {
-                worker.kill();
-                // @ts-ignore
-                cluster.disconnect(() => process.exit());
+                worker.disconnect();
             }
         });
     } else {
