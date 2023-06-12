@@ -2,10 +2,12 @@
     "conversion": {
         "rename_keys": { "tc_counter1": "tc_counter" },
         "change_values": [
-            ["multiply", ["cycle_index", "step_index"], "multiply"],
-            ["sum", ["cycle_index", "step_index"], "sum"]
+            ["multiplyValues", ["cycle_index", "step_index"], "multiply"],
+            ["sumValues", ["cycle_index", "step_index"], "sum"]
         ],
+        "add_values": [["recordDate", "recorded_at"]],
         "map_object": {
+            "recorded_at": "recorded_at",
             "date_time": "date_time",
             "cycle_index": "cycle_index",
             "step_index": "step_index",
@@ -13,7 +15,7 @@
             "multiply": "multiply",
             "sum": "sum"
         },
-        "date": "date_time"
+        "date": ["date_time", "recorded_at"]
     },
     "file": {
         "file_extension": "xlsx",

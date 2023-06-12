@@ -6,6 +6,28 @@ const normalize_formulas = require('./normalize_formulas.js');
 
 xlsx.set_fs(fs);
 
+function addValuesIfNeeded(param) {
+    return function (data) {
+        if (_.isEmpty(param)) {
+            return data;
+        } else {
+            return addValues(param, data);
+        }
+    };
+}
+
+function addValues(param, data) {
+    _.forEach(param, (param_item) => {
+        const [callback_name, key] = param_item;
+        const callback = normalize_formulas[callback_name];
+        _.forEach(data, (data_item) => {
+            const value = callback();
+            _.set(data_item, key, value);
+        });
+    });
+    return data;
+}
+
 /**
  * Verifica a necessidade de aplicar uma função com base nos parâmetros fornecidos.
  *
@@ -104,25 +126,26 @@ function convertDateIfNeeded(param) {
 /**
  * Faz a conversão da data com base nos parâmetros fornecidos.
  *
- * @param {string} param
- * String com o nome da chave para conversão da data.
+ * @param {string[]} param
+ * Array com os nomes das chaves para conversão da data.
  *
- * @param {Array<Object>} data
+ * @param {{}[]} data
  * Array contendo os objetos de dados a serem processados.
  *
- * @returns {Array<Object>}
+ * @returns {object[]}
  * Array contendo os objetos de dados com a data convertida.
  */
 function converteDate(param, data) {
-    return _.map(data, (item) => {
-        return _.mapValues(item, (value, key) => {
-            if (key === param) {
-                return value.toISOString().slice(0, 19).replace('T', ' ');
-            } else {
-                return value;
-            }
+    _.forEach(param, (param_item) => {
+        _.forEach(data, (data_item) => {
+            _.mapValues(data_item, (value, key) => {
+                if (key === param_item) {
+                    _.set(data_item, key, value.toISOString().slice(0, 19).replace('T', ' '));
+                }
+            });
         });
     });
+    return data;
 }
 
 /**
@@ -324,6 +347,7 @@ function chunkSplit(chunk) {
 }
 
 module.exports = {
+    addValuesIfNeeded,
     changeValuesIfNeeded,
     chunkSplit,
     convertSpreadsheets,
