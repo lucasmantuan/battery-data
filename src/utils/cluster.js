@@ -41,7 +41,8 @@ function createCluster(data, profile) {
         const total_items = data.length;
 
         data.forEach((item, index) => {
-            if (index < Math.min(cpus, total_items)) {
+            // if (index < Math.min(cpus, total_items)) {
+            if (index < Math.min(cpus - 1)) {
                 // @ts-ignore
                 const worker = cluster.fork();
                 worker.send(item);
