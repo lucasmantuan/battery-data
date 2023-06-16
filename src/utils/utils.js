@@ -1,5 +1,11 @@
+const path = require('path');
+
 function parseToObject(data) {
     return JSON.parse(data);
 }
 
-module.exports = { parseToObject };
+function getFileName(data) {
+    return data.map((file_name) => path.basename(file_name));
+}
+
+module.exports = { parseToObject, getFileName };

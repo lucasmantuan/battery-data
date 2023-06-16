@@ -1,8 +1,10 @@
 const cluster = require('cluster');
 const cpus = require('os').cpus().length;
 const readline = require('readline');
+const { global_parameters } = require('../utils/global_parameters.js');
 const { database } = require('../database/database.js');
 const { normalize } = require('../normalize/normalize.js');
+const { getFileName } = require('../utils/utils.js');
 
 /**
  * Atualiza o percentual de conclusão do processamento dos arquivos no terminal.
@@ -61,6 +63,10 @@ function createCluster(data, profile) {
         });
     } else {
         process.on('message', async function (item) {
+            // @ts-ignore
+            global_parameters.id = cluster.worker.id;
+            global_parameters.time = new Date();
+            global_parameters.files = getFileName(item);
             // @ts-ignore
             const data = await normalize(item, profile);
             await database(data, profile);

@@ -3,6 +3,7 @@ const path = require('path');
 const xlsx = require('xlsx');
 const _ = require('lodash');
 const normalize_formulas = require('./normalize_formulas.js');
+const { global_parameters } = require('../utils/global_parameters.js');
 
 xlsx.set_fs(fs);
 
@@ -21,7 +22,7 @@ function addValues(param, data) {
         const [callback_name, key] = param_item;
         const callback = normalize_formulas[callback_name];
         _.forEach(data, (data_item) => {
-            const value = callback();
+            const value = callback(global_parameters);
             _.set(data_item, key, value);
         });
     });
@@ -123,18 +124,6 @@ function convertDateIfNeeded(param) {
     };
 }
 
-/**
- * Faz a conversão da data com base nos parâmetros fornecidos.
- *
- * @param {string[]} param
- * Array com os nomes das chaves para conversão da data.
- *
- * @param {{}[]} data
- * Array contendo os objetos de dados a serem processados.
- *
- * @returns {object[]}
- * Array contendo os objetos de dados com a data convertida.
- */
 function converteDate(param, data) {
     _.forEach(param, (param_item) => {
         _.forEach(data, (data_item) => {

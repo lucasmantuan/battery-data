@@ -5,9 +5,14 @@
             ["multiplyValues", ["cycle_index", "step_index"], "multiply"],
             ["sumValues", ["cycle_index", "step_index"], "sum"]
         ],
-        "add_values": [["recordDate", "recorded_at"]],
+        "add_values": [
+            ["recordDate", "recorded_at"],
+            ["recordFileName", "file_name"]
+        ],
         "map_object": {
             "recorded_at": "recorded_at",
+            "file_name": "file_name",
+            "file": "file",
             "date_time": "date_time",
             "cycle_index": "cycle_index",
             "step_index": "step_index",
@@ -18,6 +23,7 @@
         "date": ["date_time", "recorded_at"]
     },
     "file": {
+        "profile_name": "arbin",
         "file_extension": "xlsx",
         "worksheet_number": 1
     },
@@ -35,8 +41,17 @@
         "table": {
             "name": "battery",
             "schema": {
+                "id": {
+                    "type": "increments"
+                },
                 "date_time": {
                     "type": "datetime"
+                },
+                "recorded_at": {
+                    "type": "datetime"
+                },
+                "file_name": {
+                    "type": "text"
                 },
                 "cycle_index": {
                     "type": "integer"
