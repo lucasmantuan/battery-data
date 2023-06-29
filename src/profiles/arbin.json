@@ -1,74 +1,48 @@
 {
     "conversion": {
-        "rename_keys": { "tc_counter1": "tc_counter" },
+        "rename_keys": {},
         "change_values": [
-            ["multiplyValues", ["cycle_index", "step_index"], "multiply"],
-            ["sumValues", ["cycle_index", "step_index"], "sum"]
+            [
+                "calculateCoulombicEfficiency",
+                ["Discharge_Capacity(Ah)", "Charge_Capacity(Ah)"],
+                [0],
+                "coulombic_efficiency"
+            ],
+            ["calculateMilliampereHoursPerGramMass", ["Discharge_Capacity(Ah)"], [5], "mAh/g"]
         ],
         "add_values": [
             ["recordDate", "recorded_at"],
-            ["recordFileName", "file_name"]
+            ["recordFileName", "file_name"],
+            ["recordNull", "switch_off"],
+            ["recordNull", "test_condition"],
+            ["recordOne", "volt/cell(V)"]
         ],
         "map_object": {
-            "recorded_at": "recorded_at",
-            "file_name": "file_name",
-            "file": "file",
+            "Charge_Capacity(Ah)": "charge_capacity(Ah)",
+            "Charge_Energy(Wh)": "charge_energy(Wh)",
+            "coulombic_efficiency": "coulombic_efficiency",
+            "Current(A)": "current(A)",
+            "Cycle_Index": "cycle_index",
             "date_time": "date_time",
-            "cycle_index": "cycle_index",
-            "step_index": "step_index",
-            "tc_counter": "tc_counter",
-            "multiply": "multiply",
-            "sum": "sum"
+            "Discharge_Capacity(Ah)": "discharge_capacity(Ah)",
+            "Discharge_Energy(Wh)": "discharge_energy(Wh)",
+            "file_name": "file_name",
+            "mAh/g": "mAh/g",
+            "Power(W)": "power(W)",
+            "recorded_at": "recorded_at",
+            "Step_Index": "step_index",
+            "Step_Time(s)": "step_time(s)",
+            "switch_off": "switch_off",
+            "test_condition": "test_condition",
+            "Test_Time(s)": "test_time(s)",
+            "volt/cell(V)": "volt/cell(V)",
+            "Voltage(V)": "voltage(V)"
         },
         "date": ["date_time", "recorded_at"]
     },
     "file": {
-        "profile_name": "arbin",
         "file_extension": "xlsx",
+        "profile_name": "arbin",
         "worksheet_number": 1
-    },
-    "database": {
-        "connection": {
-            "client": "mysql2",
-            "connection": {
-                "host": "172.22.210.211",
-                "port": 3306,
-                "user": "root",
-                "password": "lucas",
-                "database": "lucas"
-            }
-        },
-        "table": {
-            "name": "battery",
-            "schema": {
-                "id": {
-                    "type": "increments"
-                },
-                "date_time": {
-                    "type": "datetime"
-                },
-                "recorded_at": {
-                    "type": "datetime"
-                },
-                "file_name": {
-                    "type": "text"
-                },
-                "cycle_index": {
-                    "type": "integer"
-                },
-                "step_index": {
-                    "type": "integer"
-                },
-                "tc_counter": {
-                    "type": "integer"
-                },
-                "multiply": {
-                    "type": "integer"
-                },
-                "sum": {
-                    "type": "integer"
-                }
-            }
-        }
     }
 }

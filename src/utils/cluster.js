@@ -41,8 +41,7 @@ function createCluster(data, profile) {
         const total_items = data.length;
 
         data.forEach((item, index) => {
-            // if (index < Math.min(cpus, total_items)) {
-            if (index < Math.min(cpus - 1)) {
+            if (index < Math.min(cpus, total_items)) {
                 // @ts-ignore
                 const worker = cluster.fork();
                 worker.send(item);
@@ -70,7 +69,8 @@ function createCluster(data, profile) {
             global_parameters.files = getFileName(item);
             // @ts-ignore
             const data = await normalize(item, profile);
-            await database(data, profile);
+            console.log(data);
+            // await database(data, profile);
             process.send('processed');
         });
     }

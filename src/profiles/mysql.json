@@ -1,0 +1,46 @@
+{
+    "database": {
+        "connection": {
+            "client": "mysql2",
+            "connection": {
+                "host": "172.22.210.211",
+                "port": 3306,
+                "user": "root",
+                "password": "lucas",
+                "database": "lucas"
+            }
+        },
+        "table": {
+            "name": "battery",
+            "schema": {
+                "id": {
+                    "type": "increments"
+                },
+                "date_time": {
+                    "type": "datetime"
+                },
+                "recorded_at": {
+                    "type": "datetime"
+                },
+                "file_name": {
+                    "type": "text"
+                },
+                "cycle_index": {
+                    "type": "integer"
+                },
+                "step_index": {
+                    "type": "integer"
+                },
+                "tc_counter": {
+                    "type": "integer"
+                },
+                "multiply": {
+                    "type": "integer"
+                },
+                "sum": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

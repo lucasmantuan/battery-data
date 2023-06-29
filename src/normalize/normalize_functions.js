@@ -62,11 +62,11 @@ function changeValuesIfNeeded(param) {
  */
 function changeValues(param, data) {
     _.forEach(param, (param_item) => {
-        const [callback_name, params, key] = param_item;
+        const [callback_name, params, new_params, key] = param_item;
         const callback = normalize_formulas[callback_name];
         _.forEach(data, (data_item) => {
             const values = _.values(_.pick(data_item, params));
-            const new_value = callback(values);
+            const new_value = callback(values, new_params);
             _.set(data_item, key, new_value);
         });
     });
