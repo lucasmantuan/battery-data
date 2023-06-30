@@ -1,30 +1,54 @@
 {
     "conversion": {
-        "rename_keys": { "tc_counter1": "tc_counter" },
+        "rename_keys": {},
         "change_values": [
-            ["multiplyValues", ["cycle_index", "step_index"], "multiply"],
-            ["sumValues", ["cycle_index", "step_index"], "sum"]
+            ["calculateChargeCapacity", ["capacity [Ah]"], [0], "charge_capacity(Ah)"],
+            ["calculateDischargeCapacity", ["capacity [Ah]"], [0], "discharge_capacity(Ah)"],
+            ["calculateChargeEnergy", ["volt [V]", "charge_capacity(Ah)"], [0], "charge_energy(Wh)"],
+            ["calculateDischargeEnergy", ["volt [V]", "discharge_capacity(Ah)"], [0], "discharge_energy(Wh)"],
+            [
+                "calculateCoulombicEfficiency",
+                ["Discharge_Capacity(Ah)", "Charge_Capacity(Ah)"],
+                [0],
+                "coulombic_efficiency"
+            ],
+            ["calculateMilliampereHoursPerGramMass", ["discharge_capacity(Ah)"], [5], "mAh/g"],
+            ["calculatePower", ["volt [V]", "current [A]"], [0], "power(W)"]
         ],
         "add_values": [
             ["recordDate", "recorded_at"],
-            ["recordFileName", "file_name"]
+            ["recordFileName", "file_name"],
+            ["recordNull", "cycle_index"],
+            ["recordNull", "step_index"],
+            ["recordNull", "step_time(s)"]
         ],
         "map_object": {
-            "recorded_at": "recorded_at",
-            "file_name": "file_name",
-            "file": "file",
-            "date_time": "date_time",
+            "charge_capacity(Ah)": "charge_capacity(Ah)",
+            "charge_energy(Wh)": "charge_energy(Wh)",
+            "coulombic_efficiency": "coulombic_efficiency",
+            "current [A]": "current(A)",
             "cycle_index": "cycle_index",
+            "": "date_time",
+            "discharge_capacity(Ah)": "discharge_capacity(Ah)",
+            "discharge_energy(Wh)": "discharge_energy(Wh)",
+            "file_name": "file_name",
+            "mAh/g": "mAh/g",
+            "power(W)": "power(W)",
+            "recorded_at": "recorded_at",
             "step_index": "step_index",
-            "tc_counter": "tc_counter",
-            "multiply": "multiply",
-            "sum": "sum"
+            "step_time(s)": "step_time(s)",
+            "switch off": "switch_off",
+            "test condition": "test_condition",
+            "time [s]": "test_time(s)",
+            "volt [V]": "voltage(V)",
+            "volt/cell [V]": "volt/cell(V)"
         },
-        "date": ["date_time", "recorded_at"]
+        "date": ["recorded_at"]
     },
     "file": {
-        "profile_name": "arbin",
-        "file_extension": "xlsx",
-        "worksheet_number": 1
+        "file_extension": "txt",
+        "profile_name": "hh",
+        "worksheet_number": 0,
+        "line_header": 2
     }
 }

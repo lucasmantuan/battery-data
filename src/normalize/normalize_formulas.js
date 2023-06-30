@@ -1,11 +1,3 @@
-function multiplyValues(values) {
-    return values.reduce((acc, value) => acc * value, 1);
-}
-
-function sumValues(values) {
-    return values.reduce((acc, value) => acc + value, 0);
-}
-
 function recordDate(value) {
     return value.time;
 }
@@ -32,19 +24,57 @@ function calculateCoulombicEfficiency(values) {
 function calculateMilliampereHoursPerGramMass(values, new_values) {
     const [discharge_capacity] = values;
     const [mass] = new_values;
-    if (mass === '0') return 0;
-    return discharge_capacity / mass;
+    if (mass === 0) return 0;
+    const result = discharge_capacity / mass;
+    if (result == null || isNaN(result)) return 0;
+    return result;
+}
+
+function calculateChargeCapacity(values) {
+    const [capacity] = values;
+    if (capacity >= 0) return capacity;
+    return null;
+}
+
+function calculateDischargeCapacity(values) {
+    const [capacity] = values;
+    if (capacity < 0) return capacity;
+    return null;
+}
+
+function calculateChargeEnergy(values) {
+    const [voltage, charge_capacity] = values;
+    const result = voltage * charge_capacity;
+    if (result == null || isNaN(result)) return 0;
+    return result;
+}
+
+function calculateDischargeEnergy(values) {
+    const [voltage, discharge_capacity] = values;
+    const result = voltage * discharge_capacity;
+    if (result == null || isNaN(result)) return 0;
+    return result;
+}
+
+function calculatePower(values) {
+    const [voltage, current] = values;
+    const result = voltage * current;
+    if (result == null || isNaN(result)) return 0;
+    return result;
 }
 
 const normalize_formulas = {
+    calculateChargeCapacity,
+    calculateChargeEnergy,
     calculateCoulombicEfficiency,
+    calculateDischargeCapacity,
+    calculateDischargeEnergy,
     calculateMilliampereHoursPerGramMass,
-    multiplyValues,
+    calculatePower,
     recordDate,
     recordFileName,
     recordNull,
-    recordOne,
-    sumValues
+    recordOne
 };
 
 module.exports = normalize_formulas;

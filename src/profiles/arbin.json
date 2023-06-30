@@ -43,6 +43,7 @@
     "file": {
         "file_extension": "xlsx",
         "profile_name": "arbin",
-        "worksheet_number": 1
+        "worksheet_number": 1,
+        "line_header": 0
     }
 }

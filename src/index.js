@@ -25,6 +25,9 @@ function updateStatus(status) {
 if (parameters.profile === 'arbin') {
     const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
     profile = parseToObject(result);
+} else if (parameters.profile === 'hh') {
+    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
+    profile = parseToObject(result);
 }
 
 async function readAsync(folder, profile, chunk) {

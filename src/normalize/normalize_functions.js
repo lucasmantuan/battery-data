@@ -84,7 +84,10 @@ function changeValues(param, data) {
  */
 function convertSpreadsheets(data) {
     return new Promise((resolve) => {
-        const result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet));
+        // hh
+        const result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet, { range: 2 }));
+        // arbin
+        // const result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet));
         resolve(result);
     });
 }
