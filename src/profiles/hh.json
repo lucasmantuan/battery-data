@@ -6,12 +6,6 @@
             ["calculateDischargeCapacity", ["capacity [Ah]"], [0], "discharge_capacity(Ah)"],
             ["calculateChargeEnergy", ["volt [V]", "charge_capacity(Ah)"], [0], "charge_energy(Wh)"],
             ["calculateDischargeEnergy", ["volt [V]", "discharge_capacity(Ah)"], [0], "discharge_energy(Wh)"],
-            [
-                "calculateCoulombicEfficiency",
-                ["Discharge_Capacity(Ah)", "Charge_Capacity(Ah)"],
-                [0],
-                "coulombic_efficiency"
-            ],
             ["calculateMilliampereHoursPerGramMass", ["discharge_capacity(Ah)"], [5], "mAh/g"],
             ["calculatePower", ["volt [V]", "current [A]"], [0], "power(W)"],
             ["extractRecordStart", ["volt [V]"], [0], "date_time"],

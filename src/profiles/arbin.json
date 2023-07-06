@@ -1,15 +1,7 @@
 {
     "conversion": {
         "rename_keys": {},
-        "change_values": [
-            [
-                "calculateCoulombicEfficiency",
-                ["Discharge_Capacity(Ah)", "Charge_Capacity(Ah)"],
-                [0],
-                "coulombic_efficiency"
-            ],
-            ["calculateMilliampereHoursPerGramMass", ["Discharge_Capacity(Ah)"], [5], "mAh/g"]
-        ],
+        "change_values": [["calculateMilliampereHoursPerGramMass", ["Discharge_Capacity(Ah)"], [5], "mAh/g"]],
         "add_values": [
             ["recordDate", "recorded_at"],
             ["recordFileName", "file_name"],

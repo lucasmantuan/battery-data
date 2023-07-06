@@ -84,12 +84,13 @@ function changeValues(param, data) {
  */
 function convertSpreadsheets(data) {
     return new Promise((resolve) => {
-        // hh
-        // const result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet, { range: 2 }));
         const header = global_parameters.header;
-        const result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet, { header }));
-        // arbin
-        // const result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet));
+        let result = [];
+        if (_.isEmpty(header)) {
+            result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet));
+        } else {
+            result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet, { header }));
+        }
         resolve(result);
     });
 }
