@@ -14,6 +14,12 @@ function extractRecordStart(values) {
     return record_start;
 }
 
+function recordDateFile(values) {
+    const [date_time, step_time] = values;
+    const new_date_time = new Date(date_time).getTime();
+    return new Date(new_date_time + step_time * 1000);
+}
+
 function recordDate(value) {
     return value.time;
 }
@@ -89,6 +95,7 @@ const normalize_formulas = {
     calculatePower,
     extractRecordStart,
     recordDate,
+    recordDateFile,
     recordFileName,
     recordNull,
     recordOne

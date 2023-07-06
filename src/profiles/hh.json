@@ -14,7 +14,8 @@
             ],
             ["calculateMilliampereHoursPerGramMass", ["discharge_capacity(Ah)"], [5], "mAh/g"],
             ["calculatePower", ["volt [V]", "current [A]"], [0], "power(W)"],
-            ["extractRecordStart", ["volt [V]"], [0], "date_time"]
+            ["extractRecordStart", ["volt [V]"], [0], "date_time"],
+            ["recordDateFile", ["date_time", "time [s]"], [0], "date_time"]
         ],
         "add_values": [
             ["recordDate", "recorded_at"],
