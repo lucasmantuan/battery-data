@@ -17,6 +17,7 @@
             ["recordNull", "test_condition"],
             ["recordOne", "volt/cell(V)"]
         ],
+        "validate_value": {},
         "map_object": {
             "Charge_Capacity(Ah)": "charge_capacity(Ah)",
             "Charge_Energy(Wh)": "charge_energy(Wh)",
@@ -44,6 +45,6 @@
         "file_extension": "xlsx",
         "profile_name": "arbin",
         "worksheet_number": 1,
-        "line_header": 0
+        "header": []
     }
 }

@@ -13,7 +13,8 @@
                 "coulombic_efficiency"
             ],
             ["calculateMilliampereHoursPerGramMass", ["discharge_capacity(Ah)"], [5], "mAh/g"],
-            ["calculatePower", ["volt [V]", "current [A]"], [0], "power(W)"]
+            ["calculatePower", ["volt [V]", "current [A]"], [0], "power(W)"],
+            ["extractRecordStart", ["volt [V]"], [0], "date_time"]
         ],
         "add_values": [
             ["recordDate", "recorded_at"],
@@ -22,13 +23,14 @@
             ["recordNull", "step_index"],
             ["recordNull", "step_time(s)"]
         ],
+        "validate_value": { "key": 0, "type": "number" },
         "map_object": {
             "charge_capacity(Ah)": "charge_capacity(Ah)",
             "charge_energy(Wh)": "charge_energy(Wh)",
             "coulombic_efficiency": "coulombic_efficiency",
             "current [A]": "current(A)",
             "cycle_index": "cycle_index",
-            "": "date_time",
+            "date_time": "date_time",
             "discharge_capacity(Ah)": "discharge_capacity(Ah)",
             "discharge_energy(Wh)": "discharge_energy(Wh)",
             "file_name": "file_name",
@@ -43,12 +45,21 @@
             "volt [V]": "voltage(V)",
             "volt/cell [V]": "volt/cell(V)"
         },
-        "date": ["recorded_at"]
+        "date": ["date_time", "recorded_at"]
     },
     "file": {
         "file_extension": "txt",
         "profile_name": "hh",
         "worksheet_number": 0,
-        "line_header": 2
+        "header": [
+            "volt [V]",
+            "volt/cell [V]",
+            "current [A]",
+            "time [s]",
+            "capacity [Ah]",
+            "limit status",
+            "test condition",
+            "switch off"
+        ]
     }
 }

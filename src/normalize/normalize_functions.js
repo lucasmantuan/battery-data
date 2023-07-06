@@ -1,7 +1,7 @@
+const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 const xlsx = require('xlsx');
-const _ = require('lodash');
 const normalize_formulas = require('./normalize_formulas.js');
 const { global_parameters } = require('../utils/global_parameters.js');
 
@@ -85,7 +85,9 @@ function changeValues(param, data) {
 function convertSpreadsheets(data) {
     return new Promise((resolve) => {
         // hh
-        const result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet, { range: 2 }));
+        // const result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet, { range: 2 }));
+        const header = global_parameters.header;
+        const result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet, { header }));
         // arbin
         // const result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet));
         resolve(result);
@@ -131,7 +133,7 @@ function converteDate(param, data) {
     _.forEach(param, (param_item) => {
         _.forEach(data, (data_item) => {
             _.mapValues(data_item, (value, key) => {
-                if (key === param_item) {
+                if (key === param_item && value != null) {
                     _.set(data_item, key, value.toISOString().slice(0, 19).replace('T', ' '));
                 }
             });
@@ -250,6 +252,26 @@ function removeWhitespace(data) {
     return result;
 }
 
+function removeInvalidDataIfNeeded(param) {
+    return function (data) {
+        if (_.isEmpty(param)) {
+            return data;
+        } else {
+            return removeInvalidData(param, data);
+        }
+    };
+}
+
+function removeInvalidData(param, data) {
+    const { key, type } = param;
+    function isValidData(item) {
+        const values = _.values(item);
+        return typeof values[key] === type;
+    }
+
+    return _.filter(data, isValidData);
+}
+
 /**
  * Verifica a necessidade de renomear as chaves de um objeto com base no parâmetro fornecido.
  *
@@ -350,6 +372,7 @@ module.exports = {
     mapObjectIfNeeded,
     readFolder,
     readSpreadsheets,
+    removeInvalidDataIfNeeded,
     removeWhitespace,
     renameKeysIfNeeded
 };

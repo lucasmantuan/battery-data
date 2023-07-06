@@ -2,6 +2,7 @@ const global_parameters = {
     _id: 0,
     _time: new Date(),
     _files: [],
+    _header: [],
 
     get id() {
         return this._id;
@@ -25,6 +26,14 @@ const global_parameters = {
 
     set files(value) {
         this._files = value;
+    },
+
+    get header() {
+        return this._header;
+    },
+
+    set header(value) {
+        this._header = value;
     }
 };
 
