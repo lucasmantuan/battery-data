@@ -5,12 +5,13 @@ const { read } = require('./normalize/normalize.js');
 const { createCluster } = require('./utils/cluster.js');
 const { parseToObject } = require('./utils/utils.js');
 
-let profile = {};
+let profile_data = {};
+let profile_database = {};
 let data = [];
 
 const parameters = {
     profile: String(process.argv[2].split('-')[1]),
-    create: String(process.argv[3].split('-')[1]),
+    database: process.argv[3] ? String(process.argv[3].split('-')[1]) : undefined,
     chunk: process.argv[4] ? Number(process.argv[4].split('-')[1]) : undefined,
     folder: process.argv[5] ? String(process.argv[5]) : undefined
 };
@@ -22,17 +23,9 @@ function updateStatus(status) {
     readline.clearScreenDown(process.stdout);
 }
 
-if (parameters.profile === 'arbin') {
-    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
-    profile = parseToObject(result);
-} else if (parameters.profile === 'hh') {
-    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
-    profile = parseToObject(result);
-}
-
-async function readAsync(folder, profile, chunk) {
-    data = await read(folder, profile, chunk);
-    createCluster(data, profile);
+async function readAsync(folder, profile_data, chunk, profile_database) {
+    data = await read(folder, profile_data, chunk);
+    createCluster(data, profile_data, profile_database);
 }
 
 async function createAsync(profile) {
@@ -40,14 +33,27 @@ async function createAsync(profile) {
     return result;
 }
 
-function start(folder, profile, chunk, create) {
-    if (create === 'true') {
-        createAsync(profile)
-            .then((result) => updateStatus(result))
-            .then(() => process.exit());
-    } else {
-        readAsync(folder, profile, chunk);
-    }
+if (parameters.database === 'mysql') {
+    const result = fs.readFileSync(`./profiles/${parameters.database}.json`);
+    profile_database = parseToObject(result);
 }
 
-start(parameters.folder, profile, parameters.chunk, parameters.create);
+if (parameters.profile === 'mysql') {
+    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
+    profile_data = parseToObject(result);
+    createAsync(profile_data)
+        .then((result) => updateStatus(result))
+        .then(() => process.exit());
+}
+
+if (parameters.profile === 'arbin') {
+    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
+    profile_data = parseToObject(result);
+}
+
+if (parameters.profile === 'hh') {
+    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
+    profile_data = parseToObject(result);
+}
+
+readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);

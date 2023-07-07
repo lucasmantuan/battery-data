@@ -16,29 +16,62 @@
                 "id": {
                     "type": "increments"
                 },
-                "date_time": {
-                    "type": "datetime"
+                "charge_capacity(Ah)": {
+                    "type": "double"
                 },
-                "recorded_at": {
-                    "type": "datetime"
+                "charge_energy(Wh)": {
+                    "type": "double"
                 },
-                "file_name": {
-                    "type": "text"
+                "coulombic_efficiency": {
+                    "type": "float"
+                },
+                "current(A)": {
+                    "type": "double"
                 },
                 "cycle_index": {
-                    "type": "integer"
+                    "type": "float"
+                },
+                "date_time": {
+                    "type": "date"
+                },
+                "discharge_capacity(Ah)": {
+                    "type": "double"
+                },
+                "discharge_energy(Wh)": {
+                    "type": "double"
+                },
+                "file_name": {
+                    "type": "string"
+                },
+                "mAh/g": {
+                    "type": "double"
+                },
+                "power(W)": {
+                    "type": "double"
+                },
+                "recorded_at": {
+                    "type": "date"
                 },
                 "step_index": {
-                    "type": "integer"
+                    "type": "float"
                 },
-                "tc_counter": {
-                    "type": "integer"
+                "step_time(s)": {
+                    "type": "double"
                 },
-                "multiply": {
-                    "type": "integer"
+                "switch_off": {
+                    "type": "string"
                 },
-                "sum": {
-                    "type": "integer"
+                "test_condition": {
+                    "type": "string"
+                },
+                "test_time(s)": {
+                    "type": "double"
+                },
+                "voltage(V)": {
+                    "type": "double"
+                },
+                "volt/cell(V)": {
+                    "type": "float"
                 }
             }
         }

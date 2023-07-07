@@ -29,12 +29,12 @@ function updateStatus(items_processed, total_items) {
  * @param {Array} data
  * Um array contendo o caminho dos arquivos a serem processados.
  *
- * @param {Object} profile
+ * @param {Object} profile_data
  * Um objeto contendo os parâmetros para normalização dos dados.
  *
  * @returns {void} Essa função não retorna nenhum valor.
  */
-function createCluster(data, profile) {
+function createCluster(data, profile_data, profile_database) {
     // @ts-ignore
     if (cluster.isPrimary) {
         let items_processed = 0;
@@ -67,11 +67,10 @@ function createCluster(data, profile) {
             global_parameters.id = cluster.worker.id;
             global_parameters.time = new Date();
             global_parameters.files = getFileName(item);
-            global_parameters.header = profile.file.header;
+            global_parameters.header = profile_data.file.header;
             // @ts-ignore
-            const data = await normalize(item, profile);
-            console.log(data);
-            // await database(data, profile);
+            const data = await normalize(item, profile_data);
+            await database(data, profile_database);
             process.send('processed');
         });
     }

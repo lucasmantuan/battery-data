@@ -1,5 +1,5 @@
-const knex = require('knex');
 const _ = require('lodash');
+const knex = require('knex');
 
 function openConnection(connection_config) {
     return new Promise((resolve) => {

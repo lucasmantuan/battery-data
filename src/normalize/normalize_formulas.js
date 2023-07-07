@@ -4,13 +4,11 @@ function extractRecordStart(values) {
     const data_value = values.toString();
     const regex = /record start at [a-z]+, (.*), (.*)/;
     const match = data_value.match(regex);
-
     if (match && match.length > 1) {
         const data = match[1];
         const hora = match[2].replace(/\./g, ':');
         record_start = new Date(`${data} ${hora}`);
     }
-
     return record_start;
 }
 
