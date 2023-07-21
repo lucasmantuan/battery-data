@@ -11,7 +11,8 @@ const {
     readSpreadsheets,
     removeInvalidDataIfNeeded,
     removeWhitespace,
-    renameKeysIfNeeded
+    renameKeysIfNeeded,
+    convertTextToNumberIfNeeded
 } = require('./normalize_functions.js');
 
 /**
@@ -33,13 +34,16 @@ const {
  * Promise que resolve em um array de objetos.
  */
 function normalize(folder_list, profile) {
-    const { rename_keys, change_values, add_values, validate_value, map_object, date } = profile.conversion;
+    const { rename_keys, change_values, add_values, validate_value, convert_values, map_object, date } =
+        profile.conversion;
+
     const { worksheet_number } = profile.file;
 
     const result = readSpreadsheets(folder_list, worksheet_number)
         .then(convertSpreadsheets)
         .then(flattenData)
         .then(removeWhitespace)
+        .then(convertTextToNumberIfNeeded(convert_values))
         .then(renameKeysIfNeeded(rename_keys))
         .then(changeValuesIfNeeded(change_values))
         .then(addValuesIfNeeded(add_values))

@@ -1,7 +1,7 @@
 {
     "conversion": {
         "rename_keys": {},
-        "change_values": [["calculateMilliampereHoursPerGramMass", ["Discharge_Capacity(Ah)"], [5], "mAh/g"]],
+        "change_values": [["calculateMilliampereHoursPerGramMass", ["Discharge_Capacity(Ah)"], [0], "mAh/g"]],
         "add_values": [
             ["recordDate", "recorded_at"],
             ["recordFileName", "file_name"],
@@ -10,6 +10,7 @@
             ["recordOne", "volt/cell(V)"]
         ],
         "validate_value": {},
+        "convert_values": {},
         "map_object": {
             "Charge_Capacity(Ah)": "charge_capacity(Ah)",
             "Charge_Energy(Wh)": "charge_energy(Wh)",

@@ -89,10 +89,31 @@ function convertSpreadsheets(data) {
         if (_.isEmpty(header)) {
             result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet));
         } else {
-            result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet, { header }));
+            result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet, { header, rawNumbers: false }));
         }
         resolve(result);
     });
+}
+
+function convertTextToNumberIfNeeded(param) {
+    return function (data) {
+        if (_.isEmpty(param)) {
+            return data;
+        } else {
+            return convertTextToNumber(param, data);
+        }
+    };
+}
+
+function convertTextToNumber(param, data) {
+    const { from, to } = param;
+    const result = _.map(data, (item) => {
+        return _.mapValues(item, (value) => {
+            const number_value = Number(value.replace(from, to));
+            return isNaN(number_value) ? value : number_value;
+        });
+    });
+    return result;
 }
 
 /**
@@ -365,9 +386,10 @@ module.exports = {
     addValuesIfNeeded,
     changeValuesIfNeeded,
     chunkSplit,
+    convertDateIfNeeded,
     convertSpreadsheets,
     convertToLowercase,
-    convertDateIfNeeded,
+    convertTextToNumberIfNeeded,
     fileExtension,
     flattenData,
     mapObjectIfNeeded,

@@ -1,0 +1,21 @@
+{
+    "conversion": {
+        "rename_keys": {},
+        "change_values": [],
+        "add_values": [],
+        "validate_value": { "key": 0, "type": "number" },
+        "convert_values": { "from": ",", "to": "." },
+        "map_object": {
+            "Current_ACT": "current(A)",
+            "Power_ACT": "power(W)",
+            "Voltage_ACT": "voltage(V)"
+        },
+        "date": ["date_time"]
+    },
+    "file": {
+        "file_extension": "csv",
+        "profile_name": "regatron",
+        "worksheet_number": 0,
+        "header": ["Time_MS", "Voltage_ACT", "Current_ACT", "Power_ACT", "Voltage_REF", "Current_REF", "Power_REF"]
+    }
+}

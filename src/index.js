@@ -56,4 +56,9 @@ if (parameters.profile === 'hh') {
     profile_data = parseToObject(result);
 }
 
+if (parameters.profile === 'regatron') {
+    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
+    profile_data = parseToObject(result);
+}
+
 readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
