@@ -1,4 +1,4 @@
-const calculateIntegral = require('../utils/regression.js');
+const { calculateIntegral } = require('../utils/utils.js');
 
 let calculated_integral;
 let control_iteration = true;
@@ -13,7 +13,6 @@ function recordDataForCalculationIntegral(values) {
 
 function calculateChargeCapacityFromIntegral(values) {
     const [charge_capacity] = values;
-
     if (control_iteration) {
         calculated_integral = calculateIntegral(
             data_points,
@@ -23,7 +22,6 @@ function calculateChargeCapacityFromIntegral(values) {
         );
         control_iteration = false;
     }
-
     if (charge_capacity == null || isNaN(charge_capacity)) return calculated_integral;
     return charge_capacity;
 }
