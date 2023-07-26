@@ -6,5 +6,12 @@
         "target": "es2021",
         "checkJs": true
     },
-    "exclude": ["node_modules", "**/node_modules/*", "vendor_modules", "**/vendor_modules/*", "outros_arquivos", "**/outros_arquivos/*"]
+    "exclude": [
+        "node_modules",
+        "**/node_modules/*",
+        "vendor_modules",
+        "**/vendor_modules/*",
+        "outros_arquivos",
+        "**/outros_arquivos/*"
+    ]
 }

@@ -1,8 +1,8 @@
 const _ = require('lodash');
 const fs = require('fs');
+const normalize_formulas = require('./normalize_formulas.js');
 const path = require('path');
 const xlsx = require('xlsx');
-const normalize_formulas = require('./normalize_formulas.js');
 const { global_parameters } = require('../utils/global_parameters.js');
 
 xlsx.set_fs(fs);

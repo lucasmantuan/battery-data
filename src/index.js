@@ -1,13 +1,13 @@
 const fs = require('fs');
 const readline = require('readline');
 const { create } = require('./database/database.js');
-const { read } = require('./normalize/normalize.js');
 const { createCluster } = require('./utils/cluster.js');
 const { parseToObject } = require('./utils/utils.js');
+const { read } = require('./normalize/normalize.js');
 
+let data = [];
 let profile_data = {};
 let profile_database = {};
-let data = [];
 
 const parameters = {
     profile: String(process.argv[2].split('-')[1]),

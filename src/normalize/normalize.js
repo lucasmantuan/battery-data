@@ -2,8 +2,9 @@ const {
     addValuesIfNeeded,
     changeValuesIfNeeded,
     chunkSplit,
-    convertSpreadsheets,
     convertDateIfNeeded,
+    convertSpreadsheets,
+    convertTextToNumberIfNeeded,
     fileExtension,
     flattenData,
     mapObjectIfNeeded,
@@ -11,8 +12,7 @@ const {
     readSpreadsheets,
     removeInvalidDataIfNeeded,
     removeWhitespace,
-    renameKeysIfNeeded,
-    convertTextToNumberIfNeeded
+    renameKeysIfNeeded
 } = require('./normalize_functions.js');
 
 /**

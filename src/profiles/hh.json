@@ -9,9 +9,7 @@
             ["calculateMilliampereHoursPerGramMass", ["discharge_capacity(Ah)"], [0], "mAh/g"],
             ["calculatePower", ["volt [V]", "current [A]"], [0], "power(W)"],
             ["extractRecordStart", ["volt [V]"], [0], "date_time"],
-            ["recordDateFile", ["date_time", "time [s]"], [0], "date_time"],
-            ["recordDataForCalculationIntegral", ["current [A]", "date_time"], [0], ""],
-            ["calculateChargeCapacityFromIntegral", ["charge_capacity(Ah)"], [0], "charge_capacity(Ah)"]
+            ["recordDateFile", ["date_time", "time [s]"], [0], "date_time"]
         ],
         "add_values": [
             ["recordDate", "recorded_at"],

@@ -13,8 +13,6 @@
         "knex": "2.4.2",
         "lodash": "4.17.21",
         "mysql2": "3.3.0",
-        "nerdamer": "1.1.13",
-        "regression": "2.0.1",
         "xlsx": "file:vendor_modules/xlsx-0.19.3.tgz"
     },
     "devDependencies": {

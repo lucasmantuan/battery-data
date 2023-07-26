@@ -1,30 +1,4 @@
-const { calculateIntegral } = require('../utils/utils.js');
-
-let calculated_integral;
-let control_iteration = true;
-let data_points = [];
 let record_start;
-
-function recordDataForCalculationIntegral(values) {
-    const [current, time] = values;
-    if (current == null || isNaN(current)) return;
-    return data_points.push([current, new Date(time).getTime()]);
-}
-
-function calculateChargeCapacityFromIntegral(values) {
-    const [charge_capacity] = values;
-    if (control_iteration) {
-        calculated_integral = calculateIntegral(
-            data_points,
-            10,
-            data_points[0][0],
-            data_points[data_points.length - 1][0]
-        );
-        control_iteration = false;
-    }
-    if (charge_capacity == null || isNaN(charge_capacity)) return calculated_integral;
-    return charge_capacity;
-}
 
 function extractRecordStart(values) {
     const data_value = values.toString();
@@ -109,19 +83,24 @@ function calculatePower(values) {
     return result;
 }
 
+function calculateTestTime(values) {
+    const [time] = values;
+    const result = time / 1000;
+    return result;
+}
+
 const normalize_formulas = {
     calculateChargeCapacity,
-    calculateChargeCapacityFromIntegral,
     calculateChargeEnergy,
     calculateCoulombicEfficiency,
     calculateDischargeCapacity,
     calculateDischargeEnergy,
     calculateMilliampereHoursPerGramMass,
     calculatePower,
+    calculateTestTime,
     extractRecordStart,
     recordDate,
     recordDateFile,
-    recordDataForCalculationIntegral,
     recordFileName,
     recordNull,
     recordOne
