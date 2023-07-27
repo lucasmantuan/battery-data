@@ -66,8 +66,9 @@ function createCluster(data, profile_data, profile_database) {
             // @ts-ignore
             global_parameters.id = cluster.worker.id;
             global_parameters.time = new Date();
-            global_parameters.files = getFileName(item);
+            global_parameters.file_name = getFileName(item);
             global_parameters.header = profile_data.file.header;
+            global_parameters.profile = profile_data.file.profile_name;
             // @ts-ignore
             const data = await normalize(item, profile_data);
             console.log(data);

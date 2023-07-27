@@ -2,14 +2,14 @@
     "conversion": {
         "rename_keys": {},
         "change_values": [
-            ["calculateChargeCapacity", ["capacity [Ah]"], [0], "charge_capacity(Ah)"],
-            ["calculateDischargeCapacity", ["capacity [Ah]"], [0], "discharge_capacity(Ah)"],
-            ["calculateChargeEnergy", ["volt [V]", "charge_capacity(Ah)"], [0], "charge_energy(Wh)"],
-            ["calculateDischargeEnergy", ["volt [V]", "discharge_capacity(Ah)"], [0], "discharge_energy(Wh)"],
-            ["calculateMilliampereHoursPerGramMass", ["discharge_capacity(Ah)"], [0], "mAh/g"],
-            ["calculatePower", ["volt [V]", "current [A]"], [0], "power(W)"],
-            ["extractRecordStart", ["volt [V]"], [0], "date_time"],
-            ["recordDateFile", ["date_time", "time [s]"], [0], "date_time"]
+            ["calculateChargeCapacity", ["capacity [Ah]"], [], "charge_capacity(Ah)"],
+            ["calculateDischargeCapacity", ["capacity [Ah]"], [], "discharge_capacity(Ah)"],
+            ["calculateChargeEnergy", ["volt [V]", "charge_capacity(Ah)"], [], "charge_energy(Wh)"],
+            ["calculateDischargeEnergy", ["volt [V]", "discharge_capacity(Ah)"], [], "discharge_energy(Wh)"],
+            ["calculateMilliampereHoursPerGramMass", ["discharge_capacity(Ah)"], [], "mAh/g"],
+            ["calculatePower", ["volt [V]", "current [A]"], [], "power(W)"],
+            ["extractRecordStart", ["volt [V]"], [], "date_time"],
+            ["recordDateFile", ["date_time", "time [s]"], [], "date_time"]
         ],
         "add_values": [
             ["recordDate", "recorded_at"],

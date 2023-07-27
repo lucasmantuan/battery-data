@@ -1,15 +1,32 @@
-let record_start;
+const { global_parameters } = require('../utils/global_parameters.js');
+let charge_new_time = 0;
+let charge_old_time = 0;
+let discharge_new_time = 0;
+let discharge_old_time = 0;
+let record_start = new Date();
 
 function extractRecordStart(values) {
-    const data_value = values.toString();
-    const regex = /record start at [a-z]+, (.*), (.*)/;
-    const match = data_value.match(regex);
-    if (match && match.length > 1) {
-        const data = match[1];
-        const hora = match[2].replace(/\./g, ':');
-        record_start = new Date(`${data} ${hora}`);
+    if (global_parameters.profile === 'hh') {
+        const data_value = values.toString();
+        const regex = /record start at [a-z]+, (.*), (.*)/;
+        const match = data_value.match(regex);
+        if (match && match.length > 1) {
+            const data = match[1];
+            const hora = match[2].replace(/\./g, ':');
+            record_start = new Date(`${data} ${hora}`);
+        }
+        return record_start;
+    } else if (global_parameters.profile === 'regatron') {
+        const data_value = global_parameters.file_name.toString();
+        const regex = /(.{10})T(.{8})/;
+        const match = data_value.match(regex);
+        if (match && match.length > 1) {
+            const data = match[1];
+            const hora = match[2].replace(/_/g, ':');
+            record_start = new Date(`${data} ${hora}`);
+        }
+        return record_start;
     }
-    return record_start;
 }
 
 function recordDateFile(values) {
@@ -23,7 +40,7 @@ function recordDate(value) {
 }
 
 function recordFileName(value) {
-    return value.files[0];
+    return value.file_name[0];
 }
 
 function recordNull() {
@@ -51,15 +68,35 @@ function calculateMilliampereHoursPerGramMass(values, new_values) {
 }
 
 function calculateChargeCapacity(values) {
-    const [capacity] = values;
-    if (capacity >= 0) return capacity;
-    return null;
+    if (global_parameters.profile === 'hh') {
+        const [capacity] = values;
+        if (capacity >= 0) return capacity;
+        return null;
+    } else if (global_parameters.profile === 'regatron') {
+        const [time, current] = values;
+        if (!isNaN(time)) {
+            charge_new_time = time - charge_old_time;
+            charge_old_time = time;
+        }
+        if (current >= 0) return charge_new_time * current;
+        return null;
+    }
 }
 
 function calculateDischargeCapacity(values) {
-    const [capacity] = values;
-    if (capacity < 0) return capacity;
-    return null;
+    if (global_parameters.profile === 'hh') {
+        const [capacity] = values;
+        if (capacity < 0) return capacity;
+        return null;
+    } else if (global_parameters.profile === 'regatron') {
+        const [time, current] = values;
+        if (!isNaN(time)) {
+            discharge_new_time = time - discharge_old_time;
+            discharge_old_time = time;
+        }
+        if (current < 0) return discharge_new_time * current;
+        return null;
+    }
 }
 
 function calculateChargeEnergy(values) {

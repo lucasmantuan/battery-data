@@ -1,7 +1,16 @@
 {
     "conversion": {
         "rename_keys": {},
-        "change_values": [["calculateTestTime", ["Time_MS"], [0], "test_time(s)"]],
+        "change_values": [
+            ["calculateTestTime", ["Time_MS"], [], "test_time(s)"],
+            ["calculateChargeCapacity", ["test_time(s)", "Current_ACT"], [], "charge_capacity(Ah)"],
+            ["calculateDischargeCapacity", ["test_time(s)", "Current_ACT"], [], "discharge_capacity(Ah)"],
+            ["calculateChargeEnergy", ["Voltage_ACT", "charge_capacity(Ah)"], [], "charge_energy(Wh)"],
+            ["calculateDischargeEnergy", ["Voltage_ACT", "discharge_capacity(Ah)"], [], "discharge_energy(Wh)"],
+            ["calculateMilliampereHoursPerGramMass", ["discharge_capacity(Ah)"], [5], "mAh/g"],
+            ["extractRecordStart", [], [], "date_time"],
+            ["recordDateFile", ["date_time", "test_time(s)"], [], "date_time"]
+        ],
         "add_values": [
             ["recordDate", "recorded_at"],
             ["recordNull", "cycle_index"],
@@ -18,15 +27,15 @@
             "Current_ACT": "current(A)",
             "Power_ACT": "power(W)",
             "Voltage_ACT": "voltage(V)",
-            "charge_capacity(Ah)": "",
-            "charge_energy(Wh)": "",
+            "charge_capacity(Ah)": "charge_capacity(Ah)",
+            "charge_energy(Wh)": "charge_energy(Wh)",
             "coulombic_efficiency": "",
             "cycle_index": "cycle_index",
             "date_time": "date_time",
-            "discharge_capacity(Ah)": "",
-            "discharge_energy(Wh)": "",
+            "discharge_capacity(Ah)": "discharge_capacity(Ah)",
+            "discharge_energy(Wh)": "discharge_energy(Wh)",
             "file_name": "file_name",
-            "mAh/g": "",
+            "mAh/g": "mAh/g",
             "recorded_at": "recorded_at",
             "step_index": "step_index",
             "step_time(s)": "step_time(s)",
@@ -35,7 +44,7 @@
             "test_time(s)": "test_time(s)",
             "volt/cell(V)": "volt/cell(V)"
         },
-        "date": ["date_time"]
+        "date": ["date_time", "recorded_at"]
     },
     "file": {
         "file_extension": "csv",

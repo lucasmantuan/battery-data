@@ -1,7 +1,7 @@
 {
     "conversion": {
         "rename_keys": {},
-        "change_values": [["calculateMilliampereHoursPerGramMass", ["Discharge_Capacity(Ah)"], [0], "mAh/g"]],
+        "change_values": [["calculateMilliampereHoursPerGramMass", ["Discharge_Capacity(Ah)"], [], "mAh/g"]],
         "add_values": [
             ["recordDate", "recorded_at"],
             ["recordFileName", "file_name"],
