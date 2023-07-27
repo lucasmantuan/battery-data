@@ -84,12 +84,15 @@ function changeValues(param, data) {
  */
 function convertSpreadsheets(data) {
     return new Promise((resolve) => {
-        const header = global_parameters.header;
+        const header_file = global_parameters.header;
+        const raw_numbers = global_parameters.raw_numbers;
         let result = [];
-        if (_.isEmpty(header)) {
-            result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet));
+        if (_.isEmpty(header_file)) {
+            result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet, { rawNumbers: raw_numbers }));
         } else {
-            result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet, { header, rawNumbers: false }));
+            result = _.map(data, (spreadsheet) =>
+                xlsx.utils.sheet_to_json(spreadsheet, { header: header_file, rawNumbers: raw_numbers })
+            );
         }
         resolve(result);
     });

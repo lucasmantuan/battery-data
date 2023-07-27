@@ -48,8 +48,9 @@
     },
     "file": {
         "file_extension": "csv",
+        "header": ["Time_MS", "Voltage_ACT", "Current_ACT", "Power_ACT", "Voltage_REF", "Current_REF", "Power_REF"],
         "profile_name": "regatron",
-        "worksheet_number": 0,
-        "header": ["Time_MS", "Voltage_ACT", "Current_ACT", "Power_ACT", "Voltage_REF", "Current_REF", "Power_REF"]
+        "raw_numbers": false,
+        "worksheet_number": 0
     }
 }

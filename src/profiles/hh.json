@@ -45,8 +45,6 @@
     },
     "file": {
         "file_extension": "txt",
-        "profile_name": "hh",
-        "worksheet_number": 0,
         "header": [
             "volt [V]",
             "volt/cell [V]",
@@ -56,6 +54,9 @@
             "limit status",
             "test condition",
             "switch off"
-        ]
+        ],
+        "profile_name": "hh",
+        "raw_numbers": true,
+        "worksheet_number": 0
     }
 }

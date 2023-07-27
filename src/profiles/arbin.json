@@ -36,8 +36,9 @@
     },
     "file": {
         "file_extension": "xlsx",
+        "header": [],
         "profile_name": "arbin",
-        "worksheet_number": 1,
-        "header": []
+        "raw_numbers": true,
+        "worksheet_number": 1
     }
 }
