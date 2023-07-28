@@ -18,8 +18,8 @@
             ["recordNull", "step_index"],
             ["recordNull", "step_time(s)"]
         ],
-        "validate_value": { "key": 0, "type": "number" },
-        "convert_values": {},
+        "validate_value": [{ "key": 0, "type": "number" }],
+        "convert_values": [],
         "map_object": {
             "charge_capacity(Ah)": "charge_capacity(Ah)",
             "charge_energy(Wh)": "charge_energy(Wh)",

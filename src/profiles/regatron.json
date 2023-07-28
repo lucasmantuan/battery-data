@@ -21,8 +21,8 @@
             ["recordNull", "test_condition"],
             ["recordNull", "volt/cell(V)"]
         ],
-        "validate_value": { "key": 0, "type": "number" },
-        "convert_values": { "from": ",", "to": "." },
+        "validate_value": [{ "key": 0, "type": "number" }],
+        "convert_values": [["convertTextToNumber", [",", "."]]],
         "map_object": {
             "Current_ACT": "current(A)",
             "Power_ACT": "power(W)",

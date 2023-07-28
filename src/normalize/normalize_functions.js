@@ -73,6 +73,30 @@ function changeValues(param, data) {
     return data;
 }
 
+function convertValuesIfNeeded(param) {
+    return function (data) {
+        if (_.isEmpty(param)) {
+            return data;
+        } else {
+            return convertValues(param, data);
+        }
+    };
+}
+
+function convertValues(param, data) {
+    _.forEach(param, (param_item) => {
+        const [callback_name, params] = param_item;
+        const callback = normalize_formulas[callback_name];
+        _.forEach(data, (data_item) => {
+            _.forEach(data_item, (value, key) => {
+                const new_value = callback(value, params);
+                _.set(data_item, key, new_value);
+            });
+        });
+    });
+    return data;
+}
+
 /**
  * Converte o array das planilhas para um array de JSON.
  *
@@ -96,27 +120,6 @@ function convertSpreadsheets(data) {
         }
         resolve(result);
     });
-}
-
-function convertTextToNumberIfNeeded(param) {
-    return function (data) {
-        if (_.isEmpty(param)) {
-            return data;
-        } else {
-            return convertTextToNumber(param, data);
-        }
-    };
-}
-
-function convertTextToNumber(param, data) {
-    const { from, to } = param;
-    const result = _.map(data, (item) => {
-        return _.mapValues(item, (value) => {
-            const number_value = Number(value.replace(from, to));
-            return isNaN(number_value) ? value : number_value;
-        });
-    });
-    return result;
 }
 
 /**
@@ -288,13 +291,13 @@ function removeInvalidDataIfNeeded(param) {
 }
 
 function removeInvalidData(param, data) {
-    const { key, type } = param;
-    function isValidData(item) {
-        const values = _.values(item);
-        return typeof values[key] === type;
-    }
-
-    return _.filter(data, isValidData);
+    return _.filter(data, (item) => {
+        return _.every(param, (param) => {
+            const { key, type } = param;
+            const values = _.values(item);
+            return typeof values[key] === type;
+        });
+    });
 }
 
 /**
@@ -392,7 +395,7 @@ module.exports = {
     convertDateIfNeeded,
     convertSpreadsheets,
     convertToLowercase,
-    convertTextToNumberIfNeeded,
+    convertValuesIfNeeded,
     fileExtension,
     flattenData,
     mapObjectIfNeeded,

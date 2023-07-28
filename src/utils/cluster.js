@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const cluster = require('cluster');
 const cpus = require('os').cpus().length;
 const readline = require('readline');
@@ -40,7 +41,7 @@ function createCluster(data, profile_data, profile_database) {
         let items_processed = 0;
         const total_items = data.length;
 
-        data.forEach((item, index) => {
+        _.forEach(data, (item, index) => {
             if (index < Math.min(cpus, total_items)) {
                 // @ts-ignore
                 const worker = cluster.fork();
@@ -72,7 +73,7 @@ function createCluster(data, profile_data, profile_database) {
             global_parameters.raw_numbers = profile_data.file.raw_numbers;
             // @ts-ignore
             const data = await normalize(item, profile_data);
-            // console.log(data);
+            console.log(data);
             // await database(data, profile_database);
             process.send('processed');
         });

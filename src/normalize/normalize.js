@@ -4,7 +4,7 @@ const {
     chunkSplit,
     convertDateIfNeeded,
     convertSpreadsheets,
-    convertTextToNumberIfNeeded,
+    convertValuesIfNeeded,
     fileExtension,
     flattenData,
     mapObjectIfNeeded,
@@ -43,7 +43,7 @@ function normalize(folder_list, profile) {
         .then(convertSpreadsheets)
         .then(flattenData)
         .then(removeWhitespace)
-        .then(convertTextToNumberIfNeeded(convert_values))
+        .then(convertValuesIfNeeded(convert_values))
         .then(renameKeysIfNeeded(rename_keys))
         .then(changeValuesIfNeeded(change_values))
         .then(addValuesIfNeeded(add_values))

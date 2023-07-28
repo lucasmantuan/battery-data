@@ -9,8 +9,8 @@
             ["recordNull", "test_condition"],
             ["recordOne", "volt/cell(V)"]
         ],
-        "validate_value": {},
-        "convert_values": {},
+        "validate_value": [],
+        "convert_values": [],
         "map_object": {
             "Charge_Capacity(Ah)": "charge_capacity(Ah)",
             "Charge_Energy(Wh)": "charge_energy(Wh)",

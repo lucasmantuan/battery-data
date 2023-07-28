@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const { global_parameters } = require('../utils/global_parameters.js');
 let charge_new_time = 0;
 let charge_old_time = 0;
@@ -5,14 +6,14 @@ let discharge_new_time = 0;
 let discharge_old_time = 0;
 let record_start = new Date();
 
-function extractRecordStart(values) {
+function extractRecordStart(value) {
     if (global_parameters.profile === 'hh') {
-        const data_value = values.toString();
+        const data_value = value.toString();
         const regex = /record start at [a-z]+, (.*), (.*)/;
         const match = data_value.match(regex);
         if (match && match.length > 1) {
             const data = match[1];
-            const hora = match[2].replace(/\./g, ':');
+            const hora = _.replace(match[2], /\./g, ':');
             record_start = new Date(`${data} ${hora}`);
         }
         return record_start;
@@ -22,15 +23,15 @@ function extractRecordStart(values) {
         const match = data_value.match(regex);
         if (match && match.length > 1) {
             const data = match[1];
-            const hora = match[2].replace(/_/g, ':');
+            const hora = _.replace(match[2], /_/g, ':');
             record_start = new Date(`${data} ${hora}`);
         }
         return record_start;
     }
 }
 
-function recordDateFile(values) {
-    const [date_time, step_time] = values;
+function recordDateFile(value) {
+    const [date_time, step_time] = value;
     const new_date_time = new Date(date_time).getTime();
     return new Date(new_date_time + step_time * 1000);
 }
@@ -51,6 +52,12 @@ function recordOne() {
     return 1;
 }
 
+function convertTextToNumber(value, params) {
+    const [from, to] = params;
+    const number_value = Number(_.replace(value.trim(), from, to));
+    return isNaN(number_value) ? value : number_value;
+}
+
 function calculateCoulombicEfficiency(values) {
     const [discharge_capacity, charge_capacity] = values;
     const result = (100 * discharge_capacity) / charge_capacity;
@@ -58,22 +65,22 @@ function calculateCoulombicEfficiency(values) {
     return result;
 }
 
-function calculateMilliampereHoursPerGramMass(values, new_values) {
-    const [discharge_capacity] = values;
-    const [mass] = new_values;
+function calculateMilliampereHoursPerGramMass(value, params) {
+    const [discharge_capacity] = value;
+    const [mass] = params;
     if (mass === 0) return 0;
     const result = discharge_capacity / mass;
     if (result == null || isNaN(result)) return 0;
     return result;
 }
 
-function calculateChargeCapacity(values) {
+function calculateChargeCapacity(value) {
     if (global_parameters.profile === 'hh') {
-        const [capacity] = values;
+        const [capacity] = value;
         if (capacity >= 0) return capacity;
         return null;
     } else if (global_parameters.profile === 'regatron') {
-        const [time, current] = values;
+        const [time, current] = value;
         if (!isNaN(time)) {
             charge_new_time = time - charge_old_time;
             charge_old_time = time;
@@ -83,13 +90,13 @@ function calculateChargeCapacity(values) {
     }
 }
 
-function calculateDischargeCapacity(values) {
+function calculateDischargeCapacity(value) {
     if (global_parameters.profile === 'hh') {
-        const [capacity] = values;
+        const [capacity] = value;
         if (capacity < 0) return capacity;
         return null;
     } else if (global_parameters.profile === 'regatron') {
-        const [time, current] = values;
+        const [time, current] = value;
         if (!isNaN(time)) {
             discharge_new_time = time - discharge_old_time;
             discharge_old_time = time;
@@ -99,29 +106,29 @@ function calculateDischargeCapacity(values) {
     }
 }
 
-function calculateChargeEnergy(values) {
-    const [voltage, charge_capacity] = values;
+function calculateChargeEnergy(value) {
+    const [voltage, charge_capacity] = value;
     const result = voltage * charge_capacity;
     if (result == null || isNaN(result)) return 0;
     return result;
 }
 
-function calculateDischargeEnergy(values) {
-    const [voltage, discharge_capacity] = values;
+function calculateDischargeEnergy(value) {
+    const [voltage, discharge_capacity] = value;
     const result = voltage * discharge_capacity;
     if (result == null || isNaN(result)) return 0;
     return result;
 }
 
-function calculatePower(values) {
-    const [voltage, current] = values;
+function calculatePower(value) {
+    const [voltage, current] = value;
     const result = voltage * current;
     if (result == null || isNaN(result)) return 0;
     return result;
 }
 
-function calculateTestTime(values) {
-    const [time] = values;
+function calculateTestTime(value) {
+    const [time] = value;
     const result = time / 1000;
     return result;
 }
@@ -135,6 +142,7 @@ const normalize_formulas = {
     calculateMilliampereHoursPerGramMass,
     calculatePower,
     calculateTestTime,
+    convertTextToNumber,
     extractRecordStart,
     recordDate,
     recordDateFile,
