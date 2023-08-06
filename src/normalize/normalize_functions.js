@@ -7,7 +7,25 @@ const { global_parameters } = require('../utils/global_parameters.js');
 
 xlsx.set_fs(fs);
 
+/**
+ * Retorna uma função que verifica a necesidade de se aplicar uma função nos dados.
+ *
+ * @param {Array<*>} param
+ * Array vazio ou com os parâmetros para aplicação nos dados.
+ *
+ * @returns {(data: Array<Object>) => Array<Object>}
+ * Função que adiciona novos valores aos dados se o parâmetro não estiver vazio.
+ */
 function addValuesIfNeeded(param) {
+    /**
+     * Retorna os dados sem alteração ou com os novos valores adicionados.
+     *
+     * @param {Array<Object>} data
+     * Array com os dados para aplicação da função.
+     *
+     * @returns {Array<Object>}
+     * Array com os dados sem alteração ou com os novos valores adicionados.
+     */
     return function (data) {
         if (_.isEmpty(param)) {
             return data;
@@ -17,12 +35,24 @@ function addValuesIfNeeded(param) {
     };
 }
 
+/**
+ * Adiciona novos valores para cada item de dados com base nos parâmetros fornecidos.
+ *
+ * @param {Array<*>} param
+ * Array contendo o nome da função de callback a ser aplicada, os seus parâmetros e o nome da chave para o novo valor.
+ *
+ * @param {Array<Object>} data
+ * Array com os dados para aplicação da função de callback.
+ *
+ * @returns {Array<Object>}
+ * Array com os dados após a aplicação da função de callback.
+ */
 function addValues(param, data) {
     _.forEach(param, (param_item) => {
-        const [callback_name, key] = param_item;
+        const [callback_name, params, key] = param_item;
         const callback = normalize_formulas[callback_name];
         _.forEach(data, (data_item) => {
-            const value = callback(global_parameters);
+            const value = callback(params, global_parameters);
             _.set(data_item, key, value);
         });
     });
@@ -30,15 +60,24 @@ function addValues(param, data) {
 }
 
 /**
- * Verifica a necessidade de aplicar uma função com base nos parâmetros fornecidos.
+ * Retorna uma função que verifica a necesidade de se aplicar uma função nos dados.
  *
- * @param {Array | Array<Object<string, string>>} param
- * Array vazio ou um Array com os parâmetros para aplicação da função.
+ * @param {Array<*>} param
+ * Array vazio ou com os parâmetros para aplicação nos dados.
  *
- * @returns {((data: Array<Object>) => Array<Object>)}
- * Função que recebe um array de objetos e retorna um array de objetos sem alteração ou com as chaves renomeadas.
+ * @returns {(data: Array<Object>) => Array<Object>}
+ * Função que modifica os valores dos dados se o parâmetro não estiver vazio.
  */
 function changeValuesIfNeeded(param) {
+    /**
+     * Retorna os dados sem alteração ou com os valores modificados.
+     *
+     * @param {Array<Object>} data
+     * Array com os dados para aplicação da função.
+     *
+     * @returns {Array<Object>}
+     * Array com os dados sem alteração ou com os valores modificados.
+     */
     return function (data) {
         if (_.isEmpty(param)) {
             return data;
@@ -49,16 +88,17 @@ function changeValuesIfNeeded(param) {
 }
 
 /**
- * Aplica uma função nos valores de um objeto com base nos parâmetros fornecidos.
+ * Modifica os valores de cada item de dados com base nos parâmetros fornecidos.
  *
- * @param {Array} param
- * Array com os parâmetros para aplicação da função.
+ * @param {Array<*>} param
+ * Array contendo o nome da função de callback a ser aplicada, os seus parâmetros,
+ * novos parâmetros, se necessário, e o nome da chave para modificação do valor.
  *
  * @param {Array<Object>} data
- * Array contendo os objetos de dados a serem processados.
+ * Array com os dados para aplicação da função de callback.
  *
  * @returns {Array<Object>}
- * Array contendo os objetos de dados com os valores aplicados.
+ * Array com os dados após a aplicação da função de callback.
  */
 function changeValues(param, data) {
     _.forEach(param, (param_item) => {
@@ -71,6 +111,127 @@ function changeValues(param, data) {
         });
     });
     return data;
+}
+
+/**
+ * Retorna uma função que divide um array em partes do tamanho especificado.
+ *
+ * @param {number} chunk
+ * O tamanho de cada parte.
+ *
+ * @returns {(data: Array<*>) => Array<Array> | Array<*>}
+ * Função que recebe um array e retorna um array de arrays.
+ */
+function chunkSplit(chunk) {
+    /**
+     * Retorna um array de arrays dividido conforme o tamanho especificado.
+     *
+     * @param {Array<*>} params
+     * Array com os dados para divisão.
+     *
+     * @returns {Array<Object>}
+     * Array de arrays dividido conforme o tamanho especificado.
+     */
+    return function (params) {
+        return _.chunk(params, chunk);
+    };
+}
+
+/**
+ * Retorna uma função que verifica a necesidade de converter as datas especificadas
+ * nos parâmetros fornecidos para o formato 'YYYY-MM-DD HH:MM:SS'.
+ *
+ * @param {Array<string>} param
+ * Array vazio ou um array com os nomes das chaves que contém as datas a serem convertidas.
+ *
+ * @returns {(data: Array<Object>) => Array<Object>}
+ * Função que converte as datas dos dados se o parâmetro não estiver vazio.
+ */
+function convertDateIfNeeded(param) {
+    /**
+     * Retorna os dados sem alteração ou com as datas convertidas.
+     *
+     * @param {Array<Object>} data
+     * Array com os dados para aplicação da função.
+     *
+     * @returns {Array<Object>}
+     * Array com as datas sem alteração com com as datas convertidas.
+     */
+    return function (data) {
+        if (_.isEmpty(param)) {
+            return data;
+        } else {
+            return converteDate(param, data);
+        }
+    };
+}
+
+/**
+ * Modifica as datas dos itens de dados com base nos parâmetros fornecidos para o formato 'YYYY-MM-DD HH:MM:SS'.
+ *
+ * @param {Array<*>} param
+ * Array contendo os nomes das chaves que contém as datas a serem convertidas.
+ *
+ * @param {Array<Object>} data
+ * Array com os dados para conversãop das datas.
+ *
+ * @returns {Array<Object>}
+ * Array com os dados após a conversão das datas.
+ */
+function converteDate(param, data) {
+    _.forEach(param, (param_item) => {
+        _.forEach(data, (data_item) => {
+            _.mapValues(data_item, (value, key) => {
+                if (key === param_item && value != null) {
+                    _.set(data_item, key, value.toISOString().slice(0, 19).replace('T', ' '));
+                }
+            });
+        });
+    });
+    return data;
+}
+
+/**
+ * Retorna uma Promise que recebe um array com os dados brutos e resolve para um array de objetos mapeados.
+ *
+ * @param {Array<Object>} data
+ * Array contento os dados brutos para a conversão.
+ *
+ * @returns {Promise<Array<Object>>} -
+ * Promise que resolve para um array de objetos mapeados.
+ */
+function convertSpreadsheets(data) {
+    return new Promise((resolve) => {
+        const header_file = global_parameters.header;
+        const raw_numbers = global_parameters.raw_numbers;
+        let result = [];
+        if (_.isEmpty(header_file)) {
+            result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet, { rawNumbers: raw_numbers }));
+        } else {
+            result = _.map(data, (spreadsheet) =>
+                xlsx.utils.sheet_to_json(spreadsheet, { header: header_file, rawNumbers: raw_numbers })
+            );
+        }
+        resolve(result);
+    });
+}
+
+// ********************************************************************************
+
+/**
+ * Converte os nomes das chaves dos objetos para minúsculas.
+ *
+ * @param {Array<Object>} data
+ * O array contendo os objetos para a conversão dos nomes das chaves para minúsculas.
+ *
+ * @returns {Array<Object>}
+ * O novo array de objetos com os nomes das chaves convertidas para minúsculas.
+ */
+function convertToLowercase(data) {
+    const result = _.map(data, (item) => {
+        return _.mapKeys(item, (value, key) => _.toLower(key));
+    });
+    return result;
 }
 
 function convertValuesIfNeeded(param) {
@@ -98,76 +259,18 @@ function convertValues(param, data) {
 }
 
 /**
- * Converte o array das planilhas para um array de JSON.
+ * Filtra a lista de caminhos com base na extensão informada como parâmetro.
  *
- * @param {Array<Object>} data
- * Array contendo as planilhas para conversão.
+ * @param {string} extension
+ * String com a extensão para aplicação do filtro.
  *
- * @returns {Promise<Object>}
- * Uma promise que resolve para um array de JSON.
+ * @returns {((data: Array<string>) => Array<string>)}
+ * Função que recebe um array de strings e retornaum array de strings com o filtro aplicado.
  */
-function convertSpreadsheets(data) {
-    return new Promise((resolve) => {
-        const header_file = global_parameters.header;
-        const raw_numbers = global_parameters.raw_numbers;
-        let result = [];
-        if (_.isEmpty(header_file)) {
-            result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet, { rawNumbers: raw_numbers }));
-        } else {
-            result = _.map(data, (spreadsheet) =>
-                xlsx.utils.sheet_to_json(spreadsheet, { header: header_file, rawNumbers: raw_numbers })
-            );
-        }
-        resolve(result);
-    });
-}
-
-/**
- * Converte os nomes das chaves dos objetos para minúsculas.
- *
- * @param {Array<Object>} data
- * O array contendo os objetos para a conversão dos nomes das chaves para minúsculas.
- *
- * @returns {Array<Object>}
- * O novo array de objetos com os nomes das chaves convertidas para minúsculas.
- */
-function convertToLowercase(data) {
-    const result = _.map(data, (item) => {
-        return _.mapKeys(item, (value, key) => _.toLower(key));
-    });
-    return result;
-}
-
-/**
- * Verifica a necessidade de converter a data com base em um parâmetro fornecido para o formato 'YYYY-MM-DD HH:MM:SS'.
- *
- * @param {Object | Object<string, string>} param
- * Objeto vazio ou um objeto com um par chave-valor representando o valor a ser convertido.
- *
- * @returns {((data: Array<Object>) => Array<Object>)}
- * Função que recebe um array de objetos e retorna um array de objetos sem alteração ou com o valor da data convertido.
- */
-function convertDateIfNeeded(param) {
+function fileExtension(extension) {
     return function (data) {
-        if (_.isEmpty(param)) {
-            return data;
-        } else {
-            return converteDate(param, data);
-        }
+        return data.filter((item) => item.endsWith(extension));
     };
-}
-
-function converteDate(param, data) {
-    _.forEach(param, (param_item) => {
-        _.forEach(data, (data_item) => {
-            _.mapValues(data_item, (value, key) => {
-                if (key === param_item && value != null) {
-                    _.set(data_item, key, value.toISOString().slice(0, 19).replace('T', ' '));
-                }
-            });
-        });
-    });
-    return data;
 }
 
 /**
@@ -228,6 +331,23 @@ function mapObject(param, data) {
 }
 
 /**
+ * Faz a leitura dos arquivos com base no caminho informado e resolve em um array contendo a lista de arquivos.
+ *
+ * @param {string} folder
+ * String com o caminho dos arquivos.
+ *
+ * @returns {Promise<object>}
+ * Promise que resolve em um array contendo a lista de arquivos.
+ */
+function readFolder(folder) {
+    return new Promise((resolve) => {
+        const files = fs.readdirSync(folder);
+        const result = _.map(files, (file) => path.join(folder, file));
+        resolve(result);
+    });
+}
+
+/**
  * Converte o array de arquivos em uma única promise que contém os arquivos processados.
  *
  * @param {Array<string>} folder_list
@@ -264,22 +384,6 @@ function readSpreadsheet(path, index) {
     });
 }
 
-/**
- * Remove os espaços em branco do inicio e do final dos valores das chaves dos objetos.
- *
- * @param {Array<Object>} data
- * Array contendo os objetos para a remoção dos espaços em branco nos valores das chaves.
- *
- * @returns {Array<Object>}
- * Array de objetos com os valores das chaves sem os espaços em branco.
- */
-function removeWhitespace(data) {
-    const result = _.map(data, (item) => {
-        return _.mapKeys(item, (value, key) => _.trim(key));
-    });
-    return result;
-}
-
 function removeInvalidDataIfNeeded(param) {
     return function (data) {
         if (_.isEmpty(param)) {
@@ -298,6 +402,22 @@ function removeInvalidData(param, data) {
             return typeof values[key] === type;
         });
     });
+}
+
+/**
+ * Remove os espaços em branco do inicio e do final dos valores das chaves dos objetos.
+ *
+ * @param {Array<Object>} data
+ * Array contendo os objetos para a remoção dos espaços em branco nos valores das chaves.
+ *
+ * @returns {Array<Object>}
+ * Array de objetos com os valores das chaves sem os espaços em branco.
+ */
+function removeWhitespace(data) {
+    const result = _.map(data, (item) => {
+        return _.mapKeys(item, (value, key) => _.trim(key));
+    });
+    return result;
 }
 
 /**
@@ -339,53 +459,6 @@ function renameKeys(param, data) {
         });
     });
     return result;
-}
-
-/**
- * Faz a leitura dos arquivos com base no caminho informado e resolve em um array contendo a lista de arquivos.
- *
- * @param {string} folder
- * String com o caminho dos arquivos.
- *
- * @returns {Promise<object>}
- * Promise que resolve em um array contendo a lista de arquivos.
- */
-function readFolder(folder) {
-    return new Promise((resolve) => {
-        const files = fs.readdirSync(folder);
-        const result = _.map(files, (file) => path.join(folder, file));
-        resolve(result);
-    });
-}
-
-/**
- * Filtra a lista de caminhos com base na extensão informada como parâmetro.
- *
- * @param {string} extension
- * String com a extensão para aplicação do filtro.
- *
- * @returns {((data: Array<string>) => Array<string>)}
- * Função que recebe um array de strings e retornaum array de strings com o filtro aplicado.
- */
-function fileExtension(extension) {
-    return function (data) {
-        return data.filter((item) => item.endsWith(extension));
-    };
-}
-
-/**
- * Cria um array de arrays de caminhos de arquivos com base no valor informado como parâmetro.
- *
- * @param {number} chunk
- * Tamanho do array com os caminhos dos arquivos.
- *
- * @returns {((data: Array<string>) => Array<Array<string>>)}
- * Função que recebe um array de strings e retornaum array de arrays de strings.
- */
-function chunkSplit(chunk) {
-    return function (params) {
-        return _.chunk(params, chunk);
-    };
 }
 
 module.exports = {

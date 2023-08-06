@@ -4,26 +4,27 @@
         "change_values": [
             ["calculateChargeCapacity", ["capacity [Ah]"], [], "charge_capacity(Ah)"],
             ["calculateDischargeCapacity", ["capacity [Ah]"], [], "discharge_capacity(Ah)"],
-            ["calculateChargeEnergy", ["volt [V]", "charge_capacity(Ah)"], [], "charge_energy(Wh)"],
-            ["calculateDischargeEnergy", ["volt [V]", "discharge_capacity(Ah)"], [], "discharge_energy(Wh)"],
-            ["calculateMilliampereHoursPerGramMass", ["discharge_capacity(Ah)"], [], "mAh/g"],
-            ["calculatePower", ["volt [V]", "current [A]"], [], "power(W)"],
+            ["multiplyValues", ["volt [V]", "charge_capacity(Ah)"], [], "charge_energy(Wh)"],
+            ["multiplyValues", ["volt [V]", "discharge_capacity(Ah)"], [], "discharge_energy(Wh)"],
+            ["divideOneByOther", ["discharge_capacity(Ah)"], [], "mAh/g"],
+            ["multiplyValues", ["volt [V]", "current [A]"], [], "power(W)"],
             ["extractRecordStart", ["volt [V]"], [], "date_time"],
-            ["recordDateFile", ["date_time", "time [s]"], [], "date_time"]
+            ["recordDate", ["date_time", "time [s]"], [], "date_time"]
         ],
         "add_values": [
-            ["recordDate", "recorded_at"],
-            ["recordFileName", "file_name"],
-            ["recordNull", "cycle_index"],
-            ["recordNull", "step_index"],
-            ["recordNull", "step_time(s)"]
+            ["recordValue", "file_name", "file_name"],
+            ["recordValue", "recorded_at", "recorded_at"],
+            ["recordValue", null, "cycle_index"],
+            ["recordValue", null, "step_index"],
+            ["recordValue", null, "step_time(s)"],
+            ["recordValue", null, "switch_off"]
         ],
         "validate_value": [{ "key": 0, "type": "number" }],
         "convert_values": [],
         "map_object": {
             "charge_capacity(Ah)": "charge_capacity(Ah)",
             "charge_energy(Wh)": "charge_energy(Wh)",
-            "coulombic_efficiency": "coulombic_efficiency",
+            "coulombic_efficiency": "",
             "current [A]": "current(A)",
             "cycle_index": "cycle_index",
             "date_time": "date_time",
@@ -35,11 +36,11 @@
             "recorded_at": "recorded_at",
             "step_index": "step_index",
             "step_time(s)": "step_time(s)",
-            "switch off": "switch_off",
+            "switch_off": "switch_off",
             "test condition": "test_condition",
             "time [s]": "test_time(s)",
-            "volt [V]": "voltage(V)",
-            "volt/cell [V]": "volt/cell(V)"
+            "volt/cell [V]": "volt/cell(V)",
+            "volt [V]": "voltage(V)"
         },
         "date": ["date_time", "recorded_at"]
     },

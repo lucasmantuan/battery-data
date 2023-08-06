@@ -16,22 +16,23 @@ const {
 } = require('./normalize_functions.js');
 
 /**
- * Normaliza os arquivos, aplicando uma sequência de transformações, com base nos parâmetros fornecidos.
+ * Normaliza os dados dos arquivos aplicando uma sequência de transformações
+ * com base nos parâmetros fornecidos pelo perfil.
  *
  * @param {Array<string>} folder_list
- * Objeto com a lista dos arquivos.
+ * Array com a lista dos arquivos para processamento.
  *
  * @param {Object} profile
- * Objeto contendo os parâmetros para manipulação dos arquivos.
+ * Objeto contendo os parâmetros de configuração.
  *
- * @param {Object} profile.conversion
- * Objeto contendo as configurações de conversão.
+ * @param {Object<*, *>} profile.conversion
+ * Objeto contendo as configurações de conversão dos dados dos arquivos.
  *
- * @param {Object} profile.file
- * Objeto contendo as configurações do arquivo.
+ * @param {Object<*, *>} profile.file
+ * Objeto contendo as configurações do arquivo que será processado.
  *
- * @returns {Promise<Array<object>>}
- * Promise que resolve em um array de objetos.
+ * @returns {Promise<Array<Object>>}
+ * Promise que resolve em um array de objetos normalizados.
  */
 function normalize(folder_list, profile) {
     const { rename_keys, change_values, add_values, validate_value, convert_values, map_object, date } =
@@ -54,7 +55,7 @@ function normalize(folder_list, profile) {
 }
 
 /**
- * Divide uma lista de arquivos em blocos com base nos parâmetros fornecidos.
+ * Divide uma lista de arquivos dentro de uma pasta em blocos, com base nos parâmetros fornecidos.
  *
  * @param {string} folder
  * String com o local dos arquivos para divisão.
@@ -63,13 +64,13 @@ function normalize(folder_list, profile) {
  * Objeto contendo os parâmetros para manipulação dos arquivos.
  *
  * @param {Object} profile.file
- * Objeto contendo as configurações do arquivo.
+ * Objeto contendo as configurações do arquivo que será processado.
  *
  * @param {number} chunk
- * Quantidade de itens para cada bloco.
+ * Tamanho do pedaço em que os arquivos devem ser divididos.
  *
  * @returns {Promise<Array<Array>>}
- * Promise que resolve em um array de arrays.
+ * Promise que resolve em um array de arrays de caminhos de arquivos.
  */
 function read(folder, profile, chunk) {
     const { file_extension } = profile.file;

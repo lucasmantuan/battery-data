@@ -8,13 +8,13 @@ const { global_parameters } = require('../utils/global_parameters.js');
 const { normalize } = require('../normalize/normalize.js');
 
 /**
- * Atualiza o percentual de conclusão do processamento dos arquivos no terminal.
+ * Exibe o número de arquivos para processamento e o número de arquivos processados no terminal.
  *
  * @param {number} items_processed
- * Total de itens processados.
+ * O total de itens processados.
  *
  * @param {number} total_items
- * Total de itens pra processamento.
+ * O total itens para processamento.
  */
 function updateStatus(items_processed, total_items) {
     readline.cursorTo(process.stdout, 0, 1);
@@ -24,16 +24,19 @@ function updateStatus(items_processed, total_items) {
 }
 
 /**
- * Cria um balanceador de carga simples para efetuar o processamento dos dados
+ * Cria um balanceador de carga simples para efetuar o processamento dos dados,
  * distribuindo os itens entre os processadores disponíveis no computador.
  *
- * @param {Array} data
+ * @param {Array<string>} data
  * Um array contendo o caminho dos arquivos a serem processados.
  *
- * @param {Object} profile_data
+ * @param {Object<*, *>} profile_data
  * Um objeto contendo os parâmetros para normalização dos dados.
  *
- * @returns {void} Essa função não retorna nenhum valor.
+ * @param {Object<*, *>} profile_database
+ * Um objeto contendo os parâmetros para gravação dos dados no banco de dados.
+ *
+ * @returns {void}
  */
 function createCluster(data, profile_data, profile_database) {
     // @ts-ignore
@@ -41,7 +44,7 @@ function createCluster(data, profile_data, profile_database) {
         let items_processed = 0;
         const total_items = data.length;
 
-        _.forEach(data, (item, index) => {
+        _.forEach(data, function (item, index) {
             if (index < Math.min(cpus, total_items)) {
                 // @ts-ignore
                 const worker = cluster.fork();
@@ -52,7 +55,7 @@ function createCluster(data, profile_data, profile_database) {
         });
 
         // @ts-ignore
-        cluster.on('message', (worker) => {
+        cluster.on('message', function (worker) {
             if (items_processed < total_items) {
                 const item = data[items_processed];
                 worker.send(item);
@@ -66,7 +69,8 @@ function createCluster(data, profile_data, profile_database) {
         process.on('message', async function (item) {
             // @ts-ignore
             global_parameters.id = cluster.worker.id;
-            global_parameters.time = new Date();
+            global_parameters.recorded_at = new Date();
+            // @ts-ignore
             global_parameters.file_name = getFileName(item);
             global_parameters.header = profile_data.file.header;
             global_parameters.profile = profile_data.file.profile_name;
