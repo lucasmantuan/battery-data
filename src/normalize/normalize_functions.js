@@ -205,13 +205,12 @@ function convertSpreadsheets(data) {
         const header_file = global_parameters.header;
         const raw_numbers = global_parameters.raw_numbers;
         let result = [];
-        if (_.isEmpty(header_file)) {
-            result = _.map(data, (spreadsheet) => xlsx.utils.sheet_to_json(spreadsheet, { rawNumbers: raw_numbers }));
-        } else {
-            result = _.map(data, (spreadsheet) =>
-                xlsx.utils.sheet_to_json(spreadsheet, { header: header_file, rawNumbers: raw_numbers })
-            );
-        }
+        result = _.map(data, (spreadsheet) =>
+            xlsx.utils.sheet_to_json(spreadsheet, {
+                header: _.isEmpty(header_file) ? undefined : header_file,
+                rawNumbers: raw_numbers
+            })
+        );
         resolve(result);
     });
 }

@@ -9,15 +9,17 @@ let record_start = new Date();
 function calculateChargeCapacity(value) {
     if (global_parameters.profile === 'hh') {
         const [capacity] = value;
-        if (capacity >= 0) return capacity;
+        if (_.toNumber(capacity) && capacity >= 0) return capacity;
         return null;
     } else if (global_parameters.profile === 'regatron') {
         const [time, current] = value;
-        if (!isNaN(time)) {
+        if (!_.isNaN(time)) {
             charge_new_time = time - charge_old_time;
             charge_old_time = time;
         }
-        if (current >= 0) return charge_new_time * current;
+        if (_.toNumber(current) && current >= 0) return charge_new_time * current;
+        return null;
+    } else if (global_parameters.profile === 'bk') {
         return null;
     }
 }
@@ -25,7 +27,7 @@ function calculateChargeCapacity(value) {
 function calculateDischargeCapacity(value) {
     if (global_parameters.profile === 'hh') {
         const [capacity] = value;
-        if (capacity < 0) return capacity;
+        if (_.toNumber(capacity) && capacity < 0) return capacity;
         return null;
     } else if (global_parameters.profile === 'regatron') {
         const [time, current] = value;
@@ -33,7 +35,13 @@ function calculateDischargeCapacity(value) {
             discharge_new_time = time - discharge_old_time;
             discharge_old_time = time;
         }
-        if (current < 0) return discharge_new_time * current;
+        if (_.toNumber(current) && current < 0) return discharge_new_time * current;
+        return null;
+    } else if (global_parameters.profile === 'bk') {
+        const [action, capacity] = value;
+        if (_.toLower(action) === 'discharge(cc)') {
+            return capacity;
+        }
         return null;
     }
 }
@@ -85,6 +93,12 @@ function extractRecordStart(value) {
             record_start = new Date(`${data} ${hora}`);
         }
         return record_start;
+    } else if (global_parameters.profile === 'bk') {
+        const [start_value, data_value] = value;
+        if (_.toLower(start_value) === 'start time') {
+            record_start = new Date(_.trim(data_value));
+        }
+        return record_start;
     }
 }
 
@@ -103,9 +117,23 @@ function multiplyValues(values) {
 }
 
 function recordDate(value) {
-    const [date_time, step_time] = value;
-    const new_date_time = new Date(date_time).getTime();
-    return new Date(new_date_time + step_time * 1000);
+    let [date_time, step_time] = value;
+    if (global_parameters.profile === 'hh') {
+        const new_date_time = new Date(date_time).getTime();
+        return new Date(new_date_time + step_time * 1000);
+    } else if (global_parameters.profile === 'regatron') {
+        const new_date_time = new Date(date_time).getTime();
+        return new Date(new_date_time + step_time * 1000);
+    } else if (global_parameters.profile === 'bk') {
+        if (_.isNil(step_time)) {
+            const new_date_time = new Date(date_time);
+            return new_date_time;
+        } else {
+            const new_date_time = new Date(date_time).getTime();
+            const new_step_time = new Date(step_time).getTime();
+            return (new_date_time - new_step_time) / (1000 * 60 * 60 * 24);
+        }
+    }
 }
 
 /**
@@ -131,6 +159,14 @@ function recordValue(value, params) {
     }
 }
 
+function returnValue(value, params) {
+    if (_.isEmpty(params)) {
+        return _.isNil(value[0]) ? null : value[0];
+    } else if (_.isEmpty(value)) {
+        return _.isNil(params[0]) ? null : params[0];
+    }
+}
+
 const normalize_formulas = {
     calculateChargeCapacity,
     calculateDischargeCapacity,
@@ -139,7 +175,8 @@ const normalize_formulas = {
     extractRecordStart,
     multiplyValues,
     recordDate,
-    recordValue
+    recordValue,
+    returnValue
 };
 
 module.exports = normalize_formulas;
