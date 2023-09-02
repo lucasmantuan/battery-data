@@ -1,0 +1,60 @@
+{
+    "conversion": {
+        "rename_keys": {},
+        "change_values": [],
+        "add_values": [],
+        "validate_value": [{ "key": 0, "type": "number" }],
+        "convert_values": [],
+        "map_object": {
+            "AhCha": "charge_capacity(Ah)",
+            "WhCha": "charge_energy(Wh)",
+            "coulombic_efficiency": "",
+            "Current": "current(A)",
+            "cycle_index": "cycle_index",
+            "date_time": "date_time",
+            "AhDch": "discharge_capacity(Ah)",
+            "WhDch": "discharge_energy(Wh)",
+            "file_name": "file_name",
+            "mAh/g": "mAh/g",
+            "power(W)": "power(W)",
+            "recorded_at": "recorded_at",
+            "step_index": "step_index",
+            "step_time(s)": "step_time(s)",
+            "switch_off": "switch_off",
+            "test_condition": "test_condition",
+            "Prog Time": "test_time(s)",
+            "volt/cell(V)": "volt/cell(V)",
+            "Voltage": "voltage(V)"
+        },
+        "date": []
+    },
+    "file": {
+        "file_extension": "csv",
+        "header": [
+            "Step",
+            "Status",
+            "Step Time",
+            "Prog Time",
+            "Cycle",
+            "Cycle Level",
+            "Procedure",
+            "Voltage",
+            "Current",
+            "AhAccu",
+            "AhCha",
+            "AhDch",
+            "AhStep",
+            "AhPrev",
+            "AhStat",
+            "AhBal",
+            "Energy",
+            "WhCha",
+            "WhDch",
+            "WhStep",
+            "WhPrev"
+        ],
+        "profile_name": "digatron",
+        "raw_numbers": true,
+        "worksheet_number": 0
+    }
+}

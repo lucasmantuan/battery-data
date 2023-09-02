@@ -354,15 +354,22 @@ function mapObjectIfNeeded(param) {
  * Array contendo os objetos de dados mapeados.
  */
 function mapObject(param, data) {
+    // return _.map(data, (item) => {
+    //     return _.reduce(
+    //         _.keys(item),
+    //         (acc, key) => {
+    //             if (param[key]) acc[param[key]] = item[key];
+    //             return acc;
+    //         },
+    //         {}
+    //     );
+    // });
     return _.map(data, (item) => {
-        return _.reduce(
-            _.keys(item),
-            (acc, key) => {
-                if (param[key]) acc[param[key]] = item[key];
-                return acc;
-            },
-            {}
-        );
+        const mapped_item = {};
+        _.each(param, (new_key, old_key) => {
+            mapped_item[new_key] = item[old_key] !== undefined ? item[old_key] : undefined;
+        });
+        return mapped_item;
     });
 }
 

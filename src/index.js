@@ -49,21 +49,29 @@ if (parameters.profile === 'mysql') {
 if (parameters.profile === 'arbin') {
     const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
+    readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
 }
 
 if (parameters.profile === 'hh') {
     const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
+    readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
 }
 
 if (parameters.profile === 'regatron') {
     const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
+    readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
 }
 
 if (parameters.profile === 'bk') {
     const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
+    readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
 }
 
-readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
+if (parameters.profile === 'digatron') {
+    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
+    profile_data = parseToObject(result);
+    readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
+}

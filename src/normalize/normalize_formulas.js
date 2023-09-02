@@ -53,6 +53,22 @@ function convertTextToNumber(value, params) {
 }
 
 /**
+ * Calcula a diferença em segundos entre duas datas.
+ *
+ * @param {Array<Date>} values
+ * Array contendo as duas datas para cálculo da diferença.
+ *
+ * @returns {number}
+ * A diferença em segundos entre as duas datas.
+ */
+function differenceInSecondsBetweenDates(values) {
+    const [first_date, second_date] = values;
+    if (_.isDate(first_date) && _.isDate(second_date)) {
+        return Math.abs(first_date.getTime() - second_date.getTime()) / 1000;
+    }
+}
+
+/**
  * Divide o primeiro valor do array values pelo primeiro valor do array params.
  *
  * @param {Array} values
@@ -96,6 +112,16 @@ function extractRecordStart(value) {
     } else if (global_parameters.profile === 'bk') {
         const [start_value, data_value] = value;
         if (_.toLower(start_value) === 'start time') {
+            const regex = /(.{2})\/(.{2})\/(.{4}) (.{8})/;
+            const match = data_value.match(regex);
+            const data = `${match[3]}-${match[2]}-${match[1]}`;
+            const hora = match[4];
+            record_start = new Date(new Date(`${data} ${hora}`));
+        }
+        return record_start;
+    } else if (global_parameters.profile === 'digatron') {
+        const [start_value, data_value] = value;
+        if (_.toLower(start_value) === 'start time') {
             record_start = new Date(_.trim(data_value));
         }
         return record_start;
@@ -125,13 +151,21 @@ function recordDate(value) {
         const new_date_time = new Date(date_time).getTime();
         return new Date(new_date_time + step_time * 1000);
     } else if (global_parameters.profile === 'bk') {
-        if (_.isNil(step_time)) {
-            const new_date_time = new Date(date_time);
+        let new_date_time;
+        if (/(.{10}) (.{8})/.test(date_time)) {
+            const regex = /(.{2})\/(.{2})\/(.{4}) (.{8})/;
+            const match = date_time.match(regex);
+            const data = `${match[3]}-${match[2]}-${match[1]}`;
+            const hora = match[4];
+            new_date_time = new Date(`${data} ${hora}`);
             return new_date_time;
-        } else {
-            const new_date_time = new Date(date_time).getTime();
-            const new_step_time = new Date(step_time).getTime();
-            return (new_date_time - new_step_time) / (1000 * 60 * 60 * 24);
+        }
+    } else if (global_parameters.profile === 'digatron') {
+        const new_date_time = new Date(date_time);
+        if (!_.isNil(step_time)) {
+            const [horas, minutos, segundos] = step_time.split(':');
+            const new_step_time = parseInt(horas) * 3600 + parseInt(minutos) * 60 + parseInt(segundos);
+            return new Date(new_date_time.setSeconds(new_date_time.getSeconds() + new_step_time));
         }
     }
 }
@@ -171,6 +205,7 @@ const normalize_formulas = {
     calculateChargeCapacity,
     calculateDischargeCapacity,
     convertTextToNumber,
+    differenceInSecondsBetweenDates,
     divideOneByOther,
     extractRecordStart,
     multiplyValues,

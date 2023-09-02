@@ -26,7 +26,7 @@
         "map_object": {
             "charge_capacity(Ah)": "charge_capacity(Ah)",
             "charge_energy(Wh)": "charge_energy(Wh)",
-            "coulombic_efficiency": "",
+            "coulombic_efficiency": "coulombic_efficiency",
             "Current_ACT": "current(A)",
             "cycle_index": "cycle_index",
             "date_time": "date_time",

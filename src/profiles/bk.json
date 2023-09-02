@@ -8,8 +8,8 @@
             ["returnValue", ["Capacity(Wh)"], [], "discharge_energy(Wh)"],
             ["divideOneByOther", ["discharge_capacity(Ah)"], [5], "mAh/g"],
             ["recordDate", ["Timestamp"], [], "date_time"],
-            ["extractRecordStart", ["Voltage"], [], "record_start"],
-            ["recordDate", ["record_start", "Timestamp"], [], "test_time(s)"]
+            ["extractRecordStart", ["Action", "Voltage"], [], "test_time(s)"],
+            ["differenceInSecondsBetweenDates", ["date_time", "test_time(s)"], [], "test_time(s)"]
         ],
         "add_values": [
             ["recordValue", "file_name", "file_name"],
@@ -25,7 +25,7 @@
         "map_object": {
             "charge_capacity(Ah)": "charge_capacity(Ah)",
             "charge_energy(Wh)": "charge_energy(Wh)",
-            "coulombic_efficiency": "",
+            "coulombic_efficiency": "coulombic_efficiency",
             "Current": "current(A)",
             "cycle_index": "cycle_index",
             "date_time": "date_time",
@@ -47,7 +47,16 @@
     },
     "file": {
         "file_extension": "csv",
-        "header": ["Action", "Voltage", "Current", "Power", "Capacity(Ah)", "Capacity(Wh)", "Timestamp", "Fail Code"],
+        "header": [
+            "Action",
+            "Voltage",
+            "Current",
+            "Power",
+            "Capacity(Ah)",
+            "Capacity(Wh)",
+            "Timestamp",
+            "Fail Code"
+        ],
         "profile_name": "bk",
         "raw_numbers": true,
         "worksheet_number": 0
