@@ -82,6 +82,7 @@ function differenceInSecondsBetweenDates(values) {
  */
 function divideOneByOther(values, params) {
     if (_.isEmpty(params)) return 0;
+    if (_.isEmpty(values)) return 0;
     if (!_.every(values, _.isNumber)) return 0;
     const [dividend] = values;
     const [divisor] = params;
