@@ -21,6 +21,10 @@ function calculateChargeCapacity(value) {
         return null;
     } else if (global_parameters.profile === 'bk') {
         return null;
+    } else if (global_parameters.profile === 'itech') {
+        const [capacity] = value;
+        if (_.toNumber(capacity) && capacity >= 0) return capacity;
+        return null;
     }
 }
 
@@ -42,6 +46,10 @@ function calculateDischargeCapacity(value) {
         if (_.toLower(action) === 'discharge(cc)') {
             return capacity;
         }
+        return null;
+    } else if (global_parameters.profile === 'itech') {
+        const [capacity] = value;
+        if (_.toNumber(capacity) && capacity < 0) return capacity;
         return null;
     }
 }

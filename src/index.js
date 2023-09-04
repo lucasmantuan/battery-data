@@ -75,3 +75,9 @@ if (parameters.profile === 'digatron') {
     profile_data = parseToObject(result);
     readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
 }
+
+if (parameters.profile === 'itech') {
+    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
+    profile_data = parseToObject(result);
+    readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
+}
