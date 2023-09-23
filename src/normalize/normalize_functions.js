@@ -543,6 +543,57 @@ function renameKeys(param, data) {
     return result;
 }
 
+function writeFileIfNeeded(param) {
+    return function (data) {
+        if (_.isEmpty(param)) {
+            return data;
+        } else {
+            return writeFile(param, data);
+        }
+    };
+}
+
+function writeFile(param, data) {
+    const [file_name, file_extension] = param;
+    const workbook = xlsx.utils.book_new();
+    const worksheet = xlsx.utils.json_to_sheet(data);
+    xlsx.utils.book_append_sheet(workbook, worksheet, 'data');
+    xlsx.writeFile(workbook, file_name, { bookType: file_extension });
+    return data;
+}
+
+function mergeWithFilesIfNeeded(param) {
+    return function (data) {
+        if (_.isEmpty(param)) {
+            return data;
+        } else {
+            return mergeWithFiles(param, data);
+        }
+    };
+}
+
+function mergeWithFiles(param, data) {
+    _.forEach(param, (param_item) => {
+        const [file_name, key] = param_item;
+        const file = xlsx.readFile(file_name, { cellDates: true });
+        const spreadsheet = file.Sheets[file.SheetNames[0]];
+        const result = xlsx.utils.sheet_to_json(spreadsheet);
+        _.forEach(data, (data_item) => {
+            const match = _.find(
+                result,
+                (result_item) =>
+                    _.isEqual(data_item.cnpj_fundo, result_item.cnpj_fundo) &&
+                    _.isEqual(data_item.data_referencia, result_item.data_referencia)
+            );
+            if (match) {
+                _.assign(data_item, { [key]: match[key] });
+            }
+        });
+    });
+
+    return data;
+}
+
 module.exports = {
     addValuesIfNeeded,
     changeValuesIfNeeded,
@@ -554,9 +605,11 @@ module.exports = {
     fileExtension,
     flattenData,
     mapObjectIfNeeded,
+    mergeWithFilesIfNeeded,
     readFolder,
     readSpreadsheets,
     removeInvalidDataIfNeeded,
     removeWhitespace,
-    renameKeysIfNeeded
+    renameKeysIfNeeded,
+    writeFileIfNeeded
 };

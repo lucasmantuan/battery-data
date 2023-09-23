@@ -1,0 +1,23 @@
+{
+    "conversion": {
+        "rename_keys": {},
+        "change_values": [],
+        "add_values": [],
+        "validate_value": [],
+        "convert_values": [],
+        "map_object": {
+            "CNPJ_Fundo": "cnpj_fundo",
+            "Data_Referencia": "data_referencia",
+            "Cotas_Emitidas": "cotas_emitidas"
+        },
+        "date": ["data_referencia"]
+    },
+    "file": {
+        "file_extension": "csv",
+        "file_name": ["fii-complemento.csv", "csv"],
+        "header": [],
+        "profile_name": "fii",
+        "raw_numbers": true,
+        "worksheet_number": 0
+    }
+}

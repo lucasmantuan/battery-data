@@ -4,7 +4,8 @@ let charge_new_time = 0;
 let charge_old_time = 0;
 let discharge_new_time = 0;
 let discharge_old_time = 0;
-let record_start = new Date();
+let record_start_new = new Date();
+let record_start_old = null;
 
 function calculateChargeCapacity(value) {
     if (global_parameters.profile === 'hh') {
@@ -54,6 +55,16 @@ function calculateDischargeCapacity(value) {
     }
 }
 
+function calculateTestTime(value) {
+    const [record_start, step_time] = value;
+    if (global_parameters.profile === 'hh') {
+        if (record_start_old === null) record_start_old = record_start.getTime();
+        const new_record_start = new Date(record_start).getTime();
+        const new_step_time = _.round(step_time);
+        return (new_record_start - record_start_old) / 1000 + new_step_time;
+    }
+}
+
 function convertTextToNumber(value, params) {
     const [from, to] = params;
     const number_value = Number(_.replace(value.trim(), from, to));
@@ -88,13 +99,19 @@ function differenceInSecondsBetweenDates(values) {
  * @returns {number}
  * O resultado da divisão.
  */
-function divideOneByOther(values, params) {
-    if (_.isEmpty(params)) return 0;
-    if (_.isEmpty(values)) return 0;
-    if (!_.every(values, _.isNumber)) return 0;
-    const [dividend] = values;
-    const [divisor] = params;
-    return dividend / divisor;
+// function divideOneByOther(values, params) {
+//     if (_.isEmpty(params)) return 0;
+//     if (_.isEmpty(values)) return 0;
+//     if (!_.every(values, _.isNumber)) return 0;
+//     const [dividend] = values;
+//     const [divisor] = params;
+//     return dividend / divisor;
+// }
+function divideOneByOther(params) {
+    const [dividend, divisor] = params;
+    const result = dividend / divisor;
+    if (_.isNaN(result)) return 0;
+    return result;
 }
 
 function extractRecordStart(value) {
@@ -105,9 +122,9 @@ function extractRecordStart(value) {
         if (match && match.length > 1) {
             const data = match[1];
             const hora = _.replace(match[2], /\./g, ':');
-            record_start = new Date(`${data} ${hora}`);
+            record_start_new = new Date(`${data} ${hora}`);
         }
-        return record_start;
+        return record_start_new;
     } else if (global_parameters.profile === 'regatron') {
         const data_value = global_parameters.file_name.toString();
         const regex = /(.{10})T(.{8})/;
@@ -115,9 +132,9 @@ function extractRecordStart(value) {
         if (match && match.length > 1) {
             const data = match[1];
             const hora = _.replace(match[2], /_/g, ':');
-            record_start = new Date(`${data} ${hora}`);
+            record_start_new = new Date(`${data} ${hora}`);
         }
-        return record_start;
+        return record_start_new;
     } else if (global_parameters.profile === 'bk') {
         const [start_value, data_value] = value;
         if (_.toLower(start_value) === 'start time') {
@@ -125,15 +142,15 @@ function extractRecordStart(value) {
             const match = data_value.match(regex);
             const data = `${match[3]}-${match[2]}-${match[1]}`;
             const hora = match[4];
-            record_start = new Date(new Date(`${data} ${hora}`));
+            record_start_new = new Date(new Date(`${data} ${hora}`));
         }
-        return record_start;
+        return record_start_new;
     } else if (global_parameters.profile === 'digatron') {
         const [start_value, data_value] = value;
         if (_.toLower(start_value) === 'start time') {
-            record_start = new Date(_.trim(data_value));
+            record_start_new = new Date(_.trim(data_value));
         }
-        return record_start;
+        return record_start_new;
     }
 }
 
@@ -155,7 +172,7 @@ function recordDate(value) {
     let [date_time, step_time] = value;
     if (global_parameters.profile === 'hh') {
         const new_date_time = new Date(date_time).getTime();
-        return new Date(new_date_time + step_time * 1000);
+        return new Date(new_date_time + _.round(step_time) * 1000);
     } else if (global_parameters.profile === 'regatron') {
         const new_date_time = new Date(date_time).getTime();
         return new Date(new_date_time + step_time * 1000);
@@ -213,6 +230,7 @@ function returnValue(value, params) {
 const normalize_formulas = {
     calculateChargeCapacity,
     calculateDischargeCapacity,
+    calculateTestTime,
     convertTextToNumber,
     differenceInSecondsBetweenDates,
     divideOneByOther,

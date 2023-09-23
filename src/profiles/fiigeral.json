@@ -1,0 +1,27 @@
+{
+    "conversion": {
+        "rename_keys": {},
+        "change_values": [],
+        "add_values": [],
+        "validate_value": [],
+        "convert_values": [],
+        "map_object": {
+            "CNPJ_Fundo": "cnpj_fundo",
+            "Codigo_ISIN": "codigo_isin",
+            "Data_Referencia": "data_referencia"
+        },
+        "date": ["data_referencia"]
+    },
+    "file": {
+        "file_extension": "csv",
+        "file_name": ["fii-geral.csv", "csv"],
+        "file_list": [
+            ["fii-passivo.csv", "rendimentos_distribuir"],
+            ["fii-complemento.csv", "cotas_emitidas"]
+        ],
+        "header": [],
+        "profile_name": "fii",
+        "raw_numbers": true,
+        "worksheet_number": 0
+    }
+}

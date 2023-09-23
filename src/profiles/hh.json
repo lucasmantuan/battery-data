@@ -8,15 +8,15 @@
             ["multiplyValues", ["volt [V]", "discharge_capacity(Ah)"], [], "discharge_energy(Wh)"],
             ["divideOneByOther", ["discharge_capacity(Ah)"], [], "mAh/g"],
             ["multiplyValues", ["volt [V]", "current [A]"], [], "power(W)"],
-            ["extractRecordStart", ["volt [V]"], [], "date_time"],
-            ["recordDate", ["date_time", "time [s]"], [], "date_time"]
+            ["extractRecordStart", ["volt [V]"], [], "record_start"],
+            ["recordDate", ["record_start", "time [s]"], [], "date_time"],
+            ["calculateTestTime", ["record_start", "time [s]"], [], "test_time(s)"]
         ],
         "add_values": [
             ["recordValue", "file_name", "file_name"],
             ["recordValue", "recorded_at", "recorded_at"],
             ["recordValue", null, "cycle_index"],
             ["recordValue", null, "step_index"],
-            ["recordValue", null, "step_time(s)"],
             ["recordValue", null, "switch_off"]
         ],
         "validate_value": [{ "key": 0, "type": "number" }],
@@ -35,10 +35,10 @@
             "power(W)": "power(W)",
             "recorded_at": "recorded_at",
             "step_index": "step_index",
-            "step_time(s)": "step_time(s)",
+            "time [s]": "step_time(s)",
             "switch_off": "switch_off",
             "test condition": "test_condition",
-            "time [s]": "test_time(s)",
+            "test_time(s)": "test_time(s)",
             "volt/cell [V]": "volt/cell(V)",
             "volt [V]": "voltage(V)"
         },

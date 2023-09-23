@@ -77,8 +77,8 @@ function createCluster(data, profile_data, profile_database) {
             global_parameters.raw_numbers = profile_data.file.raw_numbers;
             // @ts-ignore
             const data = await normalize(item, profile_data);
-            // console.log(data);
-            await database(data, profile_database);
+            console.log(data);
+            // await database(data, profile_database);
             process.send('processed');
         });
     }
