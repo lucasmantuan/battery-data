@@ -6,7 +6,7 @@
             ["calculateDischargeCapacity", ["PV6500_1_1__Capacity"], [], "discharge_capacity(Ah)"],
             ["multiplyValues", ["PV6500_1_1__Voltage", "charge_capacity(Ah)"], [], "charge_energy(Wh)"],
             ["multiplyValues", ["PV6500_1_1__Voltage", "discharge_capacity(Ah)"], [], "discharge_energy(Wh)"],
-            ["divideOneByOther", ["discharge_capacity(Ah)"], [5], "mAh/g"]
+            ["divideOneByOther", ["discharge_capacity(Ah)"], [], "mAh/g"]
         ],
         "add_values": [
             ["recordValue", "file_name", "file_name"],
@@ -45,6 +45,7 @@
     },
     "file": {
         "file_extension": "csv",
+        "file_name": [],
         "header": [],
         "profile_name": "itech",
         "raw_numbers": false,

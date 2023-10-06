@@ -7,7 +7,7 @@
             ["calculateDischargeCapacity", ["test_time(s)", "Current_ACT"], [], "discharge_capacity(Ah)"],
             ["multiplyValues", ["Voltage_ACT", "charge_capacity(Ah)"], [], "charge_energy(Wh)"],
             ["multiplyValues", ["Voltage_ACT", "discharge_capacity(Ah)"], [], "discharge_energy(Wh)"],
-            ["divideOneByOther", ["discharge_capacity(Ah)"], [5], "mAh/g"],
+            ["divideOneByOther", ["discharge_capacity(Ah)"], [], "mAh/g"],
             ["extractRecordStart", [], [], "date_time"],
             ["recordDate", ["date_time", "test_time(s)"], [], "date_time"]
         ],
@@ -48,6 +48,7 @@
     },
     "file": {
         "file_extension": "csv",
+        "file_name": [],
         "header": ["Time_MS", "Voltage_ACT", "Current_ACT", "Power_ACT", "Voltage_REF", "Current_REF", "Power_REF"],
         "profile_name": "regatron",
         "raw_numbers": false,

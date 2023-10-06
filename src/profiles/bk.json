@@ -6,7 +6,7 @@
             ["calculateDischargeCapacity", ["Action", "Capacity(Ah)"], [], "discharge_capacity(Ah)"],
             ["returnValue", [], [null], "charge_energy(Wh)"],
             ["returnValue", ["Capacity(Wh)"], [], "discharge_energy(Wh)"],
-            ["divideOneByOther", ["discharge_capacity(Ah)"], [5], "mAh/g"],
+            ["divideOneByOther", ["discharge_capacity(Ah)"], [], "mAh/g"],
             ["recordDate", ["Timestamp"], [], "date_time"],
             ["extractRecordStart", ["Action", "Voltage"], [], "test_time(s)"],
             ["differenceInSecondsBetweenDates", ["date_time", "test_time(s)"], [], "test_time(s)"]
@@ -47,6 +47,7 @@
     },
     "file": {
         "file_extension": "csv",
+        "file_name": [],
         "header": ["Action", "Voltage", "Current", "Power", "Capacity(Ah)", "Capacity(Wh)", "Timestamp", "Fail Code"],
         "profile_name": "bk",
         "raw_numbers": true,

@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const { global_parameters } = require('../utils/global_parameters.js');
+
 let charge_new_time = 0;
 let charge_old_time = 0;
 let discharge_new_time = 0;
@@ -88,10 +89,11 @@ function differenceInSecondsBetweenDates(values) {
 }
 
 /**
- * Divide o primeiro valor do array values pelo primeiro valor do array params.
+ * Divide o primeiro valor do array values pelo primeiro valor do array params
+ * ou divide o primeiro valor pelo segundo valor do array values.
  *
  * @param {Array} values
- * Array contendo o valor do dividendo.
+ * Array contendo o valor do dividendo ou os valores do dividendo e do divisor.
  *
  * @param {Array<number>} params
  * Array contendo o valor do divisor.
@@ -99,19 +101,19 @@ function differenceInSecondsBetweenDates(values) {
  * @returns {number}
  * O resultado da divisão.
  */
-// function divideOneByOther(values, params) {
-//     if (_.isEmpty(params)) return 0;
-//     if (_.isEmpty(values)) return 0;
-//     if (!_.every(values, _.isNumber)) return 0;
-//     const [dividend] = values;
-//     const [divisor] = params;
-//     return dividend / divisor;
-// }
-function divideOneByOther(params) {
-    const [dividend, divisor] = params;
-    const result = dividend / divisor;
-    if (_.isNaN(result)) return 0;
-    return result;
+function divideOneByOther(values, params) {
+    if (_.isEmpty(values)) return 0;
+    if (values.length === 2) {
+        if (!_.every(values, _.isNumber)) return 0;
+        const [dividend, divisor] = values;
+        return dividend / divisor;
+    } else {
+        if (_.isEmpty(params)) return 0;
+        if (!_.every(values, _.isNumber)) return 0;
+        const [dividend] = values;
+        const [divisor] = params;
+        return dividend / divisor;
+    }
 }
 
 function extractRecordStart(value) {
@@ -208,7 +210,7 @@ function recordDate(value) {
  * @param {Object} params
  * O objeto global_parameters com os valores para gravação.
  *
- * @returns {*}
+ * @returns {any}
  * O valor para a gravação.
  */
 function recordValue(value, params) {

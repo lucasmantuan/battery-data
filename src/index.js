@@ -81,27 +81,3 @@ if (parameters.profile === 'itech') {
     profile_data = parseToObject(result);
     readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
 }
-
-if (parameters.profile === 'fii') {
-    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
-    profile_data = parseToObject(result);
-    readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
-}
-
-if (parameters.profile === 'fiigeral') {
-    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
-    profile_data = parseToObject(result);
-    readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
-}
-
-if (parameters.profile === 'fiicomplemento') {
-    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
-    profile_data = parseToObject(result);
-    readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
-}
-
-if (parameters.profile === 'fiipassivo') {
-    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
-    profile_data = parseToObject(result);
-    readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
-}

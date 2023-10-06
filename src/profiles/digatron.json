@@ -3,7 +3,7 @@
         "rename_keys": {},
         "change_values": [
             ["multiplyValues", ["Voltage", "Current"], [], "power(W)"],
-            ["divideOneByOther", ["AhDch"], [5], "mAh/g"],
+            ["divideOneByOther", ["AhDch"], [], "mAh/g"],
             ["extractRecordStart", ["Step", "Status"], [], "date_time"],
             ["recordDate", ["date_time", "Prog Time"], [], "date_time"]
         ],
@@ -44,6 +44,7 @@
     },
     "file": {
         "file_extension": "csv",
+        "file_name": [],
         "header": [
             "Step",
             "Status",

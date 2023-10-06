@@ -8,7 +8,6 @@ const {
     fileExtension,
     flattenData,
     mapObjectIfNeeded,
-    mergeWithFilesIfNeeded,
     readFolder,
     readSpreadsheets,
     removeInvalidDataIfNeeded,
@@ -40,7 +39,7 @@ function normalize(folder_list, profile) {
     const { rename_keys, change_values, add_values, validate_value, convert_values, map_object, date } =
         profile.conversion;
 
-    const { worksheet_number, file_name, file_list } = profile.file;
+    const { worksheet_number, file_name } = profile.file;
 
     const result = readSpreadsheets(folder_list, worksheet_number)
         .then(convertSpreadsheets)
@@ -53,7 +52,6 @@ function normalize(folder_list, profile) {
         .then(removeInvalidDataIfNeeded(validate_value))
         .then(mapObjectIfNeeded(map_object))
         .then(convertDateIfNeeded(date))
-        .then(mergeWithFilesIfNeeded(file_list))
         .then(writeFileIfNeeded(file_name));
     return result;
 }

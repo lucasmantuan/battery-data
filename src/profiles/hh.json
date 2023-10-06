@@ -46,6 +46,7 @@
     },
     "file": {
         "file_extension": "txt",
+        "file_name": [],
         "header": [
             "volt [V]",
             "volt/cell [V]",

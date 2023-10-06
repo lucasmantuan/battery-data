@@ -15,6 +15,8 @@ const { normalize } = require('../normalize/normalize.js');
  *
  * @param {number} total_items
  * O total itens para processamento.
+ *
+ * @returns {void}
  */
 function updateStatus(items_processed, total_items) {
     readline.cursorTo(process.stdout, 0, 1);
