@@ -9,14 +9,14 @@
             ["divideOneByOther", ["discharge_capacity(Ah)"], [], "mAh/g"],
             ["recordDate", ["Timestamp"], [], "date_time"],
             ["extractRecordStart", ["Action", "Voltage"], [], "test_time(s)"],
-            ["differenceInSecondsBetweenDates", ["date_time", "test_time(s)"], [], "test_time(s)"]
+            ["differenceInSecondsBetweenDates", ["date_time", "test_time(s)"], [], "test_time(s)"],
+            ["calculateStepTime", ["Action", "date_time"], [], "step_time(s)"]
         ],
         "add_values": [
             ["recordValue", "file_name", "file_name"],
             ["recordValue", "recorded_at", "recorded_at"],
             ["recordValue", null, "cycle_index"],
             ["recordValue", null, "step_index"],
-            ["recordValue", null, "step_time(s)"],
             ["recordValue", null, "switch_off"],
             ["recordValue", null, "volt/cell(V)"]
         ],

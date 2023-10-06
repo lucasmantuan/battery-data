@@ -7,6 +7,11 @@ let discharge_new_time = 0;
 let discharge_old_time = 0;
 let record_start_new = new Date();
 let record_start_old = null;
+let seconds_charge_old = 0;
+let seconds_discharge_old = 0;
+let seconds_greater_old = 0;
+let seconds_less_old = 0;
+let seconds_equal_old = 0;
 
 function calculateChargeCapacity(value) {
     if (global_parameters.profile === 'hh') {
@@ -56,13 +61,55 @@ function calculateDischargeCapacity(value) {
     }
 }
 
+function calculateStepTime(value) {
+    if (global_parameters.profile === 'bk') {
+        const [action, date_time] = value;
+        if (_.toLower(action) === 'charge') {
+            seconds_discharge_old = 0;
+            const seconds_new = date_time.getTime() / 1000;
+            if (seconds_charge_old === 0) seconds_charge_old = seconds_new;
+            console.log(seconds_new - seconds_charge_old);
+            return seconds_new - seconds_charge_old;
+        } else if (_.toLower(action) === 'discharge(cc)') {
+            seconds_charge_old = 0;
+            const seconds_new = date_time.getTime() / 1000;
+            if (seconds_discharge_old === 0) seconds_discharge_old = seconds_new;
+            console.log(seconds_new - seconds_discharge_old);
+            return seconds_new - seconds_discharge_old;
+        }
+    } else if (global_parameters.profile === 'itech') {
+        const [current, test_time] = value;
+        if (current > 0) {
+            seconds_less_old = 0;
+            seconds_equal_old = 0;
+            if (seconds_greater_old === 0) seconds_greater_old = 1 + test_time;
+            return 1 + test_time - seconds_greater_old;
+        } else if (current < 0) {
+            seconds_greater_old = 0;
+            seconds_equal_old = 0;
+            if (seconds_less_old === 0) seconds_less_old = 1 + test_time;
+            return 1 + test_time - seconds_less_old;
+        } else if (current === 0) {
+            seconds_greater_old = 0;
+            seconds_less_old = 0;
+            if (seconds_equal_old === 0) seconds_equal_old = 1 + test_time;
+            return 1 + test_time - seconds_equal_old;
+        }
+    }
+}
+
 function calculateTestTime(value) {
-    const [record_start, step_time] = value;
     if (global_parameters.profile === 'hh') {
+        const [record_start, step_time] = value;
         if (record_start_old === null) record_start_old = record_start.getTime();
         const new_record_start = new Date(record_start).getTime();
         const new_step_time = _.round(step_time);
         return (new_record_start - record_start_old) / 1000 + new_step_time;
+    } else if (global_parameters.profile === 'itech') {
+        const [save_time] = value;
+        const new_save_time = new Date(save_time);
+        if (record_start_old === null) record_start_old = new_save_time.getTime();
+        return (new_save_time.getTime() - record_start_old) / 1000;
     }
 }
 
@@ -232,6 +279,7 @@ function returnValue(value, params) {
 const normalize_formulas = {
     calculateChargeCapacity,
     calculateDischargeCapacity,
+    calculateStepTime,
     calculateTestTime,
     convertTextToNumber,
     differenceInSecondsBetweenDates,
