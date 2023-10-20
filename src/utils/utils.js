@@ -4,14 +4,14 @@ const path = require('path');
 /**
  * Converte um JSON para um objeto JavaScript.
  *
- * @param {string} data
+ * @param {Buffer} data
  * O JSON para conversão.
  *
  * @returns {Object<*, *>}
  * O objeto JavaScript.
  */
 function parseToObject(data) {
-    return JSON.parse(data);
+    return JSON.parse(data.toString());
 }
 
 /**

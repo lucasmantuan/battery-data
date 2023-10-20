@@ -12,8 +12,7 @@ let profile_database = {};
 const parameters = {
     profile: String(process.argv[2].split('-')[1]),
     database: process.argv[3] ? String(process.argv[3].split('-')[1]) : undefined,
-    chunk: process.argv[4] ? Number(process.argv[4].split('-')[1]) : undefined,
-    folder: process.argv[5] ? String(process.argv[5]) : undefined
+    folder: process.argv[4] ? String(process.argv[4]) : undefined
 };
 
 function updateStatus(status) {
@@ -23,8 +22,8 @@ function updateStatus(status) {
     readline.clearScreenDown(process.stdout);
 }
 
-async function readAsync(folder, profile_data, chunk, profile_database) {
-    data = await read(folder, profile_data, chunk);
+async function readAsync(folder, profile_data, profile_database) {
+    data = await read(folder, profile_data);
     createCluster(data, profile_data, profile_database);
 }
 
@@ -49,35 +48,35 @@ if (parameters.profile === 'mysql') {
 if (parameters.profile === 'arbin') {
     const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
-    readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
+    readAsync(parameters.folder, profile_data, profile_database);
 }
 
 if (parameters.profile === 'hh') {
     const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
-    readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
+    readAsync(parameters.folder, profile_data, profile_database);
 }
 
 if (parameters.profile === 'regatron') {
     const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
-    readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
+    readAsync(parameters.folder, profile_data, profile_database);
 }
 
 if (parameters.profile === 'bk') {
     const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
-    readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
+    readAsync(parameters.folder, profile_data, profile_database);
 }
 
 if (parameters.profile === 'digatron') {
     const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
-    readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
+    readAsync(parameters.folder, profile_data, profile_database);
 }
 
 if (parameters.profile === 'itech') {
     const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
-    readAsync(parameters.folder, profile_data, parameters.chunk, profile_database);
+    readAsync(parameters.folder, profile_data, profile_database);
 }

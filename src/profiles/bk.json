@@ -2,10 +2,10 @@
     "conversion": {
         "rename_keys": {},
         "change_values": [
-            ["calculateChargeCapacity", [], [], "charge_capacity(Ah)"],
+            ["calculateChargeCapacity", ["Action", "Capacity(Ah)"], [], "charge_capacity(Ah)"],
             ["calculateDischargeCapacity", ["Action", "Capacity(Ah)"], [], "discharge_capacity(Ah)"],
-            ["returnValue", [], [null], "charge_energy(Wh)"],
-            ["returnValue", ["Capacity(Wh)"], [], "discharge_energy(Wh)"],
+            ["calculateChargeEnergy", ["Action", "Capacity(Wh)"], [], "charge_energy(Wh)"],
+            ["calculateDischargeEnergy", ["Action", "Capacity(Wh)"], [], "discharge_energy(Wh)"],
             ["divideOneByOther", ["discharge_capacity(Ah)"], [], "mAh/g"],
             ["recordDate", ["Timestamp"], [], "date_time"],
             ["extractRecordStart", ["Action", "Voltage"], [], "test_time(s)"],

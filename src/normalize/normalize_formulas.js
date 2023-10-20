@@ -9,9 +9,9 @@ let record_start_new = new Date();
 let record_start_old = null;
 let seconds_charge_old = 0;
 let seconds_discharge_old = 0;
+let seconds_equal_old = 0;
 let seconds_greater_old = 0;
 let seconds_less_old = 0;
-let seconds_equal_old = 0;
 
 function calculateChargeCapacity(value) {
     if (global_parameters.profile === 'hh') {
@@ -27,10 +27,26 @@ function calculateChargeCapacity(value) {
         if (_.toNumber(current) && current >= 0) return charge_new_time * current;
         return null;
     } else if (global_parameters.profile === 'bk') {
+        const [action, capacity] = value;
+        if (_.toLower(action) === 'charge') {
+            if (_.isNil(capacity)) return null;
+            return capacity;
+        }
         return null;
     } else if (global_parameters.profile === 'itech') {
         const [capacity] = value;
         if (_.toNumber(capacity) && capacity >= 0) return capacity;
+        return null;
+    }
+}
+
+function calculateChargeEnergy(value) {
+    if (global_parameters.profile === 'bk') {
+        const [action, capacity] = value;
+        if (_.toLower(action) === 'charge') {
+            if (_.isNil(capacity)) return null;
+            return capacity;
+        }
         return null;
     }
 }
@@ -51,12 +67,24 @@ function calculateDischargeCapacity(value) {
     } else if (global_parameters.profile === 'bk') {
         const [action, capacity] = value;
         if (_.toLower(action) === 'discharge(cc)') {
+            if (_.isNil(capacity)) return null;
             return capacity;
         }
         return null;
     } else if (global_parameters.profile === 'itech') {
         const [capacity] = value;
         if (_.toNumber(capacity) && capacity < 0) return capacity;
+        return null;
+    }
+}
+
+function calculateDischargeEnergy(value) {
+    if (global_parameters.profile === 'bk') {
+        const [action, capacity] = value;
+        if (_.toLower(action) === 'discharge(cc)') {
+            if (_.isNil(capacity)) return null;
+            return capacity;
+        }
         return null;
     }
 }
@@ -68,13 +96,11 @@ function calculateStepTime(value) {
             seconds_discharge_old = 0;
             const seconds_new = date_time.getTime() / 1000;
             if (seconds_charge_old === 0) seconds_charge_old = seconds_new;
-            console.log(seconds_new - seconds_charge_old);
             return seconds_new - seconds_charge_old;
         } else if (_.toLower(action) === 'discharge(cc)') {
             seconds_charge_old = 0;
             const seconds_new = date_time.getTime() / 1000;
             if (seconds_discharge_old === 0) seconds_discharge_old = seconds_new;
-            console.log(seconds_new - seconds_discharge_old);
             return seconds_new - seconds_discharge_old;
         }
     } else if (global_parameters.profile === 'itech') {
@@ -153,13 +179,15 @@ function divideOneByOther(values, params) {
     if (values.length === 2) {
         if (!_.every(values, _.isNumber)) return 0;
         const [dividend, divisor] = values;
-        return dividend / divisor;
+        const isNanOrInfinity = _.isNaN(dividend / divisor) || !_.isFinite(dividend / divisor);
+        return isNanOrInfinity ? 0 : dividend / divisor;
     } else {
         if (_.isEmpty(params)) return 0;
         if (!_.every(values, _.isNumber)) return 0;
         const [dividend] = values;
         const [divisor] = params;
-        return dividend / divisor;
+        const isNanOrInfinity = _.isNaN(dividend / divisor) || !_.isFinite(dividend / divisor);
+        return isNanOrInfinity ? 0 : dividend / divisor;
     }
 }
 
@@ -246,7 +274,7 @@ function recordDate(value) {
 }
 
 /**
- * Retorna um determinado item a partir do objeto params fornnecido.
+ * Retorna um determinado item a partir do objeto params fornecido.
  * Se o item for uma chave do objeto params e seu valor for um array,
  * retorna o primeiro elemento do array, senão, retorna o seu valor.
  * Se o item não for uma chave do objeto params, retorna o próprio item.
@@ -278,7 +306,9 @@ function returnValue(value, params) {
 
 const normalize_formulas = {
     calculateChargeCapacity,
+    calculateChargeEnergy,
     calculateDischargeCapacity,
+    calculateDischargeEnergy,
     calculateStepTime,
     calculateTestTime,
     convertTextToNumber,

@@ -29,7 +29,7 @@ function updateStatus(items_processed, total_items) {
  * Cria um balanceador de carga simples para efetuar o processamento dos dados,
  * distribuindo os itens entre os processadores disponíveis no computador.
  *
- * @param {Array<string>} data
+ * @param {Array<*>} data
  * Um array contendo o caminho dos arquivos a serem processados.
  *
  * @param {Object<*, *>} profile_data
@@ -80,7 +80,7 @@ function createCluster(data, profile_data, profile_database) {
             // @ts-ignore
             const data = await normalize(item, profile_data);
             // console.log(data);
-            // await database(data, profile_database);
+            await database(data, profile_database);
             process.send('processed');
         });
     }

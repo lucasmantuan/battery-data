@@ -68,15 +68,12 @@ function normalize(folder_list, profile) {
  * @param {Object} profile.file
  * Objeto contendo as configurações do arquivo que será processado.
  *
- * @param {number} chunk
- * Tamanho do pedaço em que os arquivos devem ser divididos.
- *
  * @returns {Promise<Array<Array>>}
  * Promise que resolve em um array de arrays de caminhos de arquivos.
  */
-function read(folder, profile, chunk) {
+function read(folder, profile) {
     const { file_extension } = profile.file;
-    const result = readFolder(folder).then(fileExtension(file_extension)).then(chunkSplit(chunk));
+    const result = readFolder(folder).then(fileExtension(file_extension)).then(chunkSplit(1));
     return result;
 }
 
