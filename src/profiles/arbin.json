@@ -5,6 +5,7 @@
         "add_values": [
             ["recordValue", "file_name", "file_name"],
             ["recordValue", "recorded_at", "recorded_at"],
+            ["recordValue", "profile", "profile"],
             ["recordValue", 1, "volt/cell(V)"],
             ["recordValue", null, "switch_off"],
             ["recordValue", null, "test_condition"]
@@ -12,6 +13,7 @@
         "validate_value": [],
         "convert_values": [],
         "map_object": {
+            "profile": "profile",
             "Charge_Capacity(Ah)": "charge_capacity(Ah)",
             "Charge_Energy(Wh)": "charge_energy(Wh)",
             "coulombic_efficiency": "coulombic_efficiency",

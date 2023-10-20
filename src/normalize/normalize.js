@@ -10,6 +10,7 @@ const {
     mapObjectIfNeeded,
     readFolder,
     readSpreadsheets,
+    recordLog,
     removeInvalidDataIfNeeded,
     removeWhitespace,
     renameKeysIfNeeded,
@@ -52,7 +53,8 @@ function normalize(folder_list, profile) {
         .then(removeInvalidDataIfNeeded(validate_value))
         .then(mapObjectIfNeeded(map_object))
         .then(convertDateIfNeeded(date))
-        .then(writeFileIfNeeded(file_name));
+        .then(writeFileIfNeeded(file_name))
+        .then(recordLog);
     return result;
 }
 

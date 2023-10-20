@@ -15,6 +15,7 @@
         "add_values": [
             ["recordValue", "file_name", "file_name"],
             ["recordValue", "recorded_at", "recorded_at"],
+            ["recordValue", "profile", "profile"],
             ["recordValue", null, "cycle_index"],
             ["recordValue", null, "step_index"],
             ["recordValue", null, "switch_off"]
@@ -22,6 +23,7 @@
         "validate_value": [{ "key": 0, "type": "number" }],
         "convert_values": [],
         "map_object": {
+            "profile": "profile",
             "charge_capacity(Ah)": "charge_capacity(Ah)",
             "charge_energy(Wh)": "charge_energy(Wh)",
             "coulombic_efficiency": "coulombic_efficiency",

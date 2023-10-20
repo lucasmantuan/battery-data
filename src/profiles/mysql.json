@@ -16,6 +16,9 @@
                 "id": {
                     "type": "increments"
                 },
+                "profile": {
+                    "type": "string"
+                },
                 "charge_capacity(Ah)": {
                     "type": "double"
                 },

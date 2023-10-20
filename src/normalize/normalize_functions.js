@@ -427,6 +427,18 @@ function readSpreadsheet(path, index) {
     });
 }
 
+function recordLog(data) {
+    const header = `profile; file_name; recorded_at; total_records\n`;
+    const profile = global_parameters.profile;
+    const file_name = global_parameters.file_name[0].toLowerCase();
+    const recorded_at = global_parameters.recorded_at;
+    const total_records = data.length;
+    const line = `${profile}; ${file_name}; ${recorded_at}; ${total_records}\n`;
+    if (!fs.existsSync('log_normalize.csv')) fs.writeFileSync('log_normalize.csv', header);
+    fs.appendFileSync('log_normalize.csv', line);
+    return data;
+}
+
 /**
  * Retorna uma função que remove os dados inválidos com base nos parametros fornecidos.
  *
@@ -575,6 +587,7 @@ module.exports = {
     mapObjectIfNeeded,
     readFolder,
     readSpreadsheets,
+    recordLog,
     removeInvalidDataIfNeeded,
     removeWhitespace,
     renameKeysIfNeeded,
