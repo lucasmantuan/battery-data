@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: utils/cluster.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: utils/cluster.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const _ = require('lodash');
+const cluster = require('cluster');
+const cpus = require('os').cpus().length;
+const readline = require('readline');
+const { database } = require('../database/database.js');
+const { getFileName } = require('../utils/utils.js');
+const { global_parameters } = require('../utils/global_parameters.js');
+const { normalize } = require('../normalize/normalize.js');
+
+/**
+ * Exibe o número de arquivos para processamento e o número de arquivos processados no terminal.
+ *
+ * @param {number} items_processed
+ * O total de itens processados.
+ *
+ * @param {number} total_items
+ * O total itens para processamento.
+ *
+ * @returns {void}
+ */
+function updateStatus(items_processed, total_items) {
+    readline.cursorTo(process.stdout, 0, 1);
+    process.stdout.write(`${items_processed}:${total_items}`);
+    readline.moveCursor(process.stdout, 0, 0);
+    readline.clearScreenDown(process.stdout);
+}
+
+/**
+ * Cria um balanceador de carga simples para efetuar o processamento dos dados,
+ * distribuindo os itens entre os processadores disponíveis no computador.
+ *
+ * @param {Array&lt;*>} data
+ * Um array contendo o caminho dos arquivos a serem processados.
+ *
+ * @param {Object&lt;*, *>} profile_data
+ * Um objeto contendo os parâmetros para normalização dos dados.
+ *
+ * @param {Object&lt;*, *>} profile_database
+ * Um objeto contendo os parâmetros para gravação dos dados no banco de dados.
+ *
+ * @returns {void}
+ */
+function createCluster(data, profile_data, profile_database) {
+    // @ts-ignore
+    if (cluster.isPrimary) {
+        let items_processed = 0;
+        const total_items = data.length;
+
+        _.forEach(data, function (item, index) {
+            if (index &lt; Math.min(cpus, total_items)) {
+                // @ts-ignore
+                const worker = cluster.fork();
+                worker.send(item);
+                items_processed++;
+                updateStatus(items_processed, total_items);
+            }
+        });
+
+        // @ts-ignore
+        cluster.on('message', function (worker) {
+            if (items_processed &lt; total_items) {
+                const item = data[items_processed];
+                worker.send(item);
+                items_processed++;
+                updateStatus(items_processed, total_items);
+            } else {
+                worker.disconnect();
+            }
+        });
+    } else {
+        process.on('message', async function (item) {
+            // @ts-ignore
+            global_parameters.id = cluster.worker.id;
+            global_parameters.recorded_at = new Date();
+            // @ts-ignore
+            global_parameters.file_name = getFileName(item);
+            global_parameters.header = profile_data.file.header;
+            global_parameters.profile = profile_data.file.profile_name;
+            global_parameters.raw_numbers = profile_data.file.raw_numbers;
+            // @ts-ignore
+            const data = await normalize(item, profile_data);
+            // console.log(data);
+            // await database(data, profile_database);
+            process.send('processed');
+        });
+    }
+}
+
+module.exports = { createCluster };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addValues">addValues</a></li><li><a href="global.html#addValuesIfNeeded">addValuesIfNeeded</a></li><li><a href="global.html#changeValues">changeValues</a></li><li><a href="global.html#changeValuesIfNeeded">changeValuesIfNeeded</a></li><li><a href="global.html#chunkSplit">chunkSplit</a></li><li><a href="global.html#closeConnection">closeConnection</a></li><li><a href="global.html#convertDateIfNeeded">convertDateIfNeeded</a></li><li><a href="global.html#convertSpreadsheets">convertSpreadsheets</a></li><li><a href="global.html#convertToLowercase">convertToLowercase</a></li><li><a href="global.html#convertValues">convertValues</a></li><li><a href="global.html#convertValuesIfNeeded">convertValuesIfNeeded</a></li><li><a href="global.html#converteDate">converteDate</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#createCluster">createCluster</a></li><li><a href="global.html#createTable">createTable</a></li><li><a href="global.html#database">database</a></li><li><a href="global.html#differenceInSecondsBetweenDates">differenceInSecondsBetweenDates</a></li><li><a href="global.html#divideOneByOther">divideOneByOther</a></li><li><a href="global.html#fileExtension">fileExtension</a></li><li><a href="global.html#flattenData">flattenData</a></li><li><a href="global.html#getFileName">getFileName</a></li><li><a href="global.html#mapObject">mapObject</a></li><li><a href="global.html#mapObjectIfNeeded">mapObjectIfNeeded</a></li><li><a href="global.html#multiplyValues">multiplyValues</a></li><li><a href="global.html#normalize">normalize</a></li><li><a href="global.html#openConnection">openConnection</a></li><li><a href="global.html#parseToObject">parseToObject</a></li><li><a href="global.html#read">read</a></li><li><a href="global.html#readFolder">readFolder</a></li><li><a href="global.html#readSpreadsheet">readSpreadsheet</a></li><li><a href="global.html#readSpreadsheets">readSpreadsheets</a></li><li><a href="global.html#recordValue">recordValue</a></li><li><a href="global.html#removeInvalidData">removeInvalidData</a></li><li><a href="global.html#removeInvalidDataIfNeeded">removeInvalidDataIfNeeded</a></li><li><a href="global.html#removeWhitespace">removeWhitespace</a></li><li><a href="global.html#renameKeys">renameKeys</a></li><li><a href="global.html#renameKeysIfNeeded">renameKeysIfNeeded</a></li><li><a href="global.html#updateStatus">updateStatus</a></li><li><a href="global.html#writeData">writeData</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Oct 22 2023 10:46:43 GMT-0300 (Horário Padrão de Brasília)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
