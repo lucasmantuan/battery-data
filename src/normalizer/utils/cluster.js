@@ -80,7 +80,7 @@ function createCluster(data, profile_data, profile_database) {
             // @ts-ignore
             const data = await normalize(item, profile_data);
             // console.log(data);
-            // await database(data, profile_database);
+            await database(data, profile_database);
             process.send('processed');
         });
     }

@@ -33,12 +33,12 @@ async function createAsync(profile) {
 }
 
 if (parameters.database === 'mysql') {
-    const result = fs.readFileSync(`./profiles/${parameters.database}.json`);
+    const result = fs.readFileSync(`../profiles/${parameters.database}.json`);
     profile_database = parseToObject(result);
 }
 
 if (parameters.profile === 'mysql') {
-    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
+    const result = fs.readFileSync(`../profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
     createAsync(profile_data)
         .then((result) => updateStatus(result))
@@ -46,37 +46,37 @@ if (parameters.profile === 'mysql') {
 }
 
 if (parameters.profile === 'arbin') {
-    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
+    const result = fs.readFileSync(`../profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
     readAsync(parameters.folder, profile_data, profile_database);
 }
 
 if (parameters.profile === 'hh') {
-    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
+    const result = fs.readFileSync(`../profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
     readAsync(parameters.folder, profile_data, profile_database);
 }
 
 if (parameters.profile === 'regatron') {
-    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
+    const result = fs.readFileSync(`../profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
     readAsync(parameters.folder, profile_data, profile_database);
 }
 
 if (parameters.profile === 'bk') {
-    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
+    const result = fs.readFileSync(`../profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
     readAsync(parameters.folder, profile_data, profile_database);
 }
 
 if (parameters.profile === 'digatron') {
-    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
+    const result = fs.readFileSync(`../profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
     readAsync(parameters.folder, profile_data, profile_database);
 }
 
 if (parameters.profile === 'itech') {
-    const result = fs.readFileSync(`./profiles/${parameters.profile}.json`);
+    const result = fs.readFileSync(`../profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
     readAsync(parameters.folder, profile_data, profile_database);
 }
