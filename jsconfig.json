@@ -1,17 +1,18 @@
 {
     "compilerOptions": {
         "baseUrl": "src",
+        "checkJs": false,
         "module": "commonjs",
         "moduleResolution": "node",
-        "target": "es2021",
-        "checkJs": true
+        "target": "es2021"
     },
+
     "exclude": [
-        "node_modules",
         "**/node_modules/*",
-        "vendor_modules",
+        "**/outros_arquivos/*",
         "**/vendor_modules/*",
+        "node_modules",
         "outros_arquivos",
-        "**/outros_arquivos/*"
+        "vendor_modules"
     ]
 }

@@ -11,7 +11,6 @@ const config = {
     }
 };
 
-// @ts-ignore
 const connection = knex(config);
 
 module.exports = connection;

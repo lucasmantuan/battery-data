@@ -11,8 +11,8 @@
     "plugins": ["prettier"],
     "rules": {
         "eqeqeq": "off",
+        "max-len": ["error", { "code": 100 }],
         "no-console": "warn",
-        "max-len": ["error", { "code": 120 }],
         "prettier/prettier": "error"
     }
 }

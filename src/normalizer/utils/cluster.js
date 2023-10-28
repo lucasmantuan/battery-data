@@ -2,10 +2,10 @@ const _ = require('lodash');
 const cluster = require('cluster');
 const cpus = require('os').cpus().length;
 const readline = require('readline');
-const { database } = require('../database/database.js');
-const { getFileName } = require('../utils/utils.js');
-const { global_parameters } = require('../utils/global_parameters.js');
-const { normalize } = require('../normalize/normalize.js');
+const { database } = require('../database/database');
+const { getFileName } = require('../utils/utils');
+const { global_parameters } = require('../utils/global_parameters');
+const { normalize } = require('../normalize/normalize');
 
 /**
  * Exibe o número de arquivos para processamento e o número de arquivos processados no terminal.
@@ -41,14 +41,12 @@ function updateStatus(items_processed, total_items) {
  * @returns {void}
  */
 function createCluster(data, profile_data, profile_database) {
-    // @ts-ignore
     if (cluster.isPrimary) {
         let items_processed = 0;
         const total_items = data.length;
 
         _.forEach(data, function (item, index) {
             if (index < Math.min(cpus, total_items)) {
-                // @ts-ignore
                 const worker = cluster.fork();
                 worker.send(item);
                 items_processed++;
@@ -56,7 +54,6 @@ function createCluster(data, profile_data, profile_database) {
             }
         });
 
-        // @ts-ignore
         cluster.on('message', function (worker) {
             if (items_processed < total_items) {
                 const item = data[items_processed];
@@ -69,18 +66,17 @@ function createCluster(data, profile_data, profile_database) {
         });
     } else {
         process.on('message', async function (item) {
-            // @ts-ignore
             global_parameters.id = cluster.worker.id;
             global_parameters.recorded_at = new Date();
-            // @ts-ignore
+
             global_parameters.file_name = getFileName(item);
             global_parameters.header = profile_data.file.header;
             global_parameters.profile = profile_data.file.profile_name;
             global_parameters.raw_numbers = profile_data.file.raw_numbers;
-            // @ts-ignore
+
             const data = await normalize(item, profile_data);
-            // console.log(data);
-            await database(data, profile_database);
+            console.log(data);
+            // await database(data, profile_database);
             process.send('processed');
         });
     }

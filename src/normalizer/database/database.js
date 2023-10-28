@@ -1,4 +1,4 @@
-const { openConnection, createTable, writeData, closeConnection } = require('./database_functions.js');
+const { openConnection, createTable, writeData, closeConnection } = require('./database_functions');
 
 /**
  * Grava os dados no banco de dados na table especificada nos parametros.

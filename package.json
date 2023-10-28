@@ -3,7 +3,7 @@
     "version": "0.0.5",
     "description": "Padronização dos Dados de Carga e Descarga das Baterias",
     "scripts": {
-        "dev": "nodemon src/server/index.js"
+        "dev": "nodemon src/server/index"
     },
     "keywords": [
         "dados",
@@ -17,6 +17,7 @@
         "jsdoc": "4.0.2",
         "knex": "2.4.2",
         "lodash": "4.17.21",
+        "multer": "1.4.5-lts.1",
         "mysql2": "3.3.0",
         "xlsx": "file:vendor_modules/xlsx-0.19.3.tgz"
     },

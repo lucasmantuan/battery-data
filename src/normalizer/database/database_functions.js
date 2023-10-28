@@ -12,7 +12,6 @@ const knex = require('knex');
  */
 function openConnection(connection_config) {
     return new Promise((resolve) => {
-        // @ts-ignore
         const connection = knex(connection_config);
         resolve(connection);
     });
@@ -42,8 +41,9 @@ function createTable(param) {
      * Objeto com a conexão para o banco de dados.
      *
      * @returns {Promise<Object> | Object}
-     * Promise que resolve para um objeto com a conexão com o banco de dados e o nome da tabela utilizada
-     * ou objeto com a conexão com o banco de dados e o nome da tabela.
+     * Promise que resolve para um objeto com a conexão com o banco de dados
+     * e o nome da tabela utilizada ou objeto com a conexão com o banco
+     * de dados e o nome da tabela.
      */
     return function (connection) {
         return connection.schema.hasTable(name).then((has_table) => {
@@ -87,7 +87,8 @@ function writeData(data, table) {
      * Objeto com a conexão para o banco de dados.
      *
      * @returns {Promise}
-     * Promise que resolve para um objeto com a conexão com o banco de dados e o nome da tabela utilizada.
+     * Promise que resolve para um objeto com a conexão
+     * com o banco de dados e o nome da tabela utilizada.
      */
     return function (connection) {
         return connection(name)

@@ -23,6 +23,7 @@ async function getAll(request, response) {
 
     response.set('Access-Control-Expose-Headers', 'x-total-count');
     response.set('x-total-count', total_count);
+
     return response.status(StatusCodes.OK).json(result);
 }
 

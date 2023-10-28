@@ -15,7 +15,8 @@ function parseToObject(data) {
 }
 
 /**
- * Retorna um array com os nomes dos arquivos a partir de um array com os caminhos completos dos arquivos.
+ * Retorna um array com os nomes dos arquivos a partir
+ * de um array com os caminhos completos dos arquivos.
  *
  * @param {Array<string>} data
  * O array de caminhos completos dos arquivos.

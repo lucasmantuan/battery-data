@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { global_parameters } = require('../utils/global_parameters.js');
+const { global_parameters } = require('../utils/global_parameters');
 
 let charge_new_time = 0;
 let charge_old_time = 0;
@@ -267,7 +267,8 @@ function recordDate(value) {
         const new_date_time = new Date(date_time);
         if (!_.isNil(step_time)) {
             const [horas, minutos, segundos] = step_time.split(':');
-            const new_step_time = parseInt(horas) * 3600 + parseInt(minutos) * 60 + parseInt(segundos);
+            const new_step_time =
+                parseInt(horas) * 3600 + parseInt(minutos) * 60 + parseInt(segundos);
             return new Date(new_date_time.setSeconds(new_date_time.getSeconds() + new_step_time));
         }
     }

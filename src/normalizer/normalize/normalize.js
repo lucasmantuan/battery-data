@@ -15,7 +15,7 @@ const {
     removeWhitespace,
     renameKeysIfNeeded,
     writeFileIfNeeded
-} = require('./normalize_functions.js');
+} = require('./normalize_functions');
 
 /**
  * Normaliza os dados dos arquivos aplicando uma sequência de transformações
@@ -37,8 +37,15 @@ const {
  * Promise que resolve em um array de objetos normalizados.
  */
 function normalize(folder_list, profile) {
-    const { rename_keys, change_values, add_values, validate_value, convert_values, map_object, date } =
-        profile.conversion;
+    const {
+        rename_keys,
+        change_values,
+        add_values,
+        validate_value,
+        convert_values,
+        map_object,
+        date
+    } = profile.conversion;
 
     const { worksheet_number, file_name } = profile.file;
 

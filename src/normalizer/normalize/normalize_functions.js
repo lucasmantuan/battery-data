@@ -1,9 +1,9 @@
 const _ = require('lodash');
 const fs = require('fs');
-const normalize_formulas = require('./normalize_formulas.js');
+const normalize_formulas = require('./normalize_formulas');
 const path = require('path');
 const xlsx = require('xlsx');
-const { global_parameters } = require('../utils/global_parameters.js');
+const { global_parameters } = require('../utils/global_parameters');
 
 xlsx.set_fs(fs);
 
@@ -39,7 +39,8 @@ function addValuesIfNeeded(param) {
  * Adiciona novos valores para cada item de dados com base nos parâmetros fornecidos.
  *
  * @param {Array<*>} param
- * Array contendo o nome da função de callback a ser aplicada, os seus parâmetros e o nome da chave para o novo valor.
+ * Array contendo o nome da função de callback a ser aplicada,
+ * os seus parâmetros e o nome da chave para o novo valor.
  *
  * @param {Array<Object>} data
  * Array com os dados para aplicação da função de callback.
@@ -167,7 +168,8 @@ function convertDateIfNeeded(param) {
 }
 
 /**
- * Modifica as datas dos itens de dados com base nos parâmetros fornecidos para o formato 'YYYY-MM-DD HH:MM:SS'.
+ * Modifica as datas dos itens de dados com base nos parâmetros
+ * fornecidos para o formato 'YYYY-MM-DD HH:MM:SS'.
  *
  * @param {Array<*>} param
  * Array contendo os nomes das chaves que contém as datas a serem convertidas.
@@ -192,7 +194,8 @@ function converteDate(param, data) {
 }
 
 /**
- * Retorna uma Promise que recebe um array com os dados brutos e resolve para um array de objetos mapeados.
+ * Retorna uma Promise que recebe um array com os dados
+ * brutos e resolve para um array de objetos mapeados.
  *
  * @param {Array<Object>} data
  * Array contento os dados brutos para a conversão.
@@ -391,7 +394,8 @@ function readFolder(folder) {
 }
 
 /**
- * Faz a leitura dos arquivos de uma lista de pastas e retorna uma promise que resolve para um array de arquivos.
+ * Faz a leitura dos arquivos de uma lista de pastas e retorna
+ *  uma promise que resolve para um array de arquivos.
  *
  * @param {Array<string>} folder_list
  * Array com o caminho das pastas com os arquivos para a leitura.
@@ -403,7 +407,9 @@ function readFolder(folder) {
  * Promise que resolve para um array de arquivos.
  */
 function readSpreadsheets(folder_list, worksheet_number) {
-    const result = Promise.all(_.map(folder_list, (folder) => readSpreadsheet(folder, worksheet_number)));
+    const result = Promise.all(
+        _.map(folder_list, (folder) => readSpreadsheet(folder, worksheet_number))
+    );
     return result;
 }
 
@@ -434,9 +440,10 @@ function recordLog(data) {
     const recorded_at = global_parameters.recorded_at;
     const total_records = data.length;
     const line = `${profile}; ${file_name}; ${recorded_at}; ${total_records}\n`;
-    if (!fs.existsSync('../logs')) fs.mkdirSync('../logs');
-    if (!fs.existsSync(`../logs/${log_file_name}.csv`)) fs.writeFileSync(`../logs/${log_file_name}.csv`, header);
-    fs.appendFileSync(`../logs/${log_file_name}.csv`, line);
+    if (!fs.existsSync('src/logs')) fs.mkdirSync('src/logs');
+    if (!fs.existsSync(`src/logs/${log_file_name}.csv`))
+        fs.writeFileSync(`src/logs/${log_file_name}.csv`, header);
+    fs.appendFileSync(`src/logs/${log_file_name}.csv`, line);
     return data;
 }
 
