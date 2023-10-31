@@ -1,9 +1,8 @@
 const fs = require('fs');
-const readline = require('readline');
-const { create } = require('./database/database');
-const { createCluster } = require('./utils/cluster');
-const { parseToObject } = require('./utils/utils');
-const { read } = require('./normalize/normalize');
+const { create } = require('../database-normalizer/database');
+const { createCluster } = require('../utils/cluster');
+const { parseToObject } = require('../utils/utils');
+const { read } = require('./normalize');
 
 let data = [];
 let temp = 'src/temp';
@@ -13,15 +12,7 @@ let profile_database = {};
 const parameters = {
     profile: String(process.argv[2].split('-')[1]),
     database: process.argv[3] ? String(process.argv[3].split('-')[1]) : undefined
-    // folder: process.argv[4] ? String(process.argv[4]) : undefined
 };
-
-function updateStatus(status) {
-    readline.cursorTo(process.stdout, 0, 1);
-    process.stdout.write(`${status}`);
-    readline.moveCursor(process.stdout, 0, 0);
-    readline.clearScreenDown(process.stdout);
-}
 
 async function readAsync(folder, profile_data, profile_database) {
     data = await read(folder, profile_data);
@@ -42,7 +33,7 @@ if (parameters.profile === 'mysql') {
     const result = fs.readFileSync(`src/profiles/${parameters.profile}.json`);
     profile_data = parseToObject(result);
     createAsync(profile_data)
-        .then((result) => updateStatus(result))
+        .then((result) => console.log(result))
         .then(() => process.exit());
 }
 

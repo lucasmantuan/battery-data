@@ -1,29 +1,10 @@
 const _ = require('lodash');
 const cluster = require('cluster');
 const cpus = require('os').cpus().length;
-const readline = require('readline');
-const { database } = require('../database/database');
+const { database } = require('../database-normalizer/database');
 const { getFileName } = require('../utils/utils');
 const { global_parameters } = require('../utils/global_parameters');
-const { normalize } = require('../normalize/normalize');
-
-/**
- * Exibe o número de arquivos para processamento e o número de arquivos processados no terminal.
- *
- * @param {number} items_processed
- * O total de itens processados.
- *
- * @param {number} total_items
- * O total itens para processamento.
- *
- * @returns {void}
- */
-function updateStatus(items_processed, total_items) {
-    readline.cursorTo(process.stdout, 0, 1);
-    process.stdout.write(`${items_processed}:${total_items}`);
-    readline.moveCursor(process.stdout, 0, 0);
-    readline.clearScreenDown(process.stdout);
-}
+const { normalize } = require('../normalizer/normalize');
 
 /**
  * Cria um balanceador de carga simples para efetuar o processamento dos dados,
@@ -50,7 +31,6 @@ function createCluster(data, profile_data, profile_database) {
                 const worker = cluster.fork();
                 worker.send(item);
                 items_processed++;
-                updateStatus(items_processed, total_items);
             }
         });
 
@@ -59,7 +39,6 @@ function createCluster(data, profile_data, profile_database) {
                 const item = data[items_processed];
                 worker.send(item);
                 items_processed++;
-                updateStatus(items_processed, total_items);
             } else {
                 worker.disconnect();
             }
@@ -75,8 +54,7 @@ function createCluster(data, profile_data, profile_database) {
             global_parameters.raw_numbers = profile_data.file.raw_numbers;
 
             const data = await normalize(item, profile_data);
-            console.log(data);
-            // await database(data, profile_database);
+            await database(data, profile_database);
             process.send('processed');
         });
     }

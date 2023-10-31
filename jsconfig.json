@@ -8,11 +8,11 @@
     },
 
     "exclude": [
+        "**/data_files/*",
         "**/node_modules/*",
-        "**/outros_arquivos/*",
         "**/vendor_modules/*",
+        "data_files",
         "node_modules",
-        "outros_arquivos",
         "vendor_modules"
     ]
 }

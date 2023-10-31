@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const connection = require('../database/connection');
+const connection = require('../../database-server/connection');
 
 async function totalCount(profile) {
     try {

@@ -94,7 +94,7 @@ function writeData(data, table) {
         return connection(name)
             .insert(data)
             .then(() => {
-                return { connection, name };
+                return { connection, name, records: data.length };
             });
     };
 }
@@ -115,9 +115,9 @@ function writeData(data, table) {
  * Retorna o nome da tabela utilizada.
  */
 function closeConnection(param) {
-    const { connection, name } = param;
+    const { connection, name, records } = param;
     connection.destroy();
-    return name;
+    return { name, records };
 }
 
 module.exports = {

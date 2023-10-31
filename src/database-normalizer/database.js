@@ -1,3 +1,4 @@
+const { stringifyObject } = require('../utils/utils');
 const { openConnection, createTable, writeData, closeConnection } = require('./database_functions');
 
 /**
@@ -14,8 +15,11 @@ const { openConnection, createTable, writeData, closeConnection } = require('./d
  */
 function database(data, profile) {
     const { connection, table } = profile.database;
-    const result = openConnection(connection).then(writeData(data, table)).then(closeConnection);
-    return result;
+    openConnection(connection)
+        .then(writeData(data, table))
+        .then(closeConnection)
+        .then((result) => process.stdout.write(stringifyObject(result)));
+    return;
 }
 
 /**
@@ -29,8 +33,8 @@ function database(data, profile) {
  */
 function create(profile) {
     const { connection, table } = profile.database;
-    const result = openConnection(connection).then(createTable(table)).then(closeConnection);
-    return result;
+    openConnection(connection).then(createTable(table)).then(closeConnection);
+    return;
 }
 
 module.exports = {

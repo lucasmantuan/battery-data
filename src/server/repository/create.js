@@ -1,15 +1,17 @@
-const { exec } = require('child_process');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
+const { parseToObject } = require('../../utils/utils');
 
-const script = 'node src/normalizer/index.js -arbin -mysql';
+async function create(profile, database) {
+    const script = `node src/normalizer/index -${profile} -${database}`;
 
-async function create(profile, database, files) {
-    exec(script, (error, stdout, stderr) => {
-        if (error) {
-            console.error(error);
-            return;
-        }
-        console.log(stdout);
-    });
+    try {
+        const { stdout, stderr } = await exec(script);
+        console.log(stderr);
+        return parseToObject(stdout);
+    } catch (error) {
+        return new Error(error.message);
+    }
 }
 
 module.exports = { create };

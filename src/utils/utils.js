@@ -15,6 +15,19 @@ function parseToObject(data) {
 }
 
 /**
+ * Converte um objeto JavaScript para um JSON.
+ *
+ * @param {Object} data
+ * O objeto JavaScript para conversão.
+ *
+ * @returns {string}
+ * O JSON.
+ */
+function stringifyObject(data) {
+    return JSON.stringify(data);
+}
+
+/**
  * Retorna um array com os nomes dos arquivos a partir
  * de um array com os caminhos completos dos arquivos.
  *
@@ -28,4 +41,4 @@ function getFileName(data) {
     return _.map(data, (file_name) => path.basename(file_name));
 }
 
-module.exports = { parseToObject, getFileName };
+module.exports = { parseToObject, stringifyObject, getFileName };

@@ -288,6 +288,14 @@ function convertValues(param, data) {
     return data;
 }
 
+function deleteFile(data) {
+    const file_name = `src/temp/${global_parameters.file_name[0].toString()}`;
+    if (fs.existsSync(file_name)) {
+        fs.rmSync(file_name);
+    }
+    return data;
+}
+
 /**
  * Retorna uma função que filtra um array de strings com base na extensão fornecida.
  *
@@ -590,6 +598,7 @@ module.exports = {
     convertSpreadsheets,
     convertToLowercase,
     convertValuesIfNeeded,
+    deleteFile,
     fileExtension,
     flattenData,
     mapObjectIfNeeded,
