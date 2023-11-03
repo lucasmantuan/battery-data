@@ -1,24 +1,36 @@
 const fs = require('fs');
-const BatteryProvider = require('../repository');
 const multer = require('multer');
 const { StatusCodes } = require('http-status-codes');
+const BatteryProvider = require('../repository');
+
+// const { createHash, randomBytes } = require('node:crypto');
+
+// function generateFolderName() {
+//     const random_bytes = randomBytes(32);
+//     const hash = createHash('sha256');
+//     hash.update(random_bytes);
+//     return hash.digest('hex');
+// }
+
+// let folder = generateFolderName();
 
 const storage = multer.diskStorage({
     destination: function (request, response, callback) {
-        if (!fs.existsSync('src/temp')) fs.mkdirSync('src/temp');
-        callback(null, 'src/temp');
+        if (!fs.existsSync(`src/temp`)) fs.mkdirSync(`src/temp`);
+        callback(null, `src/temp`);
     },
     filename: function (request, response, callback) {
         callback(null, response.originalname);
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 async function create(request, response) {
     const result = await BatteryProvider.create(
         request.body.profile || '',
-        request.body.database || ''
+        request.body.database || '',
+        request.files || []
     );
 
     if (result instanceof Error) {

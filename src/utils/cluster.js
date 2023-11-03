@@ -10,7 +10,7 @@ const { normalize } = require('../normalizer/normalize');
  * Cria um balanceador de carga simples para efetuar o processamento dos dados,
  * distribuindo os itens entre os processadores disponíveis no computador.
  *
- * @param {Array<*>} data
+ * @param {Array<*>} list_files
  * Um array contendo o caminho dos arquivos a serem processados.
  *
  * @param {Object<*, *>} profile_data
@@ -21,12 +21,12 @@ const { normalize } = require('../normalizer/normalize');
  *
  * @returns {void}
  */
-function createCluster(data, profile_data, profile_database) {
+function createCluster(list_files, profile_data, profile_database) {
     if (cluster.isPrimary) {
         let items_processed = 0;
-        const total_items = data.length;
+        const total_items = list_files.length;
 
-        _.forEach(data, function (item, index) {
+        _.forEach(list_files, function (item, index) {
             if (index < Math.min(cpus, total_items)) {
                 const worker = cluster.fork();
                 worker.send(item);
@@ -36,7 +36,7 @@ function createCluster(data, profile_data, profile_database) {
 
         cluster.on('message', function (worker) {
             if (items_processed < total_items) {
-                const item = data[items_processed];
+                const item = list_files[items_processed];
                 worker.send(item);
                 items_processed++;
             } else {
@@ -47,12 +47,10 @@ function createCluster(data, profile_data, profile_database) {
         process.on('message', async function (item) {
             global_parameters.id = cluster.worker.id;
             global_parameters.recorded_at = new Date();
-
             global_parameters.file_name = getFileName(item);
             global_parameters.header = profile_data.file.header;
             global_parameters.profile = profile_data.file.profile_name;
             global_parameters.raw_numbers = profile_data.file.raw_numbers;
-
             const data = await normalize(item, profile_data);
             await database(data, profile_database);
             process.send('processed');

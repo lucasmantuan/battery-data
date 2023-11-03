@@ -1,17 +1,29 @@
-const util = require('util');
-const exec = util.promisify(require('child_process').exec);
-const { parseToObject } = require('../../utils/utils');
+const { parseToObject, stringifyObject } = require('../../utils/utils');
+const { spawn } = require('child_process');
 
-async function create(profile, database) {
-    const script = `node src/normalizer/index -${profile} -${database}`;
+function create(profile, database, files) {
+    const script = 'src/normalizer/index';
+    const list = stringifyObject(files.map((file) => [file.path]));
+    const normalizer = spawn('node', [script, profile, database, list]);
+    let result = [];
 
-    try {
-        const { stdout, stderr } = await exec(script);
-        console.log(stderr);
-        return parseToObject(stdout);
-    } catch (error) {
-        return new Error(error.message);
-    }
+    normalizer.stdout.on('data', (data) => {
+        result.push(parseToObject(data.toString()));
+    });
+
+    // normalizer.stderr.on('data', (data) => {
+    //     result = parseToObject(data.toString());
+    // });
+
+    return new Promise((resolve, reject) => {
+        normalizer.on('close', (code) => {
+            if (code === 0) {
+                resolve(result);
+            } else {
+                reject(new Error('o processo foi encerrado com erro'));
+            }
+        });
+    });
 }
 
 module.exports = { create };
