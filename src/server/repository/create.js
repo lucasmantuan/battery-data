@@ -1,9 +1,11 @@
+const _ = require('lodash');
 const { parseToObject, stringifyObject } = require('../../utils/utils');
 const { spawn } = require('child_process');
+require('dotenv').config();
 
 function create(profile, database, files) {
-    const script = 'src/normalizer/index';
-    const list = stringifyObject(files.map((file) => [file.path]));
+    const script = process.env.PATH_SCRIPT;
+    const list = stringifyObject(_.map(files, (file) => [file.path]));
     const normalizer = spawn('node', [script, profile, database, list]);
     let result = [];
 

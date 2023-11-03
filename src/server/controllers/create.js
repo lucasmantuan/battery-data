@@ -2,6 +2,7 @@ const fs = require('fs');
 const multer = require('multer');
 const { StatusCodes } = require('http-status-codes');
 const BatteryProvider = require('../repository');
+require('dotenv').config();
 
 // const { createHash, randomBytes } = require('node:crypto');
 
@@ -16,8 +17,8 @@ const BatteryProvider = require('../repository');
 
 const storage = multer.diskStorage({
     destination: function (request, response, callback) {
-        if (!fs.existsSync(`src/temp`)) fs.mkdirSync(`src/temp`);
-        callback(null, `src/temp`);
+        if (!fs.existsSync(process.env.PATH_TEMP)) fs.mkdirSync(process.env.PATH_TEMP);
+        callback(null, process.env.PATH_TEMP);
     },
     filename: function (request, response, callback) {
         callback(null, response.originalname);

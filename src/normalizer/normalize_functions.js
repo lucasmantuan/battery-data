@@ -4,6 +4,7 @@ const normalize_formulas = require('./normalize_formulas');
 const path = require('path');
 const xlsx = require('xlsx');
 const { global_parameters } = require('../utils/global_parameters');
+require('dotenv').config();
 
 xlsx.set_fs(fs);
 
@@ -289,7 +290,7 @@ function convertValues(param, data) {
 }
 
 function deleteFile(data) {
-    const file_name = `src/temp/${global_parameters.file_name[0].toString()}`;
+    const file_name = `${process.env.PATH_TEMP}/${global_parameters.file_name[0].toString()}`;
     if (fs.existsSync(file_name)) {
         fs.rmSync(file_name);
     }
@@ -448,10 +449,10 @@ function recordLog(data) {
     const recorded_at = global_parameters.recorded_at;
     const total_records = data.length;
     const line = `${profile}; ${file_name}; ${recorded_at}; ${total_records}\n`;
-    if (!fs.existsSync('src/logs')) fs.mkdirSync('src/logs');
-    if (!fs.existsSync(`src/logs/${log_file_name}.csv`))
-        fs.writeFileSync(`src/logs/${log_file_name}.csv`, header);
-    fs.appendFileSync(`src/logs/${log_file_name}.csv`, line);
+    if (!fs.existsSync(process.env.PATH_LOGS)) fs.mkdirSync(process.env.PATH_LOGS);
+    const path = `${process.env.PATH_LOGS}/${log_file_name}.csv`;
+    if (!fs.existsSync(path)) fs.writeFileSync(path, header);
+    fs.appendFileSync(path, line);
     return data;
 }
 

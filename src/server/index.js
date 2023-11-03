@@ -2,8 +2,9 @@ const _ = require('lodash');
 const cluster = require('cluster');
 const cpus = require('os').cpus();
 const server = require('./bin/server');
+require('dotenv').config();
 
-const port = process.env.port || 3000;
+const port = process.env.SERVER_PORT || 3000;
 
 const startServer = () => {
     server.listen(port, () => {

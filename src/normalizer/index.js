@@ -2,6 +2,7 @@ const fs = require('fs');
 const { create } = require('../database-normalizer/database');
 const { createCluster } = require('../utils/cluster');
 const { parseToObject } = require('../utils/utils');
+require('dotenv').config();
 // const { read } = require('./normalize');
 
 const data_profiles = ['arbin', 'hh', 'regatron', 'bk', 'digatron', 'itech'];
@@ -14,7 +15,7 @@ const parameters = {
 };
 
 if (data_profiles.includes(parameters.profile) && database_profiles.includes(parameters.database)) {
-    const temporary_folder = 'src/temp';
+    const temporary_folder = process.env.PATH_TEMP;
     const data_profile_used = processProfile(parameters.profile);
     const database_profile_used = processProfile(parameters.database);
     readAsync(temporary_folder, data_profile_used, database_profile_used);
@@ -26,7 +27,8 @@ if (database_profiles.includes(parameters.profile)) {
 }
 
 function processProfile(profile) {
-    const result = fs.readFileSync(`src/profiles/${profile}.json`);
+    const path = `${process.env.PATH_PROFILES}/${profile}.json`;
+    const result = fs.readFileSync(path);
     return parseToObject(result);
 }
 

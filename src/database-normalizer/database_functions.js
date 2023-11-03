@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const knex = require('knex');
+const { global_parameters } = require('../utils/global_parameters');
 
 /**
  * Cria uma conexão com o banco de dados usando os parametros fornecidos.
@@ -33,7 +34,7 @@ function openConnection(connection_config) {
  * Função que cria a tabela no banco de dados.
  */
 function createTable(param) {
-    const { name, schema } = param;
+    const { table, schema } = param;
     /**
      * Função que cria a tabela no banco de dados se ela ainda não foi criada.
      *
@@ -46,20 +47,20 @@ function createTable(param) {
      * de dados e o nome da tabela.
      */
     return function (connection) {
-        return connection.schema.hasTable(name).then((has_table) => {
+        return connection.schema.hasTable(table).then((has_table) => {
             if (!has_table) {
                 return connection.schema
-                    .createTable(name, function (table) {
+                    .createTable(table, function (table) {
                         _.forEach(_.toPairs(schema), ([column, params]) => {
                             const { type, ...param } = params;
                             table[type](column, ..._.values(param));
                         });
                     })
                     .then(() => {
-                        return { connection, name };
+                        return { connection, table };
                     });
             } else {
-                return { connection, name };
+                return { connection, table };
             }
         });
     };
@@ -94,7 +95,11 @@ function writeData(data, table) {
         return connection(name)
             .insert(data)
             .then(() => {
-                return { connection, name, records: data.length };
+                return {
+                    connection,
+                    table: name,
+                    file: { name: global_parameters.file_name.toString(), records: data.length }
+                };
             });
     };
 }
@@ -115,9 +120,9 @@ function writeData(data, table) {
  * Retorna o nome da tabela utilizada.
  */
 function closeConnection(param) {
-    const { connection, name, records } = param;
+    const { connection, table, file } = param;
     connection.destroy();
-    return { name, records };
+    return { table, file };
 }
 
 module.exports = {
