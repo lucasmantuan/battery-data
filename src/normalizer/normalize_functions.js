@@ -441,14 +441,16 @@ function readSpreadsheet(path, index) {
         resolve(spreadsheet);
     });
 }
+
 function recordLog(data) {
-    const header = `profile; file_name; recorded_at; total_records\n`;
+    const header = `profile; file_name; recorded_at; total_records, step\n`;
     const log_file_name = new Date().toISOString().slice(0, 10);
     const file_name = global_parameters.file_name[0].toLowerCase();
     const profile = global_parameters.profile;
-    const recorded_at = global_parameters.recorded_at;
-    const total_records = data.length;
-    const line = `${profile}; ${file_name}; ${recorded_at}; ${total_records}\n`;
+    const recorded_at = global_parameters.recorded_at.toTimeString().slice(0, 8);
+    const total_records = data.file ? data.file.records : data.length;
+    const step = data.file ? 'writing' : 'normalization';
+    const line = `${profile}; ${file_name}; ${recorded_at}; ${total_records}; ${step}\n`;
     if (!fs.existsSync(process.env.PATH_LOGS)) fs.mkdirSync(process.env.PATH_LOGS);
     const path = `${process.env.PATH_LOGS}/${log_file_name}.csv`;
     if (!fs.existsSync(path)) fs.writeFileSync(path, header);

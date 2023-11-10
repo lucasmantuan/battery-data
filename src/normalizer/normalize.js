@@ -84,7 +84,7 @@ function normalize(folder_list, profile) {
  */
 function read(folder, profile) {
     const { file_extension } = profile.file;
-    const result = readFolder(folder).then(fileExtension(file_extension)).then(chunkSplit(1));
+    const result = readFolder(folder).then(fileExtension(file_extension)).then(chunkSplit());
     return result;
 }
 

@@ -1,5 +1,7 @@
+const knex = require('knex');
 const { stringifyObject } = require('../utils/utils');
 const { openConnection, createTable, writeData, closeConnection } = require('./database_functions');
+const { recordLog } = require('../normalizer/normalize_functions');
 require('dotenv').config();
 
 const connection_config = {
@@ -29,6 +31,7 @@ function database(data, profile) {
     const { table } = profile.database;
     openConnection(connection_config)
         .then(writeData(data, table))
+        .then(recordLog)
         .then(closeConnection)
         .then((result) => process.stdout.write(stringifyObject(result)));
     return;
@@ -49,7 +52,10 @@ function create(profile) {
     return;
 }
 
+const connection = knex(connection_config);
+
 module.exports = {
-    database,
-    create
+    connection,
+    create,
+    database
 };

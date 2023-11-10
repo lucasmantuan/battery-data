@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { create } = require('../database-normalizer/database');
+const { create } = require('../database/database');
 const { createCluster } = require('../utils/cluster');
 const { parseToObject } = require('../utils/utils');
 require('dotenv').config();

@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const cluster = require('cluster');
 const cpus = require('os').cpus().length;
-const { database } = require('../database-normalizer/database');
+const { database } = require('../database/database');
 const { getFileName } = require('../utils/utils');
 const { global_parameters } = require('../utils/global_parameters');
 const { normalize } = require('../normalizer/normalize');
