@@ -443,7 +443,7 @@ function readSpreadsheet(path, index) {
 }
 
 function recordLog(data) {
-    const header = `profile; file_name; recorded_at; total_records, step\n`;
+    const header = `profile; file_name; recorded_at; total_records; step\n`;
     const log_file_name = new Date().toISOString().slice(0, 10);
     const file_name = global_parameters.file_name[0].toLowerCase();
     const profile = global_parameters.profile;
@@ -453,7 +453,7 @@ function recordLog(data) {
     const line = `${profile}; ${file_name}; ${recorded_at}; ${total_records}; ${step}\n`;
     if (!fs.existsSync(process.env.PATH_LOGS)) fs.mkdirSync(process.env.PATH_LOGS);
     const path = `${process.env.PATH_LOGS}/${log_file_name}.csv`;
-    if (!fs.existsSync(path)) fs.writeFileSync(path, header);
+    if (!fs.existsSync(path)) fs.writeFileSync(path, header, 'utf8');
     fs.appendFileSync(path, line);
     return data;
 }
