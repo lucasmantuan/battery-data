@@ -34,7 +34,7 @@ function openConnection(connection_config) {
  * Função que cria a tabela no banco de dados.
  */
 function createTable(param) {
-    const { table, schema } = param;
+    const { name, schema } = param;
     /**
      * Função que cria a tabela no banco de dados se ela ainda não foi criada.
      *
@@ -47,20 +47,20 @@ function createTable(param) {
      * de dados e o nome da tabela.
      */
     return function (connection) {
-        return connection.schema.hasTable(table).then((has_table) => {
+        return connection.schema.hasTable(name).then((has_table) => {
             if (!has_table) {
                 return connection.schema
-                    .createTable(table, function (table) {
+                    .createTable(name, function (table) {
                         _.forEach(_.toPairs(schema), ([column, params]) => {
                             const { type, ...param } = params;
                             table[type](column, ..._.values(param));
                         });
                     })
                     .then(() => {
-                        return { connection, table };
+                        return { connection, table: name };
                     });
             } else {
-                return { connection, table };
+                return { connection, table: name };
             }
         });
     };
