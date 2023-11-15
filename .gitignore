@@ -1,7 +1,8 @@
-.env
-/src/docs
-/src/logs
-/src/temp
-/data_files
-/node_modules
-/vendor_modules
+backend/.env
+backend/node_modules
+backend/src/docs
+backend/src/logs
+backend/src/temp
+backend/vendor_modules
+data_files
+frontend/node_modules

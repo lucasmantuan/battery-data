@@ -1,9 +1,8 @@
 const _ = require('lodash');
 const { connection } = require('../../database/database');
 
-async function getAll(page, limit, profile, date) {
+async function getAll(page, limit, profile, start, end) {
     try {
-        const { start, end } = date;
         const date_time = function () {
             if (!_.isEmpty(start) && !_.isEmpty(end)) {
                 this.whereRaw('date_time between ? and ?', [start, end]);

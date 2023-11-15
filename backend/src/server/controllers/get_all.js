@@ -3,13 +3,14 @@ const BatteryProvider = require('../repository');
 
 async function getAll(request, response) {
     const result = await BatteryProvider.getAll(
-        request.body.page || 1,
-        request.body.limit || 100,
-        request.body.profile || '',
-        request.body.date || {}
+        request.query.page || 1,
+        request.query.limit || 100,
+        request.query.profile || '',
+        request.query.start || '',
+        request.query.end || ''
     );
 
-    const total_count = await BatteryProvider.totalCount(request.body.profile || '');
+    const total_count = await BatteryProvider.totalCount(request.query.profile || '');
 
     if (result instanceof Error) {
         return response.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
