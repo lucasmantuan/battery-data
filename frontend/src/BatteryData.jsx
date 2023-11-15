@@ -77,11 +77,13 @@ export default function BatteryData() {
     const [profile, setProfile] = useState('');
     const [rows, setRows] = useState([]);
     const [totalRecords, setTotalRecords] = useState(0);
-    const [xAxis, setXAxis] = useState([0]);
-    const [yFirstAxis, setYFirstAxis] = useState([0]);
     const [yFirstValue, setYFirstValue] = useState('');
-    const [ySecondAxis, setYSecondAxis] = useState([0]);
     const [ySecondValue, setYSecondValue] = useState('');
+    const [dataChart, setDataChart] = useState({
+        xAxis: [0],
+        yFirstAxis: [0],
+        ySecondAxis: [0]
+    });
 
     useEffect(() => {
         BatteryService.getAll(page + 1, limit, profile)
@@ -89,23 +91,25 @@ export default function BatteryData() {
                 if (result instanceof Error) {
                     console.log(result.message);
                 } else {
-                    setRows(result.data);
-                    setTotalRecords(result.total);
-
-                    const xAxisData = result.data.map((item) => item['step_time(s)']);
-                    setXAxis(xAxisData);
-
+                    const xAxisData = result.data.map((item) => item['test_time(s)']);
                     const yFirstData = result.data.map((item) => item[yFirstValue]);
-                    setYFirstAxis(yFirstData);
-
                     const ySecondData = result.data.map((item) => item[ySecondValue]);
-                    setYSecondAxis(ySecondData);
+
+                    setRows(result.data);
+
+                    setDataChart({
+                        xAxis: xAxisData,
+                        yFirstAxis: yFirstData,
+                        ySecondAxis: ySecondData
+                    });
+
+                    setTotalRecords(result.total);
                 }
             })
             .catch((error) => {
                 console.error('Erro ao buscar dados:', error);
             });
-    }, [page, limit, profile, yFirstAxis, ySecondAxis]);
+    }, [page, limit, profile, yFirstValue, ySecondValue]);
 
     return (
         <>
@@ -122,15 +126,15 @@ export default function BatteryData() {
                     series={[
                         {
                             curve: 'linear',
-                            data: yFirstAxis,
-                            label: yFirstValue ? yFirstValue : undefined,
+                            data: dataChart.yFirstAxis,
+                            label: yFirstValue,
                             showMark: false,
                             yAxisKey: 'left'
                         },
                         {
                             curve: 'linear',
-                            data: ySecondAxis,
-                            label: ySecondValue ? ySecondValue : undefined,
+                            data: dataChart.ySecondAxis,
+                            label: ySecondValue,
                             showMark: false,
                             yAxisKey: 'right'
                         }
@@ -143,7 +147,7 @@ export default function BatteryData() {
                             labelStyle: { fontSize: 14 }
                         }
                     }}
-                    xAxis={[{ data: xAxis }]}
+                    xAxis={[{ data: dataChart.xAxis }]}
                     yAxis={[{ id: 'left' }, { id: 'right' }]}
                 />
             </Box>
