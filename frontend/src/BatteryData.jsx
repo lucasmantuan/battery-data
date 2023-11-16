@@ -79,6 +79,7 @@ export default function BatteryData() {
     const [totalRecords, setTotalRecords] = useState(0);
     const [yFirstValue, setYFirstValue] = useState('');
     const [ySecondValue, setYSecondValue] = useState('');
+
     const [dataChart, setDataChart] = useState({
         xAxis: [0],
         yFirstAxis: [0],
@@ -86,30 +87,53 @@ export default function BatteryData() {
     });
 
     useEffect(() => {
-        BatteryService.getAll(page + 1, limit, profile)
+        BatteryService.getAll(page + 1, limit)
             .then((result) => {
                 if (result instanceof Error) {
                     console.log(result.message);
                 } else {
-                    const xAxisData = result.data.map((item) => item['test_time(s)']);
-                    const yFirstData = result.data.map((item) => item[yFirstValue]);
-                    const ySecondData = result.data.map((item) => item[ySecondValue]);
-
                     setRows(result.data);
-
-                    setDataChart({
-                        xAxis: xAxisData,
-                        yFirstAxis: yFirstData,
-                        ySecondAxis: ySecondData
-                    });
-
                     setTotalRecords(result.total);
                 }
             })
             .catch((error) => {
                 console.error('Erro ao buscar dados:', error);
             });
-    }, [page, limit, profile, yFirstValue, ySecondValue]);
+    }, [page, limit]);
+
+    useEffect(() => {
+        let xAxisData = [0];
+        let yFirstData = [0];
+        let ySecondData = [0];
+
+        if (rows.length !== 0) {
+            xAxisData = rows.map((item) => item['test_time(s)']);
+        }
+
+        if (rows.length !== 0 && yFirstValue !== '') {
+            yFirstData = rows.map((item) => {
+                if (profile !== '') {
+                    return item['profile'] === profile && item[yFirstValue];
+                }
+                return item[yFirstValue];
+            });
+        }
+
+        if (rows.length !== 0 && ySecondValue !== '') {
+            ySecondData = rows.map((item) => {
+                if (profile !== '') {
+                    return item['profile'] === profile && item[ySecondValue];
+                }
+                return item[ySecondValue];
+            });
+        }
+
+        setDataChart({
+            xAxis: xAxisData,
+            yFirstAxis: yFirstData,
+            ySecondAxis: ySecondData
+        });
+    }, [profile, rows, yFirstValue, ySecondValue]);
 
     return (
         <>
@@ -159,7 +183,7 @@ export default function BatteryData() {
                 margin={2}
                 padding={2}
                 variant='outlined'>
-                <FormControl sx={{ width: '15%', marginRight: 2 }}>
+                <FormControl sx={{ width: '15%', marginRight: 2, marginTop: 1 }}>
                     <InputLabel
                         id='first_value'
                         size='small'>
@@ -183,7 +207,7 @@ export default function BatteryData() {
                         <MenuItem value='voltage(V)'>Voltage(V)</MenuItem>
                     </Select>
                 </FormControl>
-                <FormControl sx={{ width: '15%', marginRight: 2 }}>
+                <FormControl sx={{ width: '15%', marginRight: 2, marginTop: 1 }}>
                     <InputLabel
                         id='second_value'
                         size='small'>
@@ -207,7 +231,7 @@ export default function BatteryData() {
                         <MenuItem value='voltage(V)'>Voltage(V)</MenuItem>
                     </Select>
                 </FormControl>
-                <FormControl sx={{ width: '10%', marginRight: 2 }}>
+                <FormControl sx={{ width: '10%', marginRight: 2, marginTop: 1 }}>
                     <InputLabel
                         id='profile'
                         size='small'>
@@ -295,19 +319,21 @@ export default function BatteryData() {
                             ))}
                         </TableBody>
                         <TableFooter>
-                            <TablePagination
-                                ActionsComponent={paginationActions}
-                                colSpan={13}
-                                count={totalRecords}
-                                onPageChange={(event, page) => setPage(page)}
-                                onRowsPerPageChange={(event) => {
-                                    setLimit(parseInt(event.target.value, 10));
-                                    setPage(1);
-                                }}
-                                page={page}
-                                rowsPerPage={limit}
-                                rowsPerPageOptions={[100, 500, 1000]}
-                            />
+                            <TableRow>
+                                <TablePagination
+                                    ActionsComponent={paginationActions}
+                                    colSpan={13}
+                                    count={totalRecords}
+                                    onPageChange={(event, page) => setPage(page)}
+                                    onRowsPerPageChange={(event) => {
+                                        setLimit(parseInt(event.target.value, 10));
+                                        setPage(1);
+                                    }}
+                                    page={page}
+                                    rowsPerPage={limit}
+                                    rowsPerPageOptions={[100, 500, 1000]}
+                                />
+                            </TableRow>
                         </TableFooter>
                     </Table>
                 </TableContainer>
