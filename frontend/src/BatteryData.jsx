@@ -77,6 +77,7 @@ export default function BatteryData() {
     const [profile, setProfile] = useState('');
     const [rows, setRows] = useState([]);
     const [totalRecords, setTotalRecords] = useState(0);
+
     const [yFirstValue, setYFirstValue] = useState('');
     const [ySecondValue, setYSecondValue] = useState('');
 
@@ -87,7 +88,7 @@ export default function BatteryData() {
     });
 
     useEffect(() => {
-        BatteryService.getAll(page + 1, limit)
+        BatteryService.getAll(page + 1, limit, profile)
             .then((result) => {
                 if (result instanceof Error) {
                     console.log(result.message);
@@ -99,7 +100,7 @@ export default function BatteryData() {
             .catch((error) => {
                 console.error('Erro ao buscar dados:', error);
             });
-    }, [page, limit]);
+    }, [page, limit, profile]);
 
     useEffect(() => {
         let xAxisData = [0];
@@ -263,6 +264,7 @@ export default function BatteryData() {
                         <TableHead>
                             <TableRow>
                                 <TableCell align='center'>Id </TableCell>
+                                <TableCell align='center'>Profile </TableCell>
                                 <TableCell align='center'>Charge(Ah)</TableCell>
                                 <TableCell align='center'>Charge(Wh)</TableCell>
                                 <TableCell align='center'>Current(A)</TableCell>
@@ -281,39 +283,42 @@ export default function BatteryData() {
                             {rows.map((row) => (
                                 <TableRow key={row['id']}>
                                     <TableCell align='center'>{row['id']}</TableCell>
+                                    <TableCell align='center'>{row['profile']}</TableCell>
                                     <TableCell align='center'>
-                                        {row['charge_capacity(Ah)'].toFixed(4)}
+                                        {parseFloat(row['charge_capacity(Ah)']).toFixed(3)}
                                     </TableCell>
                                     <TableCell align='center'>
-                                        {row['charge_energy(Wh)'].toFixed(4)}
+                                        {parseFloat(row['charge_energy(Wh)']).toFixed(3)}
                                     </TableCell>
                                     <TableCell align='center'>
-                                        {row['current(A)'].toFixed(4)}
+                                        {parseFloat(row['current(A)']).toFixed(3)}
                                     </TableCell>
                                     <TableCell align='center'>
-                                        {row['discharge_capacity(Ah)'].toFixed(4)}
+                                        {parseFloat(row['discharge_capacity(Ah)']).toFixed(3)}
                                     </TableCell>
                                     <TableCell align='center'>
-                                        {row['discharge_energy(Wh)'].toFixed(4)}
-                                    </TableCell>
-                                    <TableCell align='center'>{row['mAh/g'].toFixed(4)}</TableCell>
-                                    <TableCell align='center'>
-                                        {row['power(W)'].toFixed(4)}
+                                        {parseFloat(row['discharge_energy(Wh)']).toFixed(3)}
                                     </TableCell>
                                     <TableCell align='center'>
-                                        {row['step_index'].toFixed(4)}
+                                        {parseFloat(row['mAh/g']).toFixed(3)}
                                     </TableCell>
                                     <TableCell align='center'>
-                                        {row['step_time(s)'].toFixed(4)}
+                                        {parseFloat(row['power(W)']).toFixed(3)}
                                     </TableCell>
                                     <TableCell align='center'>
-                                        {row['test_time(s)'].toFixed(4)}
+                                        {parseFloat(row['step_index']).toFixed(3)}
                                     </TableCell>
                                     <TableCell align='center'>
-                                        {row['volt/cell(V)'].toFixed(4)}
+                                        {parseFloat(row['step_time(s)']).toFixed(3)}
                                     </TableCell>
                                     <TableCell align='center'>
-                                        {row['voltage(V)'].toFixed(4)}
+                                        {parseFloat(row['test_time(s)']).toFixed(3)}
+                                    </TableCell>
+                                    <TableCell align='center'>
+                                        {parseFloat(row['volt/cell(V)']).toFixed(3)}
+                                    </TableCell>
+                                    <TableCell align='center'>
+                                        {parseFloat(row['voltage(V)']).toFixed(3)}
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -322,7 +327,7 @@ export default function BatteryData() {
                             <TableRow>
                                 <TablePagination
                                     ActionsComponent={paginationActions}
-                                    colSpan={13}
+                                    colSpan={14}
                                     count={totalRecords}
                                     onPageChange={(event, page) => setPage(page)}
                                     onRowsPerPageChange={(event) => {
