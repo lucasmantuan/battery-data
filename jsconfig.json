@@ -8,10 +8,8 @@
     },
 
     "exclude": [
-        "**/data_files/*",
         "**/node_modules/*",
         "**/vendor_modules/*",
-        "data_files",
         "node_modules",
         "vendor_modules"
     ]

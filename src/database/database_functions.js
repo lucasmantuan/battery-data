@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const knex = require('knex');
-const { global_parameters } = require('../utils/global_parameters');
 
 /**
  * Cria uma conexão com o banco de dados usando os parametros fornecidos.
@@ -57,10 +56,10 @@ function createTable(param) {
                         });
                     })
                     .then(() => {
-                        return { connection, table: name };
+                        return { connection };
                     });
             } else {
-                return { connection, table: name };
+                return { connection };
             }
         });
     };
@@ -95,11 +94,7 @@ function writeData(data, table) {
         return connection(name)
             .insert(data)
             .then(() => {
-                return {
-                    connection,
-                    table: name,
-                    file: { name: global_parameters.file_name.toString(), records: data.length }
-                };
+                return { connection, records: data.length };
             });
     };
 }
@@ -120,9 +115,9 @@ function writeData(data, table) {
  * Retorna o nome da tabela utilizada.
  */
 function closeConnection(param) {
-    const { connection, table, file } = param;
+    const { connection } = param;
     connection.destroy();
-    return { table, file };
+    return;
 }
 
 module.exports = {

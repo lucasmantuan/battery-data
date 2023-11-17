@@ -289,14 +289,6 @@ function convertValues(param, data) {
     return data;
 }
 
-function deleteFile(data) {
-    const file_name = `${process.env.PATH_TEMP}/${global_parameters.file_name[0].toString()}`;
-    if (fs.existsSync(file_name)) {
-        fs.rmSync(file_name);
-    }
-    return data;
-}
-
 /**
  * Retorna uma função que filtra um array de strings com base na extensão fornecida.
  *
@@ -443,18 +435,25 @@ function readSpreadsheet(path, index) {
 }
 
 function recordLog(data) {
-    const header = `profile; file_name; recorded_at; total_records; step\n`;
+    const { file_name, profile, recorded_at } = global_parameters;
+    const lower_file_name = file_name[0].toLowerCase();
     const log_file_name = new Date().toISOString().slice(0, 10);
-    const file_name = global_parameters.file_name[0].toLowerCase();
-    const profile = global_parameters.profile;
-    const recorded_at = global_parameters.recorded_at.toTimeString().slice(0, 8);
-    const total_records = data.file ? data.file.records : data.length;
-    const step = data.file ? 'writing' : 'normalization';
-    const line = `${profile}; ${file_name}; ${recorded_at}; ${total_records}; ${step}\n`;
-    if (!fs.existsSync(process.env.PATH_LOGS)) fs.mkdirSync(process.env.PATH_LOGS);
-    const path = `${process.env.PATH_LOGS}/${log_file_name}.csv`;
-    if (!fs.existsSync(path)) fs.writeFileSync(path, header, 'utf8');
+    const step = Array.isArray(data) ? 'normalization' : 'writing';
+    const records = Array.isArray(data) ? data.length : data.records;
+    const line = `${profile}; ${lower_file_name}; ${recorded_at
+        .toTimeString()
+        .slice(0, 8)}; ${records}; ${step}\n`;
+    const bash = `${profile} - ${lower_file_name} - ${records} - ${step}\n`;
+    const log_directory = process.env.PATH_LOGS;
+    const path = `${log_directory}/${log_file_name}.csv`;
+    if (!fs.existsSync(log_directory)) {
+        fs.mkdirSync(log_directory);
+    }
+    if (!fs.existsSync(path)) {
+        fs.writeFileSync(path, 'profile; file_name; recorded_at; total_records; step\n', 'utf8');
+    }
     fs.appendFileSync(path, line);
+    process.stdout.write(bash);
     return data;
 }
 
@@ -601,7 +600,7 @@ module.exports = {
     convertSpreadsheets,
     convertToLowercase,
     convertValuesIfNeeded,
-    deleteFile,
+
     fileExtension,
     flattenData,
     mapObjectIfNeeded,

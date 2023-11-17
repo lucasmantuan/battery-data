@@ -5,7 +5,6 @@ const {
     convertDateIfNeeded,
     convertSpreadsheets,
     convertValuesIfNeeded,
-    deleteFile,
     fileExtension,
     flattenData,
     mapObjectIfNeeded,
@@ -62,8 +61,7 @@ function normalize(folder_list, profile) {
         .then(mapObjectIfNeeded(map_object))
         .then(convertDateIfNeeded(date))
         .then(writeFileIfNeeded(file_name))
-        .then(recordLog)
-        .then(deleteFile);
+        .then(recordLog);
     return result;
 }
 
