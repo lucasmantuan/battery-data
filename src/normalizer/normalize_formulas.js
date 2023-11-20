@@ -14,128 +14,168 @@ let seconds_greater_old = 0;
 let seconds_less_old = 0;
 
 function calculateChargeCapacity(value) {
-    if (global_parameters.profile === 'hh') {
-        const [capacity] = value;
-        if (_.toNumber(capacity) && capacity >= 0) return capacity;
-        return null;
-    } else if (global_parameters.profile === 'regatron') {
-        const [time, current] = value;
-        if (!_.isNaN(time)) {
-            charge_new_time = time - charge_old_time;
-            charge_old_time = time;
+    const profile = global_parameters.profile;
+
+    switch (profile) {
+        case 'hh':
+        case 'itech': {
+            const [capacity] = value;
+            if (_.toNumber(capacity) && capacity >= 0) return capacity;
+            break;
         }
-        if (_.toNumber(current) && current >= 0) return charge_new_time * current;
-        return null;
-    } else if (global_parameters.profile === 'bk') {
-        const [action, capacity] = value;
-        if (_.toLower(action) === 'charge') {
-            if (_.isNil(capacity)) return null;
-            return capacity;
+        case 'regatron': {
+            const [time, current] = value;
+            if (!_.isNaN(time)) {
+                charge_new_time = time - charge_old_time;
+                charge_old_time = time;
+            }
+            if (_.toNumber(current) && current >= 0) return charge_new_time * current;
+            break;
         }
-        return null;
-    } else if (global_parameters.profile === 'itech') {
-        const [capacity] = value;
-        if (_.toNumber(capacity) && capacity >= 0) return capacity;
-        return null;
+        case 'bk': {
+            const [action, capacity] = value;
+            if (_.toLower(action) === 'charge') {
+                if (_.isNil(capacity)) return null;
+                return capacity;
+            }
+            break;
+        }
+        default:
+            return null;
     }
 }
 
 function calculateChargeEnergy(value) {
-    if (global_parameters.profile === 'bk') {
-        const [action, capacity] = value;
-        if (_.toLower(action) === 'charge') {
-            if (_.isNil(capacity)) return null;
-            return capacity;
+    const profile = global_parameters.profile;
+
+    switch (profile) {
+        case 'bk': {
+            const [action, capacity] = value;
+            if (_.toLower(action) === 'charge') {
+                if (_.isNil(capacity)) return null;
+                return capacity;
+            }
+            break;
         }
-        return null;
+
+        default:
+            return null;
     }
 }
 
 function calculateDischargeCapacity(value) {
-    if (global_parameters.profile === 'hh') {
-        const [capacity] = value;
-        if (_.toNumber(capacity) && capacity < 0) return capacity;
-        return null;
-    } else if (global_parameters.profile === 'regatron') {
-        const [time, current] = value;
-        if (!isNaN(time)) {
-            discharge_new_time = time - discharge_old_time;
-            discharge_old_time = time;
+    const profile = global_parameters.profile;
+
+    switch (profile) {
+        case 'hh':
+        case 'itech': {
+            const [capacity] = value;
+            if (_.toNumber(capacity) && capacity < 0) return capacity;
+            break;
         }
-        if (_.toNumber(current) && current < 0) return discharge_new_time * current;
-        return null;
-    } else if (global_parameters.profile === 'bk') {
-        const [action, capacity] = value;
-        if (_.toLower(action) === 'discharge(cc)') {
-            if (_.isNil(capacity)) return null;
-            return capacity;
+        case 'regatron': {
+            const [time, current] = value;
+            if (!isNaN(time)) {
+                discharge_new_time = time - discharge_old_time;
+                discharge_old_time = time;
+            }
+            if (_.toNumber(current) && current < 0) return discharge_new_time * current;
+            break;
         }
-        return null;
-    } else if (global_parameters.profile === 'itech') {
-        const [capacity] = value;
-        if (_.toNumber(capacity) && capacity < 0) return capacity;
-        return null;
+        case 'bk': {
+            const [action, capacity] = value;
+            if (_.toLower(action) === 'discharge(cc)') {
+                if (_.isNil(capacity)) return null;
+                return capacity;
+            }
+            break;
+        }
+        default:
+            return null;
     }
 }
 
 function calculateDischargeEnergy(value) {
-    if (global_parameters.profile === 'bk') {
-        const [action, capacity] = value;
-        if (_.toLower(action) === 'discharge(cc)') {
-            if (_.isNil(capacity)) return null;
-            return capacity;
+    const profile = global_parameters.profile;
+
+    switch (profile) {
+        case 'bk': {
+            const [action, capacity] = value;
+            if (_.toLower(action) === 'discharge(cc)') {
+                if (_.isNil(capacity)) return null;
+                return capacity;
+            }
+            break;
         }
-        return null;
+
+        default:
+            return null;
     }
 }
 
 function calculateStepTime(value) {
-    if (global_parameters.profile === 'bk') {
-        const [action, date_time] = value;
-        if (_.toLower(action) === 'charge') {
-            seconds_discharge_old = 0;
-            const seconds_new = date_time.getTime() / 1000;
-            if (seconds_charge_old === 0) seconds_charge_old = seconds_new;
-            return seconds_new - seconds_charge_old;
-        } else if (_.toLower(action) === 'discharge(cc)') {
-            seconds_charge_old = 0;
-            const seconds_new = date_time.getTime() / 1000;
-            if (seconds_discharge_old === 0) seconds_discharge_old = seconds_new;
-            return seconds_new - seconds_discharge_old;
+    const profile = global_parameters.profile;
+
+    switch (profile) {
+        case 'bk': {
+            const [action, date_time] = value;
+            if (_.toLower(action) === 'charge') {
+                seconds_discharge_old = 0;
+                const seconds_new = date_time.getTime() / 1000;
+                if (seconds_charge_old === 0) seconds_charge_old = seconds_new;
+                return seconds_new - seconds_charge_old;
+            } else if (_.toLower(action) === 'discharge(cc)') {
+                seconds_charge_old = 0;
+                const seconds_new = date_time.getTime() / 1000;
+                if (seconds_discharge_old === 0) seconds_discharge_old = seconds_new;
+                return seconds_new - seconds_discharge_old;
+            }
+            break;
         }
-    } else if (global_parameters.profile === 'itech') {
-        const [current, test_time] = value;
-        if (current > 0) {
-            seconds_less_old = 0;
-            seconds_equal_old = 0;
-            if (seconds_greater_old === 0) seconds_greater_old = 1 + test_time;
-            return 1 + test_time - seconds_greater_old;
-        } else if (current < 0) {
-            seconds_greater_old = 0;
-            seconds_equal_old = 0;
-            if (seconds_less_old === 0) seconds_less_old = 1 + test_time;
-            return 1 + test_time - seconds_less_old;
-        } else if (current === 0) {
-            seconds_greater_old = 0;
-            seconds_less_old = 0;
-            if (seconds_equal_old === 0) seconds_equal_old = 1 + test_time;
-            return 1 + test_time - seconds_equal_old;
+        case 'itech': {
+            const [current, test_time] = value;
+            if (current > 0) {
+                seconds_less_old = 0;
+                seconds_equal_old = 0;
+                if (seconds_greater_old === 0) seconds_greater_old = 1 + test_time;
+                return 1 + test_time - seconds_greater_old;
+            } else if (current < 0) {
+                seconds_greater_old = 0;
+                seconds_equal_old = 0;
+                if (seconds_less_old === 0) seconds_less_old = 1 + test_time;
+                return 1 + test_time - seconds_less_old;
+            } else if (current === 0) {
+                seconds_greater_old = 0;
+                seconds_less_old = 0;
+                if (seconds_equal_old === 0) seconds_equal_old = 1 + test_time;
+                return 1 + test_time - seconds_equal_old;
+            }
+            break;
         }
+        default:
+            break;
     }
 }
 
 function calculateTestTime(value) {
-    if (global_parameters.profile === 'hh') {
-        const [record_start, step_time] = value;
-        if (record_start_old === null) record_start_old = record_start.getTime();
-        const new_record_start = new Date(record_start).getTime();
-        const new_step_time = _.round(step_time);
-        return (new_record_start - record_start_old) / 1000 + new_step_time;
-    } else if (global_parameters.profile === 'itech') {
-        const [save_time] = value;
-        const new_save_time = new Date(save_time);
-        if (record_start_old === null) record_start_old = new_save_time.getTime();
-        return (new_save_time.getTime() - record_start_old) / 1000;
+    const profile = global_parameters.profile;
+
+    switch (profile) {
+        case 'hh': {
+            const [record_start, step_time] = value;
+            if (record_start_old === null) record_start_old = record_start.getTime();
+            const new_record_start = new Date(record_start).getTime();
+            const new_step_time = _.round(step_time);
+            return (new_record_start - record_start_old) / 1000 + new_step_time;
+        }
+        case 'itech': {
+            const [save_time] = value;
+            const new_save_time = new Date(save_time);
+            if (record_start_old === null) record_start_old = new_save_time.getTime();
+            return (new_save_time.getTime() - record_start_old) / 1000;
+        }
+        default:
+            break;
     }
 }
 
@@ -192,42 +232,52 @@ function divideOneByOther(values, params) {
 }
 
 function extractRecordStart(value) {
-    if (global_parameters.profile === 'hh') {
-        const data_value = value.toString();
-        const regex = /record start at [a-z]+, (.*), (.*)/;
-        const match = data_value.match(regex);
-        if (match && match.length > 1) {
-            const data = match[1];
-            const hora = _.replace(match[2], /\./g, ':');
-            record_start_new = new Date(`${data} ${hora}`);
-        }
-        return record_start_new;
-    } else if (global_parameters.profile === 'regatron') {
-        const data_value = global_parameters.file_name.toString();
-        const regex = /(.{10})T(.{8})/;
-        const match = data_value.match(regex);
-        if (match && match.length > 1) {
-            const data = match[1];
-            const hora = _.replace(match[2], /_/g, ':');
-            record_start_new = new Date(`${data} ${hora}`);
-        }
-        return record_start_new;
-    } else if (global_parameters.profile === 'bk') {
-        const [start_value, data_value] = value;
-        if (_.toLower(start_value) === 'start time') {
-            const regex = /(.{2})\/(.{2})\/(.{4}) (.{8})/;
+    const profile = global_parameters.profile;
+
+    switch (profile) {
+        case 'hh':
+            {
+                const data_value = value.toString();
+                const regex = /record start at [a-z]+, (.*), (.*)/;
+                const match = data_value.match(regex);
+                if (match && match.length > 1) {
+                    const data = match[1];
+                    const hora = _.replace(match[2], /\./g, ':');
+                    record_start_new = new Date(`${data} ${hora}`);
+                }
+            }
+            break;
+        case 'regatron': {
+            const data_value = global_parameters.file_name.toString();
+            const regex = /(.{10})T(.{8})/;
             const match = data_value.match(regex);
-            const data = `${match[3]}-${match[2]}-${match[1]}`;
-            const hora = match[4];
-            record_start_new = new Date(new Date(`${data} ${hora}`));
+            if (match && match.length > 1) {
+                const data = match[1];
+                const hora = _.replace(match[2], /_/g, ':');
+                record_start_new = new Date(`${data} ${hora}`);
+            }
+            break;
         }
-        return record_start_new;
-    } else if (global_parameters.profile === 'digatron') {
-        const [start_value, data_value] = value;
-        if (_.toLower(start_value) === 'start time') {
-            record_start_new = new Date(_.trim(data_value));
+        case 'bk': {
+            const [start_value, data_value] = value;
+            if (_.toLower(start_value) === 'start time') {
+                const regex = /(.{2})\/(.{2})\/(.{4}) (.{8})/;
+                const match = data_value.match(regex);
+                const data = `${match[3]}-${match[2]}-${match[1]}`;
+                const hora = match[4];
+                record_start_new = new Date(new Date(`${data} ${hora}`));
+            }
+            break;
         }
-        return record_start_new;
+        case 'digatron': {
+            const [start_value, data_value] = value;
+            if (_.toLower(start_value) === 'start time') {
+                record_start_new = new Date(_.trim(data_value));
+            }
+            break;
+        }
+        default:
+            return record_start_new;
     }
 }
 
@@ -247,30 +297,40 @@ function multiplyValues(values) {
 
 function recordDate(value) {
     let [date_time, step_time] = value;
-    if (global_parameters.profile === 'hh') {
-        const new_date_time = new Date(date_time).getTime();
-        return new Date(new_date_time + _.round(step_time) * 1000);
-    } else if (global_parameters.profile === 'regatron') {
-        const new_date_time = new Date(date_time).getTime();
-        return new Date(new_date_time + step_time * 1000);
-    } else if (global_parameters.profile === 'bk') {
-        let new_date_time;
-        if (/(.{10}) (.{8})/.test(date_time)) {
-            const regex = /(.{2})\/(.{2})\/(.{4}) (.{8})/;
-            const match = date_time.match(regex);
-            const data = `${match[3]}-${match[2]}-${match[1]}`;
-            const hora = match[4];
-            new_date_time = new Date(`${data} ${hora}`);
-            return new_date_time;
+    const profile = global_parameters.profile;
+
+    switch (profile) {
+        case 'regatron':
+        case 'hh': {
+            const new_date_time = new Date(date_time).getTime();
+            return new Date(new_date_time + _.round(step_time) * 1000);
         }
-    } else if (global_parameters.profile === 'digatron') {
-        const new_date_time = new Date(date_time);
-        if (!_.isNil(step_time)) {
-            const [horas, minutos, segundos] = step_time.split(':');
-            const new_step_time =
-                parseInt(horas) * 3600 + parseInt(minutos) * 60 + parseInt(segundos);
-            return new Date(new_date_time.setSeconds(new_date_time.getSeconds() + new_step_time));
+        case 'bk': {
+            let new_date_time;
+            if (/(.{10}) (.{8})/.test(date_time)) {
+                const regex = /(.{2})\/(.{2})\/(.{4}) (.{8})/;
+                const match = date_time.match(regex);
+                const data = `${match[3]}-${match[2]}-${match[1]}`;
+                const hora = match[4];
+                new_date_time = new Date(`${data} ${hora}`);
+                return new_date_time;
+            }
+            break;
         }
+        case 'digatron': {
+            const new_date_time = new Date(date_time);
+            if (!_.isNil(step_time)) {
+                const [horas, minutos, segundos] = step_time.split(':');
+                const new_step_time =
+                    parseInt(horas) * 3600 + parseInt(minutos) * 60 + parseInt(segundos);
+                return new Date(
+                    new_date_time.setSeconds(new_date_time.getSeconds() + new_step_time)
+                );
+            }
+            break;
+        }
+        default:
+            break;
     }
 }
 

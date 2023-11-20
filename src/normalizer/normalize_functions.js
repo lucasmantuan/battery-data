@@ -3,6 +3,7 @@ const fs = require('fs');
 const normalize_formulas = require('./normalize_formulas');
 const path = require('path');
 const xlsx = require('xlsx');
+const { ensureFileExists, ensureDirectoryExists } = require('../utils/utils');
 const { global_parameters } = require('../utils/global_parameters');
 require('dotenv').config();
 
@@ -437,21 +438,23 @@ function readSpreadsheet(path, index) {
 function recordLog(data) {
     const { file_name, profile, recorded_at } = global_parameters;
     const lower_file_name = file_name[0].toLowerCase();
-    const log_file_name = new Date().toISOString().slice(0, 10);
+    const time_recorded_at = recorded_at.toTimeString().slice(0, 8);
+
+    const records = Array.isArray(data)
+        ? data.length
+        : data instanceof Error
+        ? data.message
+        : data.records;
+
     const step = Array.isArray(data) ? 'normalization' : 'writing';
-    const records = Array.isArray(data) ? data.length : data.records;
-    const line = `${profile}; ${lower_file_name}; ${recorded_at
-        .toTimeString()
-        .slice(0, 8)}; ${records}; ${step}\n`;
+    const header = 'profile; file_name; recorded_at; total_records; step\n';
+    const line = `${profile}; ${lower_file_name}; ${time_recorded_at}; ${records}; ${step}\n`;
     const bash = `${profile} - ${lower_file_name} - ${records} - ${step}\n`;
+    const log_file_name = new Date().toISOString().slice(0, 10);
     const log_directory = process.env.PATH_LOGS;
     const path = `${log_directory}/${log_file_name}.csv`;
-    if (!fs.existsSync(log_directory)) {
-        fs.mkdirSync(log_directory);
-    }
-    if (!fs.existsSync(path)) {
-        fs.writeFileSync(path, 'profile; file_name; recorded_at; total_records; step\n', 'utf8');
-    }
+    ensureDirectoryExists(log_directory);
+    ensureFileExists(path, header);
     fs.appendFileSync(path, line);
     process.stdout.write(bash);
     return data;
@@ -600,7 +603,6 @@ module.exports = {
     convertSpreadsheets,
     convertToLowercase,
     convertValuesIfNeeded,
-
     fileExtension,
     flattenData,
     mapObjectIfNeeded,

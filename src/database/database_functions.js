@@ -11,9 +11,13 @@ const knex = require('knex');
  * Promise que retolve para um objeto com a conexão com o banco de dados.
  */
 function openConnection(connection_config) {
-    return new Promise((resolve) => {
-        const connection = knex(connection_config);
-        resolve(connection);
+    return new Promise((resolve, reject) => {
+        try {
+            const connection = knex(connection_config);
+            resolve(connection);
+        } catch (error) {
+            reject(error);
+        }
     });
 }
 

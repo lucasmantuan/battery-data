@@ -15,7 +15,11 @@ const { recordLog } = require('../normalizer/normalize_functions');
  */
 function database(data, profile) {
     const { connection, table } = profile.database;
-    openConnection(connection).then(writeData(data, table)).then(recordLog).then(closeConnection);
+    openConnection(connection)
+        .then(writeData(data, table))
+        .then(recordLog)
+        .then(closeConnection)
+        .catch(recordLog);
     return;
 }
 

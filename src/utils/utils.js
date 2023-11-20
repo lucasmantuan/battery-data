@@ -1,5 +1,18 @@
 const _ = require('lodash');
 const path = require('path');
+const fs = require('fs');
+
+function ensureDirectoryExists(directory) {
+    if (!fs.existsSync(directory)) {
+        fs.mkdirSync(directory);
+    }
+}
+
+function ensureFileExists(path, line) {
+    if (!fs.existsSync(path)) {
+        fs.writeFileSync(path, line, 'utf8');
+    }
+}
 
 /**
  * Converte um JSON para um objeto JavaScript.
@@ -41,4 +54,10 @@ function getFileName(data) {
     return _.map(data, (file_name) => path.basename(file_name));
 }
 
-module.exports = { parseToObject, stringifyObject, getFileName };
+module.exports = {
+    ensureDirectoryExists,
+    ensureFileExists,
+    getFileName,
+    parseToObject,
+    stringifyObject
+};
