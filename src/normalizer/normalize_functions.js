@@ -187,7 +187,14 @@ function converteDate(param, data) {
         _.forEach(data, (data_item) => {
             _.mapValues(data_item, (value, key) => {
                 if (key === param_item && value != null) {
-                    _.set(data_item, key, value.toISOString().slice(0, 19).replace('T', ' '));
+                    let new_date;
+                    if (_.isNumber(value)) {
+                        new_date = new Date(Math.round((value - 25569) * 86400 * 1000));
+                        new_date.setHours(new_date.getHours() + parseInt(process.env.TIME_ZONE));
+                    } else {
+                        new_date = value;
+                    }
+                    _.set(data_item, key, new_date.toISOString().slice(0, 19).replace('T', ' '));
                 }
             });
         });
@@ -429,7 +436,7 @@ function readSpreadsheets(folder_list, worksheet_number) {
  */
 function readSpreadsheet(path, index) {
     return new Promise((resolve) => {
-        const file = xlsx.readFile(path, { cellDates: true });
+        const file = xlsx.readFile(path, { cellDates: false });
         const spreadsheet = file.Sheets[file.SheetNames[index]];
         resolve(spreadsheet);
     });

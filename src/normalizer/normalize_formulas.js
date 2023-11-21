@@ -57,7 +57,6 @@ function calculateChargeEnergy(value) {
             }
             break;
         }
-
         default:
             return null;
     }
@@ -179,6 +178,10 @@ function calculateTestTime(value) {
     }
 }
 
+function convertTextToDate(value) {
+    return new Date(value);
+}
+
 function convertTextToNumber(value, params) {
     const [from, to] = params;
     const number_value = Number(_.replace(value.trim(), from, to));
@@ -235,18 +238,17 @@ function extractRecordStart(value) {
     const profile = global_parameters.profile;
 
     switch (profile) {
-        case 'hh':
-            {
-                const data_value = value.toString();
-                const regex = /record start at [a-z]+, (.*), (.*)/;
-                const match = data_value.match(regex);
-                if (match && match.length > 1) {
-                    const data = match[1];
-                    const hora = _.replace(match[2], /\./g, ':');
-                    record_start_new = new Date(`${data} ${hora}`);
-                }
+        case 'hh': {
+            const data_value = value.toString();
+            const regex = /record start at [a-z]+, (.*), (.*)/;
+            const match = data_value.match(regex);
+            if (match && match.length > 1) {
+                const data = match[1];
+                const hora = _.replace(match[2], /\./g, ':');
+                record_start_new = new Date(`${data} ${hora}`);
             }
-            break;
+            return record_start_new;
+        }
         case 'regatron': {
             const data_value = global_parameters.file_name.toString();
             const regex = /(.{10})T(.{8})/;
@@ -256,7 +258,7 @@ function extractRecordStart(value) {
                 const hora = _.replace(match[2], /_/g, ':');
                 record_start_new = new Date(`${data} ${hora}`);
             }
-            break;
+            return record_start_new;
         }
         case 'bk': {
             const [start_value, data_value] = value;
@@ -267,17 +269,17 @@ function extractRecordStart(value) {
                 const hora = match[4];
                 record_start_new = new Date(new Date(`${data} ${hora}`));
             }
-            break;
+            return record_start_new;
         }
         case 'digatron': {
             const [start_value, data_value] = value;
             if (_.toLower(start_value) === 'start time') {
                 record_start_new = new Date(_.trim(data_value));
             }
-            break;
+            return record_start_new;
         }
         default:
-            return record_start_new;
+            break;
     }
 }
 
@@ -300,8 +302,8 @@ function recordDate(value) {
     const profile = global_parameters.profile;
 
     switch (profile) {
-        case 'regatron':
-        case 'hh': {
+        case 'hh':
+        case 'regatron': {
             const new_date_time = new Date(date_time).getTime();
             return new Date(new_date_time + _.round(step_time) * 1000);
         }
@@ -372,6 +374,7 @@ const normalize_formulas = {
     calculateDischargeEnergy,
     calculateStepTime,
     calculateTestTime,
+    convertTextToDate,
     convertTextToNumber,
     differenceInSecondsBetweenDates,
     divideOneByOther,

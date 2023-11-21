@@ -8,7 +8,8 @@
             ["multiplyValues", ["PV6500_1_1__Voltage", "discharge_capacity(Ah)"], [], "discharge_energy(Wh)"],
             ["divideOneByOther", ["discharge_capacity(Ah)"], [], "mAh/g"],
             ["calculateTestTime", ["SaveTime"], [], "test_time(s)"],
-            ["calculateStepTime", ["PV6500_1_1__Current", "test_time(s)"], [], "step_time(s)"]
+            ["calculateStepTime", ["PV6500_1_1__Current", "test_time(s)"], [], "step_time(s)"],
+            ["convertTextToDate", ["SaveTime"], [], "date_time"]
         ],
         "add_values": [
             ["recordValue", "file_name", "file_name"],
@@ -30,7 +31,7 @@
             "coulombic_efficiency": "coulombic_efficiency",
             "PV6500_1_1__Current": "current(A)",
             "cycle_index": "cycle_index",
-            "SaveTime": "date_time",
+            "date_time": "date_time",
             "discharge_capacity(Ah)": "discharge_capacity(Ah)",
             "discharge_energy(Wh)": "discharge_energy(Wh)",
             "file_name": "file_name",
@@ -45,7 +46,7 @@
             "volt/cell(V)": "volt/cell(V)",
             "PV6500_1_1__Voltage": "voltage(V)"
         },
-        "date": ["recorded_at"]
+        "date": ["date_time", "recorded_at"]
     },
     "file": {
         "file_extension": "csv",
