@@ -1,5 +1,6 @@
 {
     "database": {
+        "name": "mysql",
         "connection": {
             "client": "mysql2",
             "connection": {

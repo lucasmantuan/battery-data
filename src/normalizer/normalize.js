@@ -80,10 +80,21 @@ function normalize(folder_list, profile) {
  * @returns {Promise<Array<Array>>}
  * Promise que resolve em um array de arrays de caminhos de arquivos.
  */
-function read(folder, profile) {
+async function read(folder, profile) {
     const { file_extension } = profile.file;
-    const result = readFolder(folder).then(fileExtension(file_extension)).then(chunkSplit());
-    return result;
+    try {
+        const result = await readFolder(folder)
+            .then(fileExtension(file_extension))
+            .then(chunkSplit());
+        return result;
+    } catch (error) {
+        if (error.message.includes('(COD005)')) {
+            throw error;
+        } else {
+            error.message = 'Erro de Leitura (COD006)';
+            throw error;
+        }
+    }
 }
 
 module.exports = {

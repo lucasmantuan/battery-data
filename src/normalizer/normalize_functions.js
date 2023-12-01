@@ -6,7 +6,6 @@ const xlsx = require('xlsx');
 const { ensureFileExists, ensureDirectoryExists } = require('../utils/utils');
 const { global_parameters } = require('../utils/global_parameters');
 require('dotenv').config();
-
 xlsx.set_fs(fs);
 
 /**
@@ -263,10 +262,14 @@ function convertValuesIfNeeded(param) {
      * Array com os dados sem alteração ou com os valores convertidos
      */
     return function (data) {
-        if (_.isEmpty(param)) {
-            return data;
-        } else {
-            return convertValues(param, data);
+        try {
+            if (_.isEmpty(param)) {
+                return data;
+            } else {
+                return convertValues(param, data);
+            }
+        } catch (error) {
+            throw new Error(`convertValuesIfNeeded ${error}`);
         }
     };
 }
@@ -284,17 +287,21 @@ function convertValuesIfNeeded(param) {
  * Array com os dados após a aplicação da função de callback.
  */
 function convertValues(param, data) {
-    _.forEach(param, (param_item) => {
-        const [callback_name, params] = param_item;
-        const callback = normalize_formulas[callback_name];
-        _.forEach(data, (data_item) => {
-            _.forEach(data_item, (value, key) => {
-                const new_value = callback(value, params);
-                _.set(data_item, key, new_value);
+    try {
+        _.forEach(param, (param_item) => {
+            const [callback_name, params] = param_item;
+            const callback = normalize_formulas[callback_name];
+            _.forEach(data, (data_item) => {
+                _.forEach(data_item, (value, key) => {
+                    const new_value = callback(value, params);
+                    _.set(data_item, key, new_value);
+                });
             });
         });
-    });
-    return data;
+        return data;
+    } catch (error) {
+        throw new Error(`convertValues ${error}`);
+    }
 }
 
 /**
@@ -395,10 +402,15 @@ function mapObject(param, data) {
  * Uma promise que resolve para um array de caminhos de arquivos.
  */
 function readFolder(folder) {
-    return new Promise((resolve) => {
-        const files = fs.readdirSync(folder);
-        const result = _.map(files, (file) => path.join(folder, file));
-        resolve(result);
+    return new Promise((resolve, reject) => {
+        try {
+            const files = fs.readdirSync(folder);
+            const result = _.map(files, (file) => path.join(folder, file));
+            resolve(result);
+        } catch (error) {
+            error.message = 'Erro de Leitura (COD005)';
+            reject(error);
+        }
     });
 }
 
