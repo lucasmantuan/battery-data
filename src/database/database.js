@@ -1,5 +1,5 @@
-const { openConnection, createTable, writeData, closeConnection } = require('./database_functions');
 const { recordLog } = require('../normalizer/normalize_functions');
+const { defineDatabase } = require('./database_functions');
 
 /**
  * Grava os dados no banco de dados na table especificada nos parametros.
@@ -14,7 +14,8 @@ const { recordLog } = require('../normalizer/normalize_functions');
  * Promise que resolve informando quando os dados foram gravados no banco de dados.
  */
 function database(data, profile) {
-    const { connection, table } = profile.database;
+    const { name, connection, table } = profile.database;
+    const { closeConnection, openConnection, writeData } = defineDatabase(name);
     openConnection(connection)
         .then(writeData(data, table))
         .then(recordLog)
@@ -33,7 +34,8 @@ function database(data, profile) {
  * Promise que resolve informando quando a tabela foi criada no banco de dados.
  */
 function create(profile) {
-    const { connection, table } = profile.database;
+    const { name, connection, table } = profile.database;
+    const { closeConnection, createTable, openConnection } = defineDatabase(name);
     openConnection(connection).then(createTable(table)).then(closeConnection);
     return;
 }
